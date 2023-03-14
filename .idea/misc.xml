@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/login_edit_bg.xml" value="0.109375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/radio_button_selector.xml" value="0.109375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/radio_button_unselected.xml" value="0.158984375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/radio_text_selected.xml" value="0.158984375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/radio_text_selector.xml" value="0.109375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/radio_text_unselected.xml" value="0.158984375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable-v24/white_round_bg.xml" value="0.109375" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable/login_edit_bg.xml" value="0.1942084942084942" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable/select_year.xml" value="0.19073359073359072" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable/white_round_bg.xml" value="0.19073359073359072" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_home.xml" value="0.125390625" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_login.xml" value="0.264" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_reg.xml" value="0.264" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/button_navigation_style.xml" value="0.152" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/date_item.xml" value="0.6" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/fragment_home.xml" value="0.16632513661202186" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/fragment_signup.xml" value="0.16632513661202186" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/fragment_text_tab.xml" value="0.16632513661202186" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/fragment_userhome.xml" value="0.16632513661202186" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/tab_layout_for_bottom.xml" value="0.176" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/date_item.xml" value="0.1" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/network_security_config.xml" value="0.1" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/radiobutton_selector.xml" value="0.16598360655737704" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/login_bg"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="362dp"
+        android:layout_height="185dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="37dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/login_logo"/>
+
+    <!-- 手机号 -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/telephone_layout"
+        android:layout_width="362dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="48dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo"
+        app:hintAnimationEnabled="true"
+        app:boxStrokeErrorColor="#FF0000"
+        app:boxStrokeWidth="0.5dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="11"
+        app:counterTextColor="@color/main_purple"
+        android:selectAllOnFocus="true"
+        app:errorEnabled="true"
+        app:boxStrokeWidthFocused="2dp"
+        app:boxBackgroundMode="filled"
+        >
+        <EditText
+            android:id="@+id/telephone"
+            android:layout_width="362dp"
+            android:layout_height="60dp"
+            android:inputType="phone"
+            android:hint="手机号"
+            android:textColorHint="#BEBEBE"
+            android:textSize="16dp"
+            android:maxLines="1"
+            android:textColor="#101010"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:background="@drawable/login_edit_bg"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 密码 -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/password_layout"
+        android:layout_width="362dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/telephone_layout"
+        app:hintAnimationEnabled="true"
+        app:boxStrokeErrorColor="#FF0000"
+        app:boxStrokeWidth="0.5dp"
+        app:counterEnabled="true"
+        app:counterMaxLength="11"
+        app:counterTextColor="@color/main_purple"
+        android:selectAllOnFocus="true"
+        app:errorEnabled="true"
+        app:boxStrokeWidthFocused="2dp"
+        app:boxBackgroundMode="filled"
+        app:passwordToggleEnabled="true"
+        >
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="362dp"
+            android:layout_height="60dp"
+            android:inputType="textPassword"
+            android:textColorHint="#BEBEBE"
+            android:layout_gravity="center_horizontal"
+            app:passwordToggleEnabled="true"
+            android:maxLines="1"
+            android:hint="密码"
+            android:textSize="16dp"
+            android:textColor="#101010"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:background="@drawable/login_edit_bg"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- 登陆按钮 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        android:layout_width="362dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="44dp"
+        android:layout_gravity="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/password_layout"
+        android:background="@drawable/login_btn"
+        />
+
+    <!-- 注册按钮 -->
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_reg"
+        android:layout_width="362dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="22dp"
+        android:layout_gravity="center"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_login"
+        android:background="@drawable/reg_btn"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
