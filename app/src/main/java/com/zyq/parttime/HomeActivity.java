@@ -1,5 +1,6 @@
 package com.zyq.parttime;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -73,8 +74,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.home://首页
             case R.id.icon_home:
                 reset();//重置文本、图片选中状态
-//                text_home.setSelected(true);//文字选中
-//                icon_home.setSelected(true);//图片选中
                 changeColors("home");//图片、文字选中的样式
 
                 if (homeFragment == null) {//fragment为空
@@ -87,8 +86,6 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.signup://我的报名
             case R.id.icon_signup:
                 reset();//重置文本、图片选中状态
-//                text_signup.setSelected(true);//文字选中
-//                icon_signup.setSelected(true);//图片选中
                 changeColors("signup");//图片、文字选中的样式
 
                 if (signupFragment == null) {//fragment为空
@@ -166,5 +163,29 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 break;
         }
+    }
+
+    //重写onResume方法，activity跳转到响应的fragment
+    @Override
+    protected void onResume() {
+        //FragmentTransaction实现向Activity state增加/删除fragment
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        int id = getIntent().getIntExtra("id", 0);
+        if (id == 1) {
+            changeColors("home");//图片、文字选中的样式
+            transaction.show(homeFragment);//显示该fragment
+        }
+        if (id == 2) {
+            changeColors("signup");//图片、文字选中的样式
+            transaction.show(signupFragment);//显示该fragment
+        }
+        if (id == 3) {
+            changeColors("userhome");//图片、文字选中的样式
+            transaction.show(userhomeFragment);//显示该fragment
+        }
+        transaction.commit();
+
+        super.onResume();
     }
 }
