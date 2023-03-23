@@ -49,14 +49,16 @@ public class HomeFragment extends Fragment {
         rv = view.findViewById(R.id.rv);
         //第一步：设置布局管理器
         rv.setLayoutManager(new LinearLayoutManager(context));
-        //第三步：设置适配器
+        //第二步：设置适配器
         homeAdapter = new HomeAdapter(context, list);
         rv.setAdapter(homeAdapter);
 
         //星推榜
-        TextView enter=(TextView) view.findViewById(R.id.enter);
+        TextView enter= view.findViewById(R.id.enter);
         enter.setOnClickListener(v->{
             Log.i("aaa","aa");
+            //跳转
+
         });
 
         return view;
@@ -64,6 +66,7 @@ public class HomeFragment extends Fragment {
 
     public void initData() {
         //调用后端接口，获取兼职信息列表，赋值给list
+
 
         //TODO 现在是假数据
         list.clear();

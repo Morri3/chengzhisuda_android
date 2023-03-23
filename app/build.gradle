@@ -38,6 +38,7 @@ dependencies {
 
     //导入依赖
     implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.alibaba:fastjson:1.1.55.android'
 //    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
 //    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.20'

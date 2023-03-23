@@ -174,15 +174,30 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         int id = getIntent().getIntExtra("id", 0);
         if (id == 1) {
             changeColors("home");//图片、文字选中的样式
-            transaction.show(homeFragment);//显示该fragment
+            if (homeFragment == null) {//fragment为空
+                homeFragment = new HomeFragment();//创建一个fragment
+                transaction.add(R.id.main_container, homeFragment);//加入transaction
+            } else {//fragment不为空
+                transaction.show(homeFragment);//显示该fragment
+            }
         }
         if (id == 2) {
             changeColors("signup");//图片、文字选中的样式
-            transaction.show(signupFragment);//显示该fragment
+            if (signupFragment == null) {//fragment为空
+                signupFragment = new SignupFragment();//创建一个fragment
+                transaction.add(R.id.main_container, signupFragment);//加入transaction
+            } else {//fragment不为空
+                transaction.show(signupFragment);//显示该fragment
+            }
         }
         if (id == 3) {
             changeColors("userhome");//图片、文字选中的样式
-            transaction.show(userhomeFragment);//显示该fragment
+            if (userhomeFragment == null) {//fragment为空
+                userhomeFragment = new UserhomeFragment();//创建一个fragment
+                transaction.add(R.id.main_container, userhomeFragment);//加入transaction
+            } else {//fragment不为空
+                transaction.show(userhomeFragment);//显示该fragment
+            }
         }
         transaction.commit();
 

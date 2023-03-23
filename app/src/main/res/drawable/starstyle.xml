@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <!--未点击时样式-->
+  <item android:id="@android:id/background"
+    android:drawable="@drawable/ratestar1"/>
+  <!--半颗星样式-->
+  <item android:id="@android:id/secondaryProgress"
+    android:drawable="@drawable/ratestar2"/>
+  <!--整颗星样式-->
+  <item android:id="@android:id/progress"
+    android:drawable="@drawable/ratestar3"/>
+</layer-list>
