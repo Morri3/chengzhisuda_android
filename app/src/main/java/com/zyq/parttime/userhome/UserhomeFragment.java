@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.zyq.parttime.R;
+import com.zyq.parttime.userhome.resume.ResumesManage;
 
 public class UserhomeFragment extends Fragment {
     private Context context;//上下文
@@ -40,6 +41,11 @@ public class UserhomeFragment extends Fragment {
         right1.setOnClickListener(v->{
             Intent i = new Intent();
             i.setClass(context, UserInfo.class);
+            startActivity(i);
+        });
+        right2.setOnClickListener(v->{
+            Intent i = new Intent();
+            i.setClass(context, ResumesManage.class);
             startActivity(i);
         });
 

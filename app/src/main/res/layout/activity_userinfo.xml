@@ -42,6 +42,16 @@
             android:gravity="center"
             android:textStyle="bold"
             />
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/back_icon"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginLeft="18dp"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
@@ -55,6 +65,7 @@
         android:src="@drawable/info"
         android:layout_marginLeft="4dp"
         />
+
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
@@ -214,6 +225,7 @@
         app:layout_constraintLeft_toLeftOf="@id/info_bg"
         app:layout_constraintTop_toBottomOf="@id/topBox"
         android:hint="陈小二"
+        android:textColorHint="@color/white"
         android:text="陈小二"
         android:textColor="@color/white"
         android:textSize="12dp"
@@ -232,7 +244,7 @@
         android:hint="男"
         android:text="男"
         android:textColor="@color/white"
-
+        android:textColorHint="@color/white"
         android:textSize="12dp"
         android:gravity="left"
         android:background="@null"
@@ -248,6 +260,8 @@
         app:layout_constraintTop_toBottomOf="@id/e2"
         android:hint="111@qq.com"
         android:textColor="@color/white"
+        android:textColorHint="@color/white"
+        android:inputType="textEmailAddress"
         android:text="111@qq.com"
         android:textSize="12dp"
         android:gravity="left"
@@ -305,10 +319,12 @@
         android:layout_marginLeft="140dp"
         app:layout_constraintLeft_toLeftOf="@id/info_bg"
         app:layout_constraintTop_toBottomOf="@id/month_text"
+        android:inputType="phone"
         android:hint="13333333333"
         android:text="13333333333"
         android:textColor="@color/white"
         android:textSize="12dp"
+        android:textColorHint="@color/white"
         android:gravity="left"
         android:background="@null"
         android:textStyle="bold"
@@ -324,6 +340,7 @@
         android:hint="浙大城市学院"
         android:text="浙大城市学院"
         android:textSize="12dp"
+        android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:gravity="left"
         android:background="@null"
@@ -340,6 +357,7 @@
         android:hint="31000001"
         android:text="31000001"
         android:textSize="12dp"
+        android:textColorHint="@color/white"
         android:textColor="@color/white"
         android:gravity="left"
         android:background="@null"
