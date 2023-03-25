@@ -107,7 +107,7 @@
         />
 
     <TextView
-        android:id="@+id/username"
+        android:id="@+id/username_resume"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/head"
@@ -142,11 +142,11 @@
         />
 
     <TextView
-        android:id="@+id/age"
+        android:id="@+id/age_resume"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/head"
-        app:layout_constraintTop_toBottomOf="@id/username"
+        app:layout_constraintTop_toBottomOf="@id/username_resume"
         android:text="21岁"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
@@ -158,17 +158,17 @@
         android:id="@+id/line1"
         android:layout_width="1dp"
         android:layout_height="18dp"
-        app:layout_constraintTop_toBottomOf="@id/username"
-        app:layout_constraintLeft_toRightOf="@id/age"
+        app:layout_constraintTop_toBottomOf="@id/username_resume"
+        app:layout_constraintLeft_toRightOf="@id/age_resume"
         android:layout_marginLeft="15dp"
         android:background="@color/divider"
         android:layout_marginTop="6dp"/>
     <TextView
-        android:id="@+id/grade"
+        android:id="@+id/grade_resume"
         android:layout_width="45dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/line1"
-        app:layout_constraintTop_toBottomOf="@id/username"
+        app:layout_constraintTop_toBottomOf="@id/username_resume"
         android:text="大四"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
@@ -180,17 +180,17 @@
         android:id="@+id/line2"
         android:layout_width="1dp"
         android:layout_height="18dp"
-        app:layout_constraintTop_toBottomOf="@id/username"
-        app:layout_constraintLeft_toRightOf="@id/grade"
+        app:layout_constraintTop_toBottomOf="@id/username_resume"
+        app:layout_constraintLeft_toRightOf="@id/grade_resume"
         android:layout_marginLeft="15dp"
         android:background="@color/divider"
         android:layout_marginTop="6dp"/>
     <TextView
-        android:id="@+id/telephone"
+        android:id="@+id/telephone_resume"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/line2"
-        app:layout_constraintTop_toBottomOf="@id/username"
+        app:layout_constraintTop_toBottomOf="@id/username_resume"
         android:text="13333333333"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
@@ -200,11 +200,11 @@
         />
 
     <TextView
-        android:id="@+id/emails"
+        android:id="@+id/emails_resume"
         android:layout_width="127dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/head"
-        app:layout_constraintTop_toBottomOf="@id/age"
+        app:layout_constraintTop_toBottomOf="@id/age_resume"
         android:text="111@qq.com"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
@@ -216,8 +216,8 @@
         android:id="@+id/line3"
         android:layout_width="1dp"
         android:layout_height="18dp"
-        app:layout_constraintTop_toBottomOf="@id/age"
-        app:layout_constraintLeft_toRightOf="@id/emails"
+        app:layout_constraintTop_toBottomOf="@id/age_resume"
+        app:layout_constraintLeft_toRightOf="@id/emails_resume"
         android:layout_marginLeft="15dp"
         android:background="@color/divider"
         android:layout_marginTop="6dp"/>
@@ -226,13 +226,28 @@
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toRightOf="@id/line3"
-        app:layout_constraintTop_toBottomOf="@id/age"
+        app:layout_constraintTop_toBottomOf="@id/age_resume"
         android:text="暂无工作经验"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="20dp"
         android:gravity="left"
+        />
+    <EditText
+        android:id="@+id/exp_edit"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@id/line3"
+        app:layout_constraintTop_toBottomOf="@id/age_resume"
+        android:text="暂无工作经验"
+        android:textColor="@color/text_black_color"
+        android:textSize="16dp"
+        android:background="@null"
+        android:minLines="1"
+        android:gravity="top"
+        android:layout_marginTop="4dp"
+        android:layout_marginLeft="20dp"
         />
 
     <!--现居地-->
@@ -248,6 +263,21 @@
         android:layout_marginTop="5dp"
         android:layout_marginLeft="20dp"
         android:gravity="left"
+        />
+    <EditText
+        android:id="@+id/current_area_edit"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/head"
+        android:text="杭州"
+        android:background="@null"
+        android:minLines="1"
+        android:textColor="@color/text_black_color"
+        android:textSize="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="top"
         />
     <ImageView
         android:id="@+id/divider1"

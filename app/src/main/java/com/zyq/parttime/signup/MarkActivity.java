@@ -73,7 +73,7 @@ public class MarkActivity extends AppCompatActivity {
         btn_mark.setOnClickListener(v -> {
             //将数组存到DB中
             Log.i("评分", point.toString());
-//TODO
+            //TODO
 
             //跳转到我的报名页
             Intent i = new Intent();

@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.zyq.parttime.R;
+import com.zyq.parttime.userhome.intented.IntentedManage;
 import com.zyq.parttime.userhome.resume.ResumesManage;
 
 public class UserhomeFragment extends Fragment {
@@ -47,6 +48,16 @@ public class UserhomeFragment extends Fragment {
             Intent i = new Intent();
             i.setClass(context, ResumesManage.class);
             startActivity(i);
+        });
+        right3.setOnClickListener(v->{
+            Intent i = new Intent();
+            i.setClass(context, IntentedManage.class);
+            startActivity(i);
+        });
+        right4.setOnClickListener(v->{
+//            Intent i = new Intent();
+//            i.setClass(context, IntentedManage.class);
+//            startActivity(i);
         });
 
 

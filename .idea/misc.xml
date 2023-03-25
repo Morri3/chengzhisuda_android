@@ -20,11 +20,13 @@
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable/white_round_bg.xml" value="0.19073359073359072" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/drawable/white_round_bg2.xml" value="0.136328125" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_home.xml" value="0.125390625" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_intented.xml" value="0.264" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_main.xml" value="0.2" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_mark.xml" value="0.264" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_reg.xml" value="0.264" />
-        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_resume.xml" value="0.264" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_resume.xml" value="0.2" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_upload_resume.xml" value="0.176" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/activity_userinfo.xml" value="0.264" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/button_navigation_style.xml" value="0.152" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/campus_edit_item.xml" value="0.264" />
@@ -41,7 +43,9 @@
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/position_detail_item.xml" value="0.2" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/signup_item.xml" value="0.264" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/tab_layout_for_bottom.xml" value="0.176" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/layout/upload_item.xml" value="0.1" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/date_item.xml" value="0.1" />
+        <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/file_paths.xml" value="0.1" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/network_security_config.xml" value="0.1" />
         <entry key="..\:/Androidxuniji/biyesheji/Parttime/app/src/main/res/xml/radiobutton_selector.xml" value="0.16598360655737704" />
       </map>
