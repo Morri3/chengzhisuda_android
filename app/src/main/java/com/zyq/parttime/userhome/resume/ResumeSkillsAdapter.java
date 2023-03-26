@@ -107,6 +107,9 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 EditSkills item = list.get(pos);
                 Log.i("isSave", isSave + "");
 
+                //设置焦点，实现走马灯
+                headerViewHolder.content.requestFocus();
+
                 if (isSave == 0) {
                     //隐藏编辑的控件
                     headerViewHolder.content2.setVisibility(View.INVISIBLE);

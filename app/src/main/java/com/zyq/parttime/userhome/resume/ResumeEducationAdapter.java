@@ -147,6 +147,11 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                 EditEducation item = list.get(pos);
                 Log.i("isSave", isSave + "");
 
+                //设置焦点，实现走马灯
+                headerViewHolder.content.requestFocus();
+                headerViewHolder.date.requestFocus();
+                headerViewHolder.title.requestFocus();
+
                 if (isSave == 0) {
                     //隐藏编辑的控件
                     headerViewHolder.title2.setVisibility(View.INVISIBLE);

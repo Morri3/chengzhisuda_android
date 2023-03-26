@@ -52,7 +52,7 @@ public class EditSkills implements Serializable {
 
     @Override
     public String toString() {
-        return "EditCampus{" +
+        return "EditSkills{" +
                 "telephone='" + telephone + '\'' +
                 ", rd_id=" + rd_id +
                 ", content='" + content + '\'' +

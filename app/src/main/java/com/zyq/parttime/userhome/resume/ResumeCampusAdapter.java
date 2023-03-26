@@ -2,6 +2,8 @@ package com.zyq.parttime.userhome.resume;
 
 import android.content.Context;
 import android.os.Handler;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,6 +148,31 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
                 EditCampus item = list.get(pos);
                 Log.i("isSave", isSave + "");
+
+                //设置焦点，实现走马灯
+                headerViewHolder.content.requestFocus();
+//                headerViewHolder.content.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
+//                headerViewHolder.content.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
+//                headerViewHolder.content.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
+//                headerViewHolder.content.setSingleLine(true); // 设置为单行显示
+//                headerViewHolder.content.setFocusable(true); // 获得焦点
+//                headerViewHolder.content.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
+
+                headerViewHolder.date.requestFocus();
+//                headerViewHolder.date.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
+//                headerViewHolder.date.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
+//                headerViewHolder.date.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
+//                headerViewHolder.date.setSingleLine(true); // 设置为单行显示
+//                headerViewHolder.date.setFocusable(true); // 获得焦点
+//                headerViewHolder.date.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
+
+                headerViewHolder.title.requestFocus();
+//                headerViewHolder.title.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
+//                headerViewHolder.title.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
+//                headerViewHolder.title.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
+//                headerViewHolder.title.setSingleLine(true); // 设置为单行显示
+//                headerViewHolder.title.setFocusable(true); // 获得焦点
+//                headerViewHolder.title.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
 
                 if (isSave == 0) {
                     //隐藏编辑的控件

@@ -8,7 +8,6 @@ public class EditCampus implements Serializable {
     private String title;
     private String date;
     private String content;
-
     private String memo;
     private String rd_status;
 

@@ -70,7 +70,7 @@ public class EditEducation implements Serializable {
 
     @Override
     public String toString() {
-        return "EditCampus{" +
+        return "EditEducation{" +
                 "telephone='" + telephone + '\'' +
                 ", rd_id=" + rd_id +
                 ", title='" + title + '\'' +
