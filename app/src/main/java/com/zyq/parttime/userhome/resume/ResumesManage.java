@@ -24,7 +24,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
 import com.zyq.parttime.form.EditCampus;
+import com.zyq.parttime.form.EditCampusDto;
 import com.zyq.parttime.form.EditEducation;
+import com.zyq.parttime.form.EditPersonalDto;
 import com.zyq.parttime.form.EditProject;
 import com.zyq.parttime.form.EditSkills;
 import com.zyq.parttime.form.Resume;
@@ -501,25 +503,12 @@ public class ResumesManage extends AppCompatActivity {
 
         Log.i("stu", student.toString());
 
-//        runOnUiThread(() -> {
         //休眠4秒,让api有充足时间获取数据，避免null
         try {
-            Thread.sleep(5000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-//            //个人信息
-//            Log.i("stu", student.toString());
-//            username.setText(student.getStu_name());
-//            age.setText(student.getAge() + "岁");
-//            emails.setText(student.getEmails());
-//            grade.setText(student.getGrade());
-//            phone.setText(student.getTelephone());
-
-//            Log.i("campus", resume.getCampusExpList().toString());
-//            exp.setText(resume.getExp());
-//            current_area.setText(resume.getCurrent_area());
 
         //编辑按钮
         edit1.setOnClickListener(v -> {
@@ -527,8 +516,10 @@ public class ResumesManage extends AppCompatActivity {
             edit1.setVisibility(View.INVISIBLE);
             exp.setVisibility(View.INVISIBLE);
             exp_edit.setVisibility(View.VISIBLE);
+            exp_edit.setText(resume.getExp());
             current_area.setVisibility(View.INVISIBLE);
             current_area_edit.setVisibility(View.VISIBLE);
+            current_area_edit.setText(resume.getCurrent_area());
         });
         //保存按钮
         save1.setOnClickListener(v -> {
@@ -543,22 +534,64 @@ public class ResumesManage extends AppCompatActivity {
             String info2 = current_area_edit.getText().toString();
             exp.setText(info1);
             current_area.setText(info2);
+            resume.setExp(info1);
+            resume.setCurrent_area(info2);
             Log.i("exp", info1);
             Log.i("current_area", info2);
 
             //调api，数据更新到DB
+            new Thread(() -> {
+                try {
+                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 
+                    //dto
+                    EditPersonalDto dto = new EditPersonalDto();
+                    dto.setTelephone(student.getTelephone());
+                    dto.setCurrent_area(resume.getCurrent_area());
+                    dto.setExp(resume.getExp());
+
+                    String json = JSON.toJSONString(dto);//dto转json
+                    Request request = new Request.Builder()
+                            .url("http://114.55.239.213:8082/users/resumes/edit_personal")
+                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                            .build();//创建Http请求
+                    client.newBuilder()
+                            .connectTimeout(20, TimeUnit.SECONDS)
+                            .readTimeout(20, TimeUnit.SECONDS)
+                            .writeTimeout(20, TimeUnit.SECONDS)
+                            .build()
+                            .newCall(request).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                            Log.i("error", "数据更新失败");
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                            if (response.isSuccessful()) {//调用成功
+                                try {
+                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                    Log.i("data", jsonObj.getString("data"));
+                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                    //获取obj中的数据
+                                    JSONObject info = data.getJSONObject("info");
+                                    Log.i("修改", "修改成功！");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            } else {//调用失败
+                                Log.i("error", response.toString());
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }).start();//要start才会启动
         });
-
-
-//            //校园经历
-//            //第一步：设置布局管理器
-//            rv.setLayoutManager(new LinearLayoutManager(context));
-//            //第二步：设置适配器
-//            adapter = new ResumeCampusAdapter(context, list, isSave);
-//            rv.setAdapter(adapter);
-//            ///第三步：添加动画
-//            rv.setItemAnimator(new DefaultItemAnimator());
 
         //编辑按钮
         edit2.setOnClickListener(v -> {
@@ -575,16 +608,6 @@ public class ResumesManage extends AppCompatActivity {
             isSave = 0;
         });
 
-
-//            //教育背景
-//            //第一步：设置布局管理器
-//            rv2.setLayoutManager(new LinearLayoutManager(context));
-//            //第二步：设置适配器
-//            adapter2 = new ResumeEducationAdapter(context, list2, isSave2);
-//            rv2.setAdapter(adapter2);
-//            ///第三步：添加动画
-//            rv2.setItemAnimator(new DefaultItemAnimator());
-
         //编辑按钮
         edit3.setOnClickListener(v -> {
             save3.setVisibility(View.VISIBLE);
@@ -600,16 +623,6 @@ public class ResumesManage extends AppCompatActivity {
             isSave2 = 0;
         });
 
-
-//            //项目经历
-//            //第一步：设置布局管理器
-//            rv3.setLayoutManager(new LinearLayoutManager(context));
-//            //第二步：设置适配器
-//            adapter3 = new ResumeProjectAdapter(context, list3, isSave3);
-//            rv3.setAdapter(adapter3);
-//            ///第三步：添加动画
-//            rv3.setItemAnimator(new DefaultItemAnimator());
-
         //编辑按钮
         edit4.setOnClickListener(v -> {
             save4.setVisibility(View.VISIBLE);
@@ -624,16 +637,6 @@ public class ResumesManage extends AppCompatActivity {
             adapter3.setIsSave(0);
             isSave3 = 0;
         });
-
-
-//            //专业技能
-//            //第一步：设置布局管理器
-//            rv4.setLayoutManager(new LinearLayoutManager(context));
-//            //第二步：设置适配器
-//            adapter4 = new ResumeSkillsAdapter(context, list4, isSave4);
-//            rv4.setAdapter(adapter4);
-//            ///第三步：添加动画
-//            rv4.setItemAnimator(new DefaultItemAnimator());
 
         //编辑按钮
         edit5.setOnClickListener(v -> {
@@ -670,73 +673,6 @@ public class ResumesManage extends AppCompatActivity {
             i.putExtra("id", 3);
             startActivity(i);
         });
-//        });
 
     }
-//
-//    private List<EditCampus> initData() {
-//        //调api，获取数据
-//
-//
-//        List<EditCampus> lists = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            EditCampus c = new EditCampus();
-//            c.setRd_id(i + 1);
-//            c.setTelephone("13300000001");
-//            c.setTitle("标题" + i);
-//            c.setDate("2022-01-0" + i);
-//            c.setContent("内容" + i);
-//            lists.add(c);
-//        }
-//        return lists;
-//    }
-//
-//    private List<EditEducation> initData2() {
-//        //调api，获取数据
-//
-//
-//        List<EditEducation> lists = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            EditEducation c = new EditEducation();
-//            c.setRd_id(i + 1);
-//            c.setTelephone("13300000001");
-//            c.setTitle("标题" + i);
-//            c.setDate("20220" + i);
-//            c.setContent("内容" + i);
-//            lists.add(c);
-//        }
-//        return lists;
-//    }
-//
-//    private List<EditProject> initData3() {
-//        //调api，获取数据
-//
-//
-//        List<EditProject> lists = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            EditProject c = new EditProject();
-//            c.setRd_id(i + 1);
-//            c.setTelephone("13300000001");
-//            c.setTitle("标题" + i);
-//            c.setDate("20000" + i);
-//            c.setContent("内容" + i);
-//            lists.add(c);
-//        }
-//        return lists;
-//    }
-//
-//    private List<EditSkills> initData4() {
-//        //调api，获取数据
-//
-//
-//        List<EditSkills> lists = new ArrayList<>();
-//        for (int i = 0; i < 4; i++) {
-//            EditSkills c = new EditSkills();
-//            c.setRd_id(i + 1);
-//            c.setTelephone("13300000001");
-//            c.setContent("内容" + i);
-//            lists.add(c);
-//        }
-//        return lists;
-//    }
 }
