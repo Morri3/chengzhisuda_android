@@ -1,11 +1,11 @@
-package com.zyq.parttime.form;
+package com.zyq.parttime.sp;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class Position implements Serializable {
+public class PositionInfo implements Serializable {
     private int p_id;
-    private String op_id;
+    private String op_id;//操作员
     private String position_name;
     private String category;
     private String salary;
@@ -20,8 +20,29 @@ public class Position implements Serializable {
     private String position_status;
     private Date create_time;
     private Date update_time;
+    private String memo;
 
-    public Position() {
+    @Override
+    public String toString() {
+        return "PositionInfo{" +
+                "p_id=" + p_id +
+                ", op_id='" + op_id + '\'' +
+                ", position_name='" + position_name + '\'' +
+                ", category='" + category + '\'' +
+                ", salary='" + salary + '\'' +
+                ", area='" + area + '\'' +
+                ", exp='" + exp + '\'' +
+                ", content='" + content + '\'' +
+                ", requirement='" + requirement + '\'' +
+                ", signup_ddl=" + signup_ddl +
+                ", slogan='" + slogan + '\'' +
+                ", work_time='" + work_time + '\'' +
+                ", settlement='" + settlement + '\'' +
+                ", position_status='" + position_status + '\'' +
+                ", create_time=" + create_time +
+                ", update_time=" + update_time +
+                ", memo='" + memo + '\'' +
+                '}';
     }
 
     public int getP_id() {
@@ -152,47 +173,11 @@ public class Position implements Serializable {
         this.update_time = update_time;
     }
 
-//    @Override
-//    public String toString() {
-//        return "{" +
-//                "\"p_id\"=" + p_id +
-//                ", \"op_id\"=" + op_id +
-//                ", \"position_name\"=\"" + position_name + '\"' +
-//                ", \"category\"=\"" + category + '\"' +
-//                ", \"salary\"=\"" + salary + '\"' +
-//                ", \"area\"=\"" + area + '\"' +
-//                ", \"exp\"=\"" + exp + '\"' +
-//                ", \"content\"=\"" + content + '\"' +
-//                ", \"requirement\"=\"" + requirement + '\"' +
-//                ", \"signup_ddl\"=" + signup_ddl +
-//                ", \"slogan\"=\"" + slogan + '\"' +
-//                ", \"work_time\"=\"" + work_time + '\"' +
-//                ", \"settlement\"=\"" + settlement + '\"' +
-//                ", \"position_status\"=\"" + position_status + '\"' +
-//                ", \"create_time\"=" + create_time +
-//                ", \"update_time\"=" + update_time +
-//                '}';
-//    }
+    public String getMemo() {
+        return memo;
+    }
 
-    @Override
-    public String toString() {
-        return "Position{" +
-                "p_id=" + p_id +
-                ", op_id=" + op_id +
-                ", position_name='" + position_name + '\'' +
-                ", category='" + category + '\'' +
-                ", salary='" + salary + '\'' +
-                ", area='" + area + '\'' +
-                ", exp='" + exp + '\'' +
-                ", content='" + content + '\'' +
-                ", requirement='" + requirement + '\'' +
-                ", signup_ddl=" + signup_ddl +
-                ", slogan='" + slogan + '\'' +
-                ", work_time='" + work_time + '\'' +
-                ", settlement='" + settlement + '\'' +
-                ", position_status='" + position_status + '\'' +
-                ", create_time=" + create_time +
-                ", update_time=" + update_time +
-                '}';
+    public void setMemo(String memo) {
+        this.memo = memo;
     }
 }

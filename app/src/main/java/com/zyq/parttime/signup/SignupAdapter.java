@@ -2,12 +2,17 @@ package com.zyq.parttime.signup;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +29,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.zyq.parttime.R;
@@ -31,21 +40,36 @@ import com.zyq.parttime.form.Position;
 import com.zyq.parttime.form.Signup;
 import com.zyq.parttime.home.HomeAdapter;
 import com.zyq.parttime.position.PositionDetail;
+import com.zyq.parttime.sp.Cancel;
 import com.zyq.parttime.sp.Cancels;
+import com.zyq.parttime.sp.CommentPost;
+import com.zyq.parttime.sp.HistoryDto;
 import com.zyq.parttime.sp.Marks;
+import com.zyq.parttime.sp.PositionInfo;
 import com.zyq.parttime.util.Utils;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Serializable {
     private static final int HEADER_VIEW = 0; //头部
 
     private Context context;
-    private List<Signup> dataList; //数据列表
+    private List<Signup> dataList = new ArrayList<>(); //数据列表
+    private HeaderViewHolder viewHolder;
 
 //    private List<Marks> marks=new ArrayList<>();
 //    private List<Cancels> cancels=new ArrayList<>();
@@ -85,6 +109,25 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private View bg;
         private ConstraintLayout line4;
         private ConstraintLayout item;
+        private View divider;
+
+        public View getDivider() {
+            return divider;
+        }
+
+        public void setDivider(View divider) {
+            this.divider = divider;
+        }
+
+        private TextView no_content;
+
+        public TextView getNo_content() {
+            return no_content;
+        }
+
+        public void setNo_content(TextView no_content) {
+            this.no_content = no_content;
+        }
 
         public TextView getName() {
             return name;
@@ -267,6 +310,8 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             headerHolder.bg = headerView.findViewById(R.id.bg);
             headerHolder.line4 = headerView.findViewById(R.id.line4);
             headerHolder.item = headerView.findViewById(R.id.item);
+            headerHolder.no_content = headerView.findViewById(R.id.no_content);
+            headerHolder.divider = headerView.findViewById(R.id.divider);
             return headerHolder;
         } else {
             return null;
@@ -278,83 +323,19 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         try {
             if (holder instanceof HeaderViewHolder) {//属于头部
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+                viewHolder = headerViewHolder;
                 Signup data = dataList.get(pos);//获取当前item的数据
-                Log.i("data", data.toString());//test
+                Log.i("报名item的信息", data.toString());
 
-                //调api，分别获取每个item是否评分、评论、取消了
-
-
-//                //本地数据存储
-//                pref = context.getSharedPreferences("signup", Context.MODE_MULTI_PROCESS);
-//                //根据sharedpreference中数据，是否删去组件
-////                boolean isMark=pref.getBoolean("isMark",false);
-////                boolean isCancel=pref.getBoolean("isCancel",false);
-////                int cur=pref.getInt("pos",-1);
-//                String strM=pref.getString("marks","");
-//                String strC=pref.getString("cancels","");
-//
-//                Gson gson = new Gson();
-//                List<Marks> ps = gson.fromJson(strM, new TypeToken<List<Marks>>(){}.getType());
-//                if(ps!=null){
-//                    for(Marks item:ps){
-//                        Log.i("item",item.toString());
-//                    }
-//                }
-
-
-
-
-//                if(isMark==true && pos==cur){
-//                    //移除mark
-//                    headerViewHolder.line4.removeView(headerViewHolder.mark);
-//                    headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
-//
-//                    ConstraintSet set =new ConstraintSet();
-//                    set.clone(headerViewHolder.line4);
-//                    set.connect(
-//                            R.id.cancel,
-//                            ConstraintSet.LEFT,
-//                            R.id.mark,
-//                            ConstraintSet.LEFT
-//                    );
-//                    set.setMargin(R.id.cancel,ConstraintSet.START,Utils.px2dp(context,75));
-//                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
-//                }
-//
-//                if(isCancel==true && pos==cur){
-//                    headerViewHolder.line4.removeView(headerViewHolder.cancel);
-//                    headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
-//                }
-
-                //调api，判断是否已经评论 TODO，并设置数据
-
-
-                boolean isComment=false;
-                if(isComment==false){
-                    //未评论
-                    //不显示评论后的textview
-                    headerViewHolder.comment_time_text.setVisibility(View.VISIBLE);
-                    headerViewHolder.comment_time.setVisibility(View.VISIBLE);
-                    headerViewHolder.comment_content.setVisibility(View.VISIBLE);
-                    headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
-                    headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
-                }else{
-                    //已经评论
-                    //显示评论后的textview
-                    headerViewHolder.comment_time_text.setVisibility(View.INVISIBLE);
-                    headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
-                    headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
-                    headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
-                    headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
-                }
-
-//                //隐藏评论的四个控件
+                if (data != null && data.getS_id() != 0) {
+                    //有记录
+                    //                //隐藏评论的四个控件
 //                headerViewHolder.comment_time_text.setVisibility(View.INVISIBLE);
 //                headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
 //                headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
 //                headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
 
-                //动态改变整个item的高度
+                    //动态改变整个item的高度
 //                ConstraintLayout.LayoutParams p = (ConstraintLayout.LayoutParams)headerViewHolder.item.getLayoutParams();
 //                p.height = Utils.px2dp(context,170);
 //                headerViewHolder.item.setLayoutParams(p);
@@ -362,7 +343,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //                View rvView = LayoutInflater.from(context).inflate(R.layout.fragment_signup, null);
 //                RecyclerView rv=(RecyclerView) rvView.findViewById(R.id.rv_signup);
 //                rv.addView(headerViewHolder.item);
-                //1950
+                    //1950
 //                ConstraintLayout layout=new ConstraintLayout(context);
 //                ConstraintLayout.LayoutParams p=new ConstraintLayout.LayoutParams
 //                        (ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
@@ -454,70 +435,338 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //                headerViewHolder.line4.addView(btn2_1);
 
 
+                    //根据p_id找到position实体，调api  TODO
+                    PositionInfo positionInfo = new PositionInfo();
+                    new Thread(() -> {
+                        try {
+                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                            Request request = new Request.Builder()
+                                    .url("http://114.55.239.213:8082/parttime/stu/get_one?p_id=" + data.getP_id())
+                                    .get()
+                                    .build();//创建Http请求
+                            client.newBuilder()
+                                    .connectTimeout(20, TimeUnit.SECONDS)
+                                    .readTimeout(20, TimeUnit.SECONDS)
+                                    .writeTimeout(20, TimeUnit.SECONDS)
+                                    .build()
+                                    .newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.i("error", "数据获取失败");
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {//调用成功
+                                        try {
+                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_position实体", jsonObj.getString("data"));
+                                            JSONObject data_position = JSON.parseObject(jsonObj.getString("data"));
+                                            Log.i("data_position实体", data_position.toString());
+
+                                            String position_name = data_position.getString("position_name");
+                                            String area = data_position.getString("area");
+                                            String settlement = data_position.getString("settlement");
+                                            String salary = data_position.getString("salary");
+                                            String work_time = data_position.getString("work_time");
+                                            positionInfo.setPosition_name(position_name);
+                                            positionInfo.setSettlement(settlement);
+                                            positionInfo.setSalary(salary);
+                                            positionInfo.setWork_time(work_time);
+                                            positionInfo.setArea(area);
+                                            String position_status = data.getSignup_status();
+                                            positionInfo.setPosition_status(position_status);
+
+                                            ((Activity) context).runOnUiThread(() -> {
+                                                headerViewHolder.name.setText(position_name);
+                                                headerViewHolder.area.setText(area);
+                                                headerViewHolder.settlement.setText(settlement);
+                                                headerViewHolder.salary.setText(salary);
+                                                headerViewHolder.work_time.setText(work_time);
+                                                headerViewHolder.status.setText(data.getSignup_status());
+                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
+                                                String update = sdf.format(data.getCreate_time());
+                                                headerViewHolder.update_time.setText(update);
+
+                                                //取消按钮的可见性
+                                                if (positionInfo.getPosition_status().equals("已结束") || positionInfo.getPosition_status().equals("已录取")) {
+                                                    headerViewHolder.cancel.setVisibility(View.INVISIBLE);//不可见
+                                                    headerViewHolder.cancel_icon.setVisibility(View.INVISIBLE);//不可见
+
+                                                    //移除组件
+                                                    headerViewHolder.line4.removeView(headerViewHolder.cancel);
+                                                    headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                                                } else if (positionInfo.getPosition_status().equals("已报名")) {
+                                                    headerViewHolder.cancel.setVisibility(View.VISIBLE);//可见
+                                                    headerViewHolder.cancel_icon.setVisibility(View.VISIBLE);//可见
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {//调用失败
+                                        Log.i("error", response.toString());
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }).start();//要start才会启动
+
+                    //评论按钮的可见性
+                    new Thread(() -> {
+                        try {
+                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                            Request request = new Request.Builder()
+                                    .url("http://114.55.239.213:8082/comments/get?s_id=" + data.getS_id())
+                                    .get()
+                                    .build();//创建Http请求
+                            client.newBuilder()
+                                    .connectTimeout(20, TimeUnit.SECONDS)
+                                    .readTimeout(20, TimeUnit.SECONDS)
+                                    .writeTimeout(20, TimeUnit.SECONDS)
+                                    .build()
+                                    .newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.i("error", "数据获取失败");
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {//调用成功
+                                        try {
+                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_comment实体", jsonObj.getString("data"));
+                                            JSONObject data_comment = JSON.parseObject(jsonObj.getString("data"));
+                                            Log.i("data_comment实体", data_comment.toString());
+
+                                            ((Activity) context).runOnUiThread(() -> {
+                                                if (data_comment.getString("memo").equals("获取失败")) {
+                                                    //说明没有评论过
+                                                    //不显示评论后的textview
+                                                    headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
+                                                    headerViewHolder.comment_content.setVisibility(View.VISIBLE);
+                                                    headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
+                                                    headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
+                                                } else {
+                                                    //评论过
+                                                    //显示评论后的textview
+                                                    headerViewHolder.comment_time.setText(data_comment.getString("create_time"));
+                                                    headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
+                                                    headerViewHolder.comment_content_after.setText(data_comment.getString("content"));
+                                                    headerViewHolder.comment_time.setVisibility(View.VISIBLE);
+                                                    headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+                                                    headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {//调用失败
+                                        Log.i("error", response.toString());
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }).start();//要start才会启动
+
+                    //评分按钮的可见性
+                    new Thread(() -> {
+                        try {
+                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                            Request request = new Request.Builder()
+                                    .url("http://114.55.239.213:8082/mark/get?s_id=" + data.getS_id())
+                                    .get()
+                                    .build();//创建Http请求
+                            client.newBuilder()
+                                    .connectTimeout(20, TimeUnit.SECONDS)
+                                    .readTimeout(20, TimeUnit.SECONDS)
+                                    .writeTimeout(20, TimeUnit.SECONDS)
+                                    .build()
+                                    .newCall(request).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                    Log.i("error", "数据获取失败");
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                    if (response.isSuccessful()) {//调用成功
+                                        try {
+                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_mark实体", jsonObj.getString("data"));
+                                            JSONObject data_mark = JSON.parseObject(jsonObj.getString("data"));
+                                            Log.i("data_mark实体", data_mark.toString());
+
+                                            ((Activity) context).runOnUiThread(() -> {
+                                                if (data_mark != null) {
+                                                    if (data_mark.getString("memo").equals("获取失败")) {
+                                                        //说明没有评分过
+                                                        headerViewHolder.mark.setVisibility(View.VISIBLE);
+                                                        headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        //评分过
+                                                        headerViewHolder.mark.setVisibility(View.INVISIBLE);
+                                                        headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
+
+                                                        //移除组件
+                                                        headerViewHolder.line4.removeView(headerViewHolder.mark);
+                                                        headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+
+                                                        //改变取消按钮的位置
+                                                        ConstraintSet set = new ConstraintSet();
+                                                        set.clone(headerViewHolder.line4);
+                                                        set.connect(
+                                                                R.id.cancel,
+                                                                ConstraintSet.LEFT,
+                                                                R.id.mark,
+                                                                ConstraintSet.LEFT
+                                                        );
+                                                        set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
+                                                        set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                                                    }
+
+                                                } else {//没记录就显示
+                                                    ((Activity) context).runOnUiThread(() -> {
+                                                        headerViewHolder.mark.setVisibility(View.VISIBLE);
+                                                        headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
+                                                    });
+                                                }
+                                            });
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {//调用失败
+                                        Log.i("error", response.toString());
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }).start();//要start才会启动
+
+//                //本地数据存储
+//                pref = context.getSharedPreferences("signup", Context.MODE_MULTI_PROCESS);
+//                //根据sharedpreference中数据，是否删去组件
+////                boolean isMark=pref.getBoolean("isMark",false);
+////                boolean isCancel=pref.getBoolean("isCancel",false);
+////                int cur=pref.getInt("pos",-1);
+//                String strM=pref.getString("marks","");
+//                String strC=pref.getString("cancels","");
+//
+//                Gson gson = new Gson();
+//                List<Marks> ps = gson.fromJson(strM, new TypeToken<List<Marks>>(){}.getType());
+//                if(ps!=null){
+//                    for(Marks item:ps){
+//                        Log.i("item",item.toString());
+//                    }
+//                }
 
 
-                //根据p_id找到position实体，调api  TODO
+//                if(isMark==true && pos==cur){
+//                    //移除mark
+//                    headerViewHolder.line4.removeView(headerViewHolder.mark);
+//                    headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+//
+//                    ConstraintSet set =new ConstraintSet();
+//                    set.clone(headerViewHolder.line4);
+//                    set.connect(
+//                            R.id.cancel,
+//                            ConstraintSet.LEFT,
+//                            R.id.mark,
+//                            ConstraintSet.LEFT
+//                    );
+//                    set.setMargin(R.id.cancel,ConstraintSet.START,Utils.px2dp(context,75));
+//                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
+//                }
+//
+//                if(isCancel==true && pos==cur){
+//                    headerViewHolder.line4.removeView(headerViewHolder.cancel);
+//                    headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+//                }
 
+                    //调api，判断是否已经评论 TODO，并设置数据
 
-                //报名自身属性
-                headerViewHolder.status.setText(data.getSignup_status());
-                headerViewHolder.update_time.setText(data.getUpdate_time() + "");
+//                boolean isComment = false;
+                    //UI更新
+//                Message msg0 = new Message();
+//                msg0.what = 1;
+//                Bundle bundle0 = new Bundle();
+//                bundle0.putBoolean("isComment", isComment);
+//                msg0.setData(bundle0);
+//                mHandler.sendMessage(msg0);//发送handler，更新ui
 
-                //评分按钮
-                headerViewHolder.mark.setOnClickListener(view -> {
-                    Toast.makeText(this.context, "点击了评分按钮", Toast.LENGTH_SHORT).show();
+                    //0401
+//                ((Activity) context).runOnUiThread(() -> {
+//                    if (isComment == false) {
+//                        //未评论
+//                        //不显示评论后的textview
+//                        headerViewHolder.comment_time_text.setVisibility(View.VISIBLE);
+//                        headerViewHolder.comment_time.setVisibility(View.VISIBLE);
+//                        headerViewHolder.comment_content.setVisibility(View.VISIBLE);
+//                        headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
+//                        headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
+//                    } else {
+//                        //已经评论
+//                        //显示评论后的textview
+//                        headerViewHolder.comment_time_text.setVisibility(View.INVISIBLE);
+//                        headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
+//                        headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+//                        headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+//                        headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
+//                    }
+//                });
 
-                    for (Signup i : dataList) {
-                        Log.i("z3", i.toString());
-                    }
+                    //不显示404
+                    ((Activity) context).runOnUiThread(() -> {
+                        headerViewHolder.no_content.setVisibility(View.INVISIBLE);
+                    });
 
-                    //移除组件
-                    headerViewHolder.line4.removeView(headerViewHolder.mark);
-                    headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+                    //评分按钮
+                    ((Activity) context).runOnUiThread(() -> {
+                        headerViewHolder.mark.setOnClickListener(view -> {
+                            Toast toast = Toast.makeText(context, "点击了评分按钮", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                            toast.show();
 
-//                    //记录sharedpreference
-//                    editor = pref.edit();
-//                    //构造对象
-//                    Marks mark=new Marks();
-//                    mark.setPos(pos);
-//                    mark.setFlag(true);
-//                    marks.add(mark);
-//                    Gson gson2 = new Gson();
-//                    String res = gson2.toJson(marks);
-//                    Log.i("mark",res);
-//                    editor.putString("marks",res);
-////                    editor.putBoolean("isMark",true);//标记为已经点了评分
-////                    editor.putInt("pos",pos);//当前选择的item
-//                    editor.commit();//提交
+                            //移除组件
+                            headerViewHolder.line4.removeView(headerViewHolder.mark);
+                            headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-                    //改变取消按钮的位置
-                    ConstraintSet set =new ConstraintSet();
-                    set.clone(headerViewHolder.line4);
-                    set.connect(
-                            R.id.cancel,
-                            ConstraintSet.LEFT,
-                            R.id.mark,
-                            ConstraintSet.LEFT
-                    );
-                    set.setMargin(R.id.cancel,ConstraintSet.START,Utils.px2dp(context,75));
-                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                            //改变取消按钮的位置
+                            ConstraintSet set = new ConstraintSet();
+                            set.clone(headerViewHolder.line4);
+                            set.connect(
+                                    R.id.cancel,
+                                    ConstraintSet.LEFT,
+                                    R.id.mark,
+                                    ConstraintSet.LEFT
+                            );
+                            set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
+                            set.applyTo(headerViewHolder.line4);//设置约束条件生效
 
-                    //跳转到评分界面
-                    Intent editpro = new Intent(context, MarkActivity.class);
-                    editpro.putExtra("signup_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("pos", data.getS_id());//传递当前选中的报名的id
-                    context.startActivity(editpro);
-                });
-                headerViewHolder.mark_icon.setOnClickListener(view -> {
-                    Toast.makeText(this.context, "点击了评分按钮", Toast.LENGTH_SHORT).show();
+                            //跳转到评分界面
+                            Intent editpro = new Intent(context, MarkActivity.class);
+                            editpro.putExtra("signup_data", (Serializable) dataList);//传递兼职数据
+                            editpro.putExtra("pos", data.getS_id());//传递当前选中的报名的id
+                            context.startActivity(editpro);
+                        });
+                        headerViewHolder.mark_icon.setOnClickListener(view -> {
+                            Toast toast = Toast.makeText(context, "点击了评分按钮", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                            toast.show();
 
-                    for (Signup i : dataList) {
-                        Log.i("z3", i.toString());
-                    }
-
-                    //移除组件
-                    headerViewHolder.line4.removeView(headerViewHolder.mark);
-                    headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+                            //移除组件
+                            headerViewHolder.line4.removeView(headerViewHolder.mark);
+                            headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
 //                    //记录sharedpreference
 //                    editor = pref.edit();
@@ -534,34 +783,93 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 ////                    editor.putInt("pos",pos);//当前选择的item
 //                    editor.commit();//提交
 
-                    //改变取消按钮的位置
-                    ConstraintSet set =new ConstraintSet();
-                    set.clone(headerViewHolder.line4);
-                    set.connect(
-                                R.id.cancel,
-                                ConstraintSet.LEFT,
-                                R.id.mark,
-                                ConstraintSet.LEFT
-                        );
-                    set.setMargin(R.id.cancel,ConstraintSet.START,Utils.px2dp(context,75));
-                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                            //改变取消按钮的位置
+                            ConstraintSet set = new ConstraintSet();
+                            set.clone(headerViewHolder.line4);
+                            set.connect(
+                                    R.id.cancel,
+                                    ConstraintSet.LEFT,
+                                    R.id.mark,
+                                    ConstraintSet.LEFT
+                            );
+                            set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
+                            set.applyTo(headerViewHolder.line4);//设置约束条件生效
 
-                    //跳转到评分界面
-                    Intent editpro = new Intent(context, MarkActivity.class);
-                    editpro.putExtra("signup_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("pos", data.getS_id());//传递当前选中的报名的id
-                    context.startActivity(editpro);
-                });
+                            //跳转到评分界面
+                            Intent editpro = new Intent(context, MarkActivity.class);
+                            editpro.putExtra("signup_data", (Serializable) dataList);//传递兼职数据
+                            editpro.putExtra("pos", data.getS_id());//传递当前选中的报名的id
+                            context.startActivity(editpro);
+                        });
+                        //取消按钮
+                        headerViewHolder.cancel.setOnClickListener(view -> {
+                            //调api，改报名状态  TODO
+                            new Thread(() -> {
+                                try {
+                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                    Cancel dto = new Cancel();
+                                    dto.setS_id(data.getS_id());
+                                    dto.setTelephone(data.getStu_id());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8082/parttime/stu/cancel")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据获取失败");
+                                            e.printStackTrace();
+                                        }
 
-                //取消按钮
-                headerViewHolder.cancel.setOnClickListener(view -> {
-                    //调api，改报名状态
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_mark实体", jsonObj.getString("data"));
+                                                    JSONObject data_cancel = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("data_cancel实体", data_cancel.toString());
 
+                                                    ((Activity) context).runOnUiThread(() -> {
+                                                        if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
+                                                            //移除组件
+                                                            headerViewHolder.line4.removeView(headerViewHolder.cancel);
+                                                            headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                                                        } else {
+                                                            //第一个参数：设置toast在屏幕中显示的位置。这里设置是居中靠顶
+                                                            //第二个参数：相对于第一个参数设置toast位置的横向X轴的偏移量，正数向右偏移，负数向左偏移
+                                                            //第三个参数：相对于第一个参数设置toast位置的纵向y轴的偏移量，正数向下偏移，负数向上偏移
+                                                            //如果设置的偏移量超过了屏幕的范围，toast将在屏幕内靠近超出的那个边界显示
+                                                            //屏幕居中显示，X轴和Y轴偏移量都是0
+                                                            Toast toast = Toast.makeText(context, "不能取消该报名", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+                                                        }
+                                                    });
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();//要start才会启动
 
-                    //移除组件
-                    headerViewHolder.line4.removeView(headerViewHolder.cancel);
-                    headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
-
+                            //移除组件
+                            ((Activity) context).runOnUiThread(() -> {
+                                headerViewHolder.line4.removeView(headerViewHolder.cancel);
+                                headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                            });
 //                    //记录sharedpreference
 //                    editor = pref.edit();
 //                    //构造对象
@@ -574,15 +882,75 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 //                    Log.i("cancel",res);
 //                    editor.putString("cancels",res);
 //                    editor.commit();//提交
-                });
-                headerViewHolder.cancel_icon.setOnClickListener(view -> {
-                    //调api，改报名状态
+                        });
+                        headerViewHolder.cancel_icon.setOnClickListener(view -> {
+                            //调api，改报名状态
+                            new Thread(() -> {
+                                try {
+                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                    Cancel dto = new Cancel();
+                                    dto.setS_id(data.getS_id());
+                                    dto.setTelephone(data.getStu_id());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8082/parttime/stu/cancel")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据获取失败");
+                                            e.printStackTrace();
+                                        }
 
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_mark实体", jsonObj.getString("data"));
+                                                    JSONObject data_cancel = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("data_cancel实体", data_cancel.toString());
 
-                    //移除组件
-                    headerViewHolder.line4.removeView(headerViewHolder.cancel);
-                    headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                                                    ((Activity) context).runOnUiThread(() -> {
+                                                        if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
+                                                            //移除组件
+                                                            headerViewHolder.line4.removeView(headerViewHolder.cancel);
+                                                            headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                                                        } else {
+                                                            //第一个参数：设置toast在屏幕中显示的位置。这里设置是居中靠顶
+                                                            //第二个参数：相对于第一个参数设置toast位置的横向X轴的偏移量，正数向右偏移，负数向左偏移
+                                                            //第三个参数：相对于第一个参数设置toast位置的纵向y轴的偏移量，正数向下偏移，负数向上偏移
+                                                            //如果设置的偏移量超过了屏幕的范围，toast将在屏幕内靠近超出的那个边界显示
+                                                            //屏幕居中显示，X轴和Y轴偏移量都是0
+                                                            Toast toast = Toast.makeText(context, "不能取消该报名", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+                                                        }
+                                                    });
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();//要start才会启动
 
+                            //移除组件
+                            ((Activity) context).runOnUiThread(() -> {
+                                headerViewHolder.line4.removeView(headerViewHolder.cancel);
+                                headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
+                            });
 //                    //记录sharedpreference
 //                    editor = pref.edit();
 //                    //构造对象
@@ -597,29 +965,111 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 ////                    editor.putBoolean("isCancel",true);//标记为已经点了取消
 ////                    editor.putInt("pos",pos);//当前选择的item
 //                    editor.commit();//提交
-                });
+                        });
 
-                //评论确定按钮
-                headerViewHolder.btn_comment.setOnClickListener(view -> {
-                    //获取输入框的内容
-                    String content = headerViewHolder.comment_content.getText().toString();
-                    Log.i("评论内容", content);
+                        //评论确定按钮
+                        headerViewHolder.btn_comment.setOnClickListener(view -> {
+                            //获取输入框的内容
+                            String content = headerViewHolder.comment_content.getText().toString();
+                            Log.i("评论内容", content);
 
-                    //调api，content存到db TODO
+                            //调api，content存到db TODO
+                            new Thread(() -> {
+                                try {
+                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                    CommentPost dto = new CommentPost();
+                                    dto.setS_id(data.getS_id());
+                                    dto.setContent(content);
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date now = sdf.parse(sdf.format(new Date()));
+                                    dto.setCreate_time(now);
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8082/comments/stu/post")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据获取失败");
+                                            e.printStackTrace();
+                                        }
 
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                        Log.i("data_mark实体", jsonObj.getString("data"));
+                                                    JSONObject data_comment_post = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("data_comment_post实体", data_comment_post.toString());
 
-                    //确定按钮+输入框，显示TextView，隐藏按钮,移除组件
-                    headerViewHolder.comment_content_after.setText(content);
-                    //移除2个控件
-                    headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
-                    headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
-                    //显示Textview
-                    headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
-                });
+                                                    ((Activity) context).runOnUiThread(() -> {
+                                                        if (data_comment_post.getString("memo").equals("评论成功")) {
+                                                            //确定按钮+输入框，显示TextView，隐藏按钮,移除组件
+                                                            headerViewHolder.comment_content_after.setText(content);
+                                                            headerViewHolder.comment_time.setVisibility(View.VISIBLE);
+                                                            headerViewHolder.comment_time.setText(sdf.format(now));//设置时间
+                                                            //移除2个控件
+                                                            headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+                                                            headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                                                            //显示Textview
+                                                            headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
+                                                        } else {
+                                                            Toast toast = Toast.makeText(context, "评论失败", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+                                                        }
+                                                    });
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();//要start才会启动
+                        });
+                    });
+                } else {
+                    //为空，显示404
+                    ((Activity) context).runOnUiThread(() -> {
+                        headerViewHolder.no_content.setVisibility(View.VISIBLE);
+                        headerViewHolder.area.setVisibility(View.INVISIBLE);
+                        headerViewHolder.salary.setVisibility(View.INVISIBLE);
+                        headerViewHolder.settlement.setVisibility(View.INVISIBLE);
+                        headerViewHolder.work_time.setVisibility(View.INVISIBLE);
+                        headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
+                        headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+                        headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
+                        headerViewHolder.cancel_icon.setVisibility(View.INVISIBLE);
+                        headerViewHolder.name.setVisibility(View.INVISIBLE);
+                        headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                        headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
+                        headerViewHolder.comment_time_text.setVisibility(View.INVISIBLE);
+                        headerViewHolder.status.setVisibility(View.INVISIBLE);
+                        headerViewHolder.update_time.setVisibility(View.INVISIBLE);
+                        headerViewHolder.mark.setVisibility(View.INVISIBLE);
+                        headerViewHolder.cancel.setVisibility(View.INVISIBLE);
+                        headerViewHolder.line4.setVisibility(View.INVISIBLE);
+                        headerViewHolder.divider.setVisibility(View.INVISIBLE);
+                    });
+                }
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
+
     }
 
     //重写getItemCount方法
@@ -637,4 +1087,5 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return -1;
         }
     }
+
 }

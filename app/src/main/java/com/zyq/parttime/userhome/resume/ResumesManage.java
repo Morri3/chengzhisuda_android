@@ -35,7 +35,9 @@ import com.zyq.parttime.form.Student;
 import com.zyq.parttime.signup.MarkActivity;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -246,205 +248,447 @@ public class ResumesManage extends AppCompatActivity {
                         if (response.isSuccessful()) {//调用成功
                             try {
                                 JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                Log.i("data", jsonObj.getString("data"));
+                                Log.i("get data", jsonObj.getString("data"));
                                 JSONObject data = JSON.parseObject(jsonObj.getString("data"));
 
-                                //获取obj中的数据
-                                String exp_data = data.getString("exp");
-                                String current_area_data = data.getString("current_area");
+                                if(data.get("memo").equals("请填写简历")){
+                                    Log.i("bnc","ajs");
+                                    //简历不存在
+                                    //当前时间
+                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String now = sdf.format(new Date());
+
+                                    FormBody.Builder params = new FormBody.Builder();
+                                    params.add("telephone",telephone);
+                                    params.add("upload_time",now);
+
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8082/users/resumes/create")
+                                            .post(params.build())
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据创建失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    String exp_data = data.getString("exp");
+                                                    String current_area_data = data.getString("current_area");
+                                                    String phone=data.getString("telephone");
+                                                    resume.setTelephone(phone);
+
+                                                    //第一个list
+                                                    JSONArray arr1 = data.getJSONArray("campusExpList");
+                                                    Log.i("arr1", arr1.toString());
+
+                                                    List<EditCampus> campusList = new ArrayList<>();//存放校园经历
+                                                    for (int i = 0; i < arr1.size(); i++) {
+                                                        EditCampus campus = new EditCampus();//校园item
+
+                                                        JSONObject obj = arr1.getJSONObject(i);
+                                                        String category = obj.getString("category");
+                                                        String telephone = obj.getString("telephone");
+                                                        int hasContent = obj.getIntValue("hasContent");
+
+                                                        if (hasContent == 1 && category.equals("校园经历")) {
+                                                            //有数据
+                                                            Log.i("校园", "有数据");
+                                                            int rd_id = obj.getIntValue("rd_id");
+                                                            String title = obj.getString("title");
+                                                            String date = obj.getString("time");
+                                                            String content = obj.getString("content");
+                                                            String rd_status = obj.getString("status");
+                                                            if (!rd_status.equals("已删除")) {
+                                                                //不显示已删除的item
+                                                                campus.setTelephone(telephone);
+                                                                campus.setContent(content);
+                                                                campus.setTitle(title);
+                                                                campus.setRd_status(rd_status);
+                                                                campus.setDate(date);
+                                                                campus.setRd_id(rd_id);
+                                                                campusList.add(campus);
+                                                            }
+
+                                                        } else if (hasContent == 0 && category.equals("校园经历")) {
+                                                            //没数据
+                                                            campus.setTelephone(telephone);
+                                                            campus.setTitle("请输入标题");
+                                                            campus.setDate("请输入日期");
+                                                            campus.setContent("请输入内容");
+                                                            campus.setMemo("无数据");
+                                                            campusList.add(campus);
+                                                        }
+                                                    }
 
 
-                                //第一个list
-                                JSONArray arr1 = data.getJSONArray("campusExpList");
-                                Log.i("arr1", arr1.toString());
+                                                    //第2个list
+                                                    JSONArray arr2 = data.getJSONArray("educationBgList");
+                                                    Log.i("arr2", arr2.toString());
 
-                                List<EditCampus> campusList = new ArrayList<>();//存放校园经历
-                                for (int i = 0; i < arr1.size(); i++) {
-                                    EditCampus campus = new EditCampus();//校园item
+                                                    List<EditEducation> educationList = new ArrayList<>();//存放教育背景
+                                                    for (int i = 0; i < arr2.size(); i++) {
+                                                        EditEducation education = new EditEducation();//item
 
-                                    JSONObject obj = arr1.getJSONObject(i);
-                                    String category = obj.getString("category");
-                                    String telephone = obj.getString("telephone");
-                                    int hasContent = obj.getIntValue("hasContent");
+                                                        JSONObject obj = arr2.getJSONObject(i);
+                                                        String category = obj.getString("category");
+                                                        String telephone = obj.getString("telephone");
+                                                        int hasContent = obj.getIntValue("hasContent");
+                                                        Log.i("aavcs", hasContent + "");
+                                                        Log.i("ahuiash", category);
+                                                        if (hasContent == 1 && category.equals("教育背景")) {
+                                                            //有数据
+                                                            Log.i("教育", "有数据");
+                                                            int rd_id = obj.getIntValue("rd_id");
+                                                            String title = obj.getString("title");
+                                                            String date = obj.getString("time");
+                                                            String content = obj.getString("content");
+                                                            String rd_status = obj.getString("status");
+                                                            if (!rd_status.equals("已删除")) {
+                                                                //不显示已删除的item
+                                                                education.setTelephone(telephone);
+                                                                education.setContent(content);
+                                                                education.setTitle(title);
+                                                                education.setRd_status(rd_status);
+                                                                education.setDate(date);
+                                                                education.setRd_id(rd_id);
+                                                                educationList.add(education);
+                                                            }
 
-                                    if (hasContent == 1 && category.equals("校园经历")) {
-                                        //有数据
-                                        Log.i("校园", "有数据");
-                                        int rd_id = obj.getIntValue("rd_id");
-                                        String title = obj.getString("title");
-                                        String date = obj.getString("time");
-                                        String content = obj.getString("content");
-                                        String rd_status = obj.getString("status");
-                                        if (!rd_status.equals("已删除")) {
-                                            //不显示已删除的item
+                                                        } else if (hasContent == 0 && category.equals("教育背景")) {
+                                                            //没数据
+                                                            education.setTelephone(telephone);
+                                                            education.setTitle("请输入标题");
+                                                            education.setDate("请输入日期");
+                                                            education.setContent("请输入内容");
+                                                            education.setMemo("无数据");
+                                                            educationList.add(education);
+                                                        }
+                                                    }
+                                                    resume.setEducationBgList(educationList);
+                                                    Log.i("educationList", resume.getEducationBgList().toString());
+
+
+                                                    //第3个list
+                                                    JSONArray arr3 = data.getJSONArray("projectExpList");
+                                                    Log.i("arr3", arr3.toString());
+
+                                                    List<EditProject> projectList = new ArrayList<>();//存放教育背景
+                                                    for (int i = 0; i < arr3.size(); i++) {
+                                                        EditProject project = new EditProject();//item
+
+                                                        JSONObject obj = arr3.getJSONObject(i);
+                                                        String category = obj.getString("category");
+                                                        String telephone = obj.getString("telephone");
+                                                        int hasContent = obj.getIntValue("hasContent");
+                                                        if (hasContent == 1 && category.equals("项目经历")) {
+                                                            //有数据
+                                                            Log.i("项目", "有数据");
+                                                            int rd_id = obj.getIntValue("rd_id");
+                                                            String title = obj.getString("title");
+                                                            String date = obj.getString("time");
+                                                            String content = obj.getString("content");
+                                                            String rd_status = obj.getString("status");
+                                                            if (!rd_status.equals("已删除")) {
+                                                                //不显示已删除的item
+                                                                project.setTelephone(telephone);
+                                                                project.setContent(content);
+                                                                project.setTitle(title);
+                                                                project.setRd_status(rd_status);
+                                                                project.setDate(date);
+                                                                project.setRd_id(rd_id);
+                                                                projectList.add(project);
+                                                            }
+
+                                                        } else if (hasContent == 0 && category.equals("项目经历")) {
+                                                            //没数据
+                                                            project.setTelephone(telephone);
+                                                            project.setTitle("请输入标题");
+                                                            project.setDate("请输入日期");
+                                                            project.setContent("请输入内容");
+                                                            project.setMemo("无数据");
+                                                            projectList.add(project);
+                                                        }
+                                                    }
+                                                    resume.setProjectExpList(projectList);
+                                                    Log.i("projectList", resume.getProjectExpList().toString());
+
+
+                                                    //第4个list
+                                                    JSONArray arr4 = data.getJSONArray("professionalSkillList");
+                                                    Log.i("arr4", arr4.toString());
+
+                                                    List<EditSkills> skillsList = new ArrayList<>();//存放专业技能
+                                                    for (int i = 0; i < arr4.size(); i++) {
+                                                        EditSkills skills = new EditSkills();//item
+
+                                                        JSONObject obj = arr4.getJSONObject(i);
+                                                        String category = obj.getString("category");
+                                                        String telephone = obj.getString("telephone");
+                                                        int hasContent = obj.getIntValue("hasContent");
+                                                        if (hasContent == 1 && category.equals("专业技能")) {
+                                                            //有数据
+                                                            Log.i("专业", "有数据");
+                                                            int rd_id = obj.getIntValue("rd_id");
+                                                            String title = obj.getString("title");
+                                                            String date = obj.getString("time");
+                                                            String content = obj.getString("content");
+                                                            String rd_status = obj.getString("status");
+                                                            if (!rd_status.equals("已删除")) {
+                                                                //不显示已删除的item
+                                                                skills.setTelephone(telephone);
+                                                                skills.setContent(content);
+                                                                skills.setRd_status(rd_status);
+                                                                skills.setRd_id(rd_id);
+                                                                skillsList.add(skills);
+                                                            }
+
+                                                        } else if (hasContent == 0 && category.equals("专业技能")) {
+                                                            //没数据
+                                                            skills.setTelephone(telephone);
+                                                            skills.setContent("请输入内容");
+                                                            skills.setMemo("无数据");
+                                                            skillsList.add(skills);
+                                                        }
+                                                    }
+                                                    resume.setProfessionalSkillList(skillsList);
+                                                    Log.i("skillsList", resume.getProfessionalSkillList().toString());
+
+
+                                                    //经验、地址
+                                                    if (exp_data == null || exp_data.equals("")) {
+                                                        resume.setExp("暂无工作经验");
+                                                    } else {
+                                                        resume.setExp(exp_data);
+                                                    }
+                                                    if (current_area_data == null || current_area_data.equals("")) {
+                                                        resume.setCurrent_area("暂未填写地址");
+                                                    } else {
+                                                        resume.setCurrent_area(current_area_data);
+                                                    }
+                                                    resume.setCampusExpList(campusList);
+                                                    Log.i("campusList", resume.getCampusExpList().toString());
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } else{//简历存在
+                                    Log.i("abc","anc");
+                                    //获取obj中的数据
+                                    String exp_data = data.getString("exp");
+                                    String current_area_data = data.getString("current_area");
+                                    String phone=data.getString("telephone");
+                                    resume.setTelephone(phone);
+
+                                    //第一个list
+                                    JSONArray arr1 = data.getJSONArray("campusExpList");
+                                    Log.i("arr1", arr1.toString());
+
+                                    List<EditCampus> campusList = new ArrayList<>();//存放校园经历
+                                    for (int i = 0; i < arr1.size(); i++) {
+                                        EditCampus campus = new EditCampus();//校园item
+
+                                        JSONObject obj = arr1.getJSONObject(i);
+                                        String category = obj.getString("category");
+                                        String telephone = obj.getString("telephone");
+                                        int hasContent = obj.getIntValue("hasContent");
+
+                                        if (hasContent == 1 && category.equals("校园经历")) {
+                                            //有数据
+                                            Log.i("校园", "有数据");
+                                            int rd_id = obj.getIntValue("rd_id");
+                                            String title = obj.getString("title");
+                                            String date = obj.getString("time");
+                                            String content = obj.getString("content");
+                                            String rd_status = obj.getString("status");
+                                            if (!rd_status.equals("已删除")) {
+                                                //不显示已删除的item
+                                                campus.setTelephone(telephone);
+                                                campus.setContent(content);
+                                                campus.setTitle(title);
+                                                campus.setRd_status(rd_status);
+                                                campus.setDate(date);
+                                                campus.setRd_id(rd_id);
+                                                campusList.add(campus);
+                                            }
+
+                                        } else if (hasContent == 0 && category.equals("校园经历")) {
+                                            //没数据
                                             campus.setTelephone(telephone);
-                                            campus.setContent(content);
-                                            campus.setTitle(title);
-                                            campus.setRd_status(rd_status);
-                                            campus.setDate(date);
-                                            campus.setRd_id(rd_id);
+                                            campus.setTitle("请输入标题");
+                                            campus.setDate("请输入日期");
+                                            campus.setContent("请输入内容");
+                                            campus.setMemo("无数据");
                                             campusList.add(campus);
                                         }
-
-                                    } else if (hasContent == 0 && category.equals("校园经历")) {
-                                        //没数据
-                                        campus.setTelephone(telephone);
-                                        campus.setTitle("请输入标题");
-                                        campus.setDate("请输入日期");
-                                        campus.setContent("请输入内容");
-                                        campus.setMemo("无数据");
-                                        campusList.add(campus);
                                     }
-                                }
 
 
-                                //第2个list
-                                JSONArray arr2 = data.getJSONArray("educationBgList");
-                                Log.i("arr2", arr2.toString());
+                                    //第2个list
+                                    JSONArray arr2 = data.getJSONArray("educationBgList");
+                                    Log.i("arr2", arr2.toString());
 
-                                List<EditEducation> educationList = new ArrayList<>();//存放教育背景
-                                for (int i = 0; i < arr2.size(); i++) {
-                                    EditEducation education = new EditEducation();//item
+                                    List<EditEducation> educationList = new ArrayList<>();//存放教育背景
+                                    for (int i = 0; i < arr2.size(); i++) {
+                                        EditEducation education = new EditEducation();//item
 
-                                    JSONObject obj = arr2.getJSONObject(i);
-                                    String category = obj.getString("category");
-                                    String telephone = obj.getString("telephone");
-                                    int hasContent = obj.getIntValue("hasContent");
-                                    Log.i("aavcs", hasContent + "");
-                                    Log.i("ahuiash", category);
-                                    Log.i("aswg", obj.getString("title"));
-                                    if (hasContent == 1 && category.equals("教育背景")) {
-                                        //有数据
-                                        Log.i("教育", "有数据");
-                                        int rd_id = obj.getIntValue("rd_id");
-                                        String title = obj.getString("title");
-                                        String date = obj.getString("time");
-                                        String content = obj.getString("content");
-                                        String rd_status = obj.getString("status");
-                                        if (!rd_status.equals("已删除")) {
-                                            //不显示已删除的item
+                                        JSONObject obj = arr2.getJSONObject(i);
+                                        String category = obj.getString("category");
+                                        String telephone = obj.getString("telephone");
+                                        int hasContent = obj.getIntValue("hasContent");
+                                        Log.i("aavcs", hasContent + "");
+                                        Log.i("ahuiash", category);
+                                        if (hasContent == 1 && category.equals("教育背景")) {
+                                            //有数据
+                                            Log.i("教育", "有数据");
+                                            int rd_id = obj.getIntValue("rd_id");
+                                            String title = obj.getString("title");
+                                            String date = obj.getString("time");
+                                            String content = obj.getString("content");
+                                            String rd_status = obj.getString("status");
+                                            if (!rd_status.equals("已删除")) {
+                                                //不显示已删除的item
+                                                education.setTelephone(telephone);
+                                                education.setContent(content);
+                                                education.setTitle(title);
+                                                education.setRd_status(rd_status);
+                                                education.setDate(date);
+                                                education.setRd_id(rd_id);
+                                                educationList.add(education);
+                                            }
+
+                                        } else if (hasContent == 0 && category.equals("教育背景")) {
+                                            //没数据
                                             education.setTelephone(telephone);
-                                            education.setContent(content);
-                                            education.setTitle(title);
-                                            education.setRd_status(rd_status);
-                                            education.setDate(date);
-                                            education.setRd_id(rd_id);
+                                            education.setTitle("请输入标题");
+                                            education.setDate("请输入日期");
+                                            education.setContent("请输入内容");
+                                            education.setMemo("无数据");
                                             educationList.add(education);
                                         }
-
-                                    } else if (hasContent == 0 && category.equals("教育背景")) {
-                                        //没数据
-                                        education.setTelephone(telephone);
-                                        education.setTitle("请输入标题");
-                                        education.setDate("请输入日期");
-                                        education.setContent("请输入内容");
-                                        education.setMemo("无数据");
-                                        educationList.add(education);
                                     }
-                                }
-                                resume.setEducationBgList(educationList);
-                                Log.i("educationList", resume.getEducationBgList().toString());
+                                    resume.setEducationBgList(educationList);
+                                    Log.i("educationList", resume.getEducationBgList().toString());
 
 
-                                //第3个list
-                                JSONArray arr3 = data.getJSONArray("projectExpList");
-                                Log.i("arr3", arr3.toString());
+                                    //第3个list
+                                    JSONArray arr3 = data.getJSONArray("projectExpList");
+                                    Log.i("arr3", arr3.toString());
 
-                                List<EditProject> projectList = new ArrayList<>();//存放教育背景
-                                for (int i = 0; i < arr3.size(); i++) {
-                                    EditProject project = new EditProject();//item
+                                    List<EditProject> projectList = new ArrayList<>();//存放教育背景
+                                    for (int i = 0; i < arr3.size(); i++) {
+                                        EditProject project = new EditProject();//item
 
-                                    JSONObject obj = arr3.getJSONObject(i);
-                                    String category = obj.getString("category");
-                                    String telephone = obj.getString("telephone");
-                                    int hasContent = obj.getIntValue("hasContent");
-                                    if (hasContent == 1 && category.equals("项目经历")) {
-                                        //有数据
-                                        Log.i("项目", "有数据");
-                                        int rd_id = obj.getIntValue("rd_id");
-                                        String title = obj.getString("title");
-                                        String date = obj.getString("time");
-                                        String content = obj.getString("content");
-                                        String rd_status = obj.getString("status");
-                                        if (!rd_status.equals("已删除")) {
-                                            //不显示已删除的item
+                                        JSONObject obj = arr3.getJSONObject(i);
+                                        String category = obj.getString("category");
+                                        String telephone = obj.getString("telephone");
+                                        int hasContent = obj.getIntValue("hasContent");
+                                        if (hasContent == 1 && category.equals("项目经历")) {
+                                            //有数据
+                                            Log.i("项目", "有数据");
+                                            int rd_id = obj.getIntValue("rd_id");
+                                            String title = obj.getString("title");
+                                            String date = obj.getString("time");
+                                            String content = obj.getString("content");
+                                            String rd_status = obj.getString("status");
+                                            if (!rd_status.equals("已删除")) {
+                                                //不显示已删除的item
+                                                project.setTelephone(telephone);
+                                                project.setContent(content);
+                                                project.setTitle(title);
+                                                project.setRd_status(rd_status);
+                                                project.setDate(date);
+                                                project.setRd_id(rd_id);
+                                                projectList.add(project);
+                                            }
+
+                                        } else if (hasContent == 0 && category.equals("项目经历")) {
+                                            //没数据
                                             project.setTelephone(telephone);
-                                            project.setContent(content);
-                                            project.setTitle(title);
-                                            project.setRd_status(rd_status);
-                                            project.setDate(date);
-                                            project.setRd_id(rd_id);
+                                            project.setTitle("请输入标题");
+                                            project.setDate("请输入日期");
+                                            project.setContent("请输入内容");
+                                            project.setMemo("无数据");
                                             projectList.add(project);
                                         }
-
-                                    } else if (hasContent == 0 && category.equals("项目经历")) {
-                                        //没数据
-                                        project.setTelephone(telephone);
-                                        project.setTitle("请输入标题");
-                                        project.setDate("请输入日期");
-                                        project.setContent("请输入内容");
-                                        project.setMemo("无数据");
-                                        projectList.add(project);
                                     }
-                                }
-                                resume.setProjectExpList(projectList);
-                                Log.i("projectList", resume.getProjectExpList().toString());
+                                    resume.setProjectExpList(projectList);
+                                    Log.i("projectList", resume.getProjectExpList().toString());
 
 
-                                //第4个list
-                                JSONArray arr4 = data.getJSONArray("professionalSkillList");
-                                Log.i("arr4", arr4.toString());
+                                    //第4个list
+                                    JSONArray arr4 = data.getJSONArray("professionalSkillList");
+                                    Log.i("arr4", arr4.toString());
 
-                                List<EditSkills> skillsList = new ArrayList<>();//存放专业技能
-                                for (int i = 0; i < arr4.size(); i++) {
-                                    EditSkills skills = new EditSkills();//item
+                                    List<EditSkills> skillsList = new ArrayList<>();//存放专业技能
+                                    for (int i = 0; i < arr4.size(); i++) {
+                                        EditSkills skills = new EditSkills();//item
 
-                                    JSONObject obj = arr4.getJSONObject(i);
-                                    String category = obj.getString("category");
-                                    String telephone = obj.getString("telephone");
-                                    int hasContent = obj.getIntValue("hasContent");
-                                    if (hasContent == 1 && category.equals("专业技能")) {
-                                        //有数据
-                                        Log.i("专业", "有数据");
-                                        int rd_id = obj.getIntValue("rd_id");
-                                        String title = obj.getString("title");
-                                        String date = obj.getString("time");
-                                        String content = obj.getString("content");
-                                        String rd_status = obj.getString("status");
-                                        if (!rd_status.equals("已删除")) {
-                                            //不显示已删除的item
+                                        JSONObject obj = arr4.getJSONObject(i);
+                                        String category = obj.getString("category");
+                                        String telephone = obj.getString("telephone");
+                                        int hasContent = obj.getIntValue("hasContent");
+                                        if (hasContent == 1 && category.equals("专业技能")) {
+                                            //有数据
+                                            Log.i("专业", "有数据");
+                                            int rd_id = obj.getIntValue("rd_id");
+                                            String title = obj.getString("title");
+                                            String date = obj.getString("time");
+                                            String content = obj.getString("content");
+                                            String rd_status = obj.getString("status");
+                                            if (!rd_status.equals("已删除")) {
+                                                //不显示已删除的item
+                                                skills.setTelephone(telephone);
+                                                skills.setContent(content);
+                                                skills.setRd_status(rd_status);
+                                                skills.setRd_id(rd_id);
+                                                skillsList.add(skills);
+                                            }
+
+                                        } else if (hasContent == 0 && category.equals("专业技能")) {
+                                            //没数据
                                             skills.setTelephone(telephone);
-                                            skills.setContent(content);
-                                            skills.setRd_status(rd_status);
-                                            skills.setRd_id(rd_id);
+                                            skills.setContent("请输入内容");
+                                            skills.setMemo("无数据");
                                             skillsList.add(skills);
                                         }
-
-                                    } else if (hasContent == 0 && category.equals("专业技能")) {
-                                        //没数据
-                                        skills.setTelephone(telephone);
-                                        skills.setContent("请输入内容");
-                                        skills.setMemo("无数据");
-                                        skillsList.add(skills);
                                     }
-                                }
-                                resume.setProfessionalSkillList(skillsList);
-                                Log.i("skillsList", resume.getProfessionalSkillList().toString());
+                                    resume.setProfessionalSkillList(skillsList);
+                                    Log.i("skillsList", resume.getProfessionalSkillList().toString());
 
 
-                                //经验、地址
-                                if (exp_data == null || exp_data.equals("")) {
-                                    resume.setExp("暂无工作经验");
-                                } else {
-                                    resume.setExp(exp_data);
+                                    //经验、地址
+                                    if (exp_data == null || exp_data.equals("")) {
+                                        resume.setExp("暂无工作经验");
+                                    } else {
+                                        resume.setExp(exp_data);
+                                    }
+                                    if (current_area_data == null || current_area_data.equals("")) {
+                                        resume.setCurrent_area("暂未填写地址");
+                                    } else {
+                                        resume.setCurrent_area(current_area_data);
+                                    }
+                                    resume.setCampusExpList(campusList);
+                                    Log.i("campusList", resume.getCampusExpList().toString());
                                 }
-                                if (current_area_data == null || current_area_data.equals("")) {
-                                    resume.setCurrent_area("暂未填写地址");
-                                } else {
-                                    resume.setCurrent_area(current_area_data);
-                                }
-                                resume.setCampusExpList(campusList);
-                                Log.i("campusList", resume.getCampusExpList().toString());
 
                                 //设置list数据给adapter
                                 runOnUiThread(() -> {
@@ -655,13 +899,17 @@ public class ResumesManage extends AppCompatActivity {
 
         //上传
         upload.setOnClickListener(v -> {
+            Log.i("telephone",resume.getTelephone());
             Intent i = new Intent();
             i.setClass(context, UploadResume.class);
+            i.putExtra("telephone",resume.getTelephone());
             startActivity(i);
         });
         upload_text.setOnClickListener(v -> {
+            Log.i("telephone",resume.getTelephone());
             Intent i = new Intent();
             i.setClass(context, UploadResume.class);
+            i.putExtra("telephone",resume.getTelephone());
             startActivity(i);
         });
 

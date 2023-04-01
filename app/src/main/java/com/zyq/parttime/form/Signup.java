@@ -61,7 +61,7 @@ public class Signup implements Serializable {
 
     @Override
     public String toString() {
-        return "SignupAdapter{" +
+        return "Signup{" +
                 "s_id=" + s_id +
                 ", stu_id='" + stu_id + '\'' +
                 ", p_id=" + p_id +

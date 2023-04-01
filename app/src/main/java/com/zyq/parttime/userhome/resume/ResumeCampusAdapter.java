@@ -335,8 +335,7 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         i.setContent("请输入内容");
         list.add(position, i);
 
-        //调api
-
+        //调api TODO
 
         //添加动画
         notifyItemInserted(position);
@@ -346,7 +345,7 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void removeData(int position) {
         list.remove(position);
 
-        //调api
+        //调api TODO
 
 
         //删除动画

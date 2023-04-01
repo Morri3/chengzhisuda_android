@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="362dp"
+        android:layout_width="347dp"
         android:layout_height="185dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="37dp"
@@ -41,7 +41,7 @@
         >
         <EditText
             android:id="@+id/telephone"
-            android:layout_width="362dp"
+            android:layout_width="347dp"
             android:layout_height="60dp"
             android:inputType="phone"
             android:hint="手机号"
@@ -80,7 +80,7 @@
         >
         <EditText
             android:id="@+id/password"
-            android:layout_width="362dp"
+            android:layout_width="347dp"
             android:layout_height="60dp"
             android:inputType="textPassword"
             android:textColorHint="#BEBEBE"
@@ -99,7 +99,7 @@
     <!-- 登陆按钮 -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_login"
-        android:layout_width="362dp"
+        android:layout_width="347dp"
         android:layout_height="47dp"
         android:layout_marginTop="44dp"
         android:layout_gravity="center"
@@ -112,7 +112,7 @@
     <!-- 注册按钮 -->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_reg"
-        android:layout_width="362dp"
+        android:layout_width="347dp"
         android:layout_height="47dp"
         android:layout_marginTop="22dp"
         android:layout_gravity="center"

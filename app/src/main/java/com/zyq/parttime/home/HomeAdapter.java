@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,7 @@ import com.zyq.parttime.position.PositionDetail;
 import java.io.Serializable;
 import java.util.List;
 
-public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Serializable{
+public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Serializable {
     private static final int HEADER_VIEW = 0; //头部
 
     private Context context;
@@ -144,19 +145,13 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             if (holder instanceof HeaderViewHolder) {//属于头部
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
                 Position data = dataList.get(pos);//获取当前item的数据
-                Log.i("data", data.toString());//test
+                Log.i("data_adapter", data.toString());//test
 
-//                headerViewHolder.name.setText(context.getResources().
-//                        getIdentifier("model_" + data.getModelid(), "drawable",
-//                                context.getPackageName()));//设置车型图片
                 headerViewHolder.name.setText(data.getPosition_name());
-                Log.d("name", headerViewHolder.name.getText().toString());
                 headerViewHolder.area.setText(data.getArea());
-                Log.d("area", headerViewHolder.area.getText().toString());
                 headerViewHolder.settlement.setText(data.getSettlement());
-                Log.d("settlement", headerViewHolder.settlement.getText().toString());
                 headerViewHolder.work_time.setText(data.getWork_time());
-                Log.d("work_time", headerViewHolder.work_time.getText().toString());
+                headerViewHolder.salary.setText(data.getSalary());
 
                 //最后一个不显示分割线
                 if (pos == dataList.size() - 1) {
@@ -165,29 +160,30 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 //查看详情按钮
                 headerViewHolder.detail_text.setOnClickListener(view -> {
-                    Toast.makeText(this.context, "点击了查看详情按钮", Toast.LENGTH_SHORT).show();
-
-                    for(Position i:dataList){
-                        Log.i("z1",i.toString());
-                    }
+                    Toast toast = Toast.makeText(context, "点击了查看详情按钮", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                    toast.show();
 
                     //跳转到兼职详细界面
                     Intent editpro = new Intent(context, PositionDetail.class);
                     editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
                     editpro.putExtra("pos", data.getP_id());//传递当前选中的兼职的id
+                    //获取该position在list中的位置（下标），传过去  TODO
+
                     context.startActivity(editpro);
                 });
                 headerViewHolder.detail_icon.setOnClickListener(view -> {
-                    Toast.makeText(this.context, "点击了查看详情按钮", Toast.LENGTH_SHORT).show();
-
-                    for(Position i:dataList){
-                        Log.i("z2",i.toString());
-                    }
+                    Toast toast = Toast.makeText(context, "点击了查看详情按钮", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                    toast.show();
 
                     //跳转到兼职详细界面
                     Intent editpro = new Intent(context, PositionDetail.class);
                     editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
                     editpro.putExtra("pos", data.getP_id());//传递当前选中的兼职的id
+                    //获取该position在list中的位置（下标），传过去  TODO
+
+
                     context.startActivity(editpro);
                 });
 

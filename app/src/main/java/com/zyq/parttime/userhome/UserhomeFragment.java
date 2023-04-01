@@ -39,6 +39,9 @@ public class UserhomeFragment extends Fragment {
         ImageView right3=view.findViewById(R.id.right3);
         ImageView right4=view.findViewById(R.id.right4);
 
+        //调api获取name、head  TODO
+
+
         right1.setOnClickListener(v->{
             Intent i = new Intent();
             i.setClass(context, UserInfo.class);
