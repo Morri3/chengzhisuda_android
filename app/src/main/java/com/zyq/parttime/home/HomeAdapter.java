@@ -22,6 +22,8 @@ import com.zyq.parttime.position.PositionDetail;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Serializable {
     private static final int HEADER_VIEW = 0; //头部
@@ -167,9 +169,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     //跳转到兼职详细界面
                     Intent editpro = new Intent(context, PositionDetail.class);
                     editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("pos", data.getP_id());//传递当前选中的兼职的id
-                    //获取该position在list中的位置（下标），传过去  TODO
-
+                    editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+                    //获取该position在list中的位置（下标），传过去
+                    editpro.putExtra("pos", pos);//传递当前选中的报名的下标
                     context.startActivity(editpro);
                 });
                 headerViewHolder.detail_icon.setOnClickListener(view -> {
@@ -180,10 +182,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     //跳转到兼职详细界面
                     Intent editpro = new Intent(context, PositionDetail.class);
                     editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("pos", data.getP_id());//传递当前选中的兼职的id
-                    //获取该position在list中的位置（下标），传过去  TODO
-
-
+                    editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+                    //获取该position在list中的位置（下标），传过去
+                    editpro.putExtra("pos", pos);//传递当前选中的报名的下标
                     context.startActivity(editpro);
                 });
 

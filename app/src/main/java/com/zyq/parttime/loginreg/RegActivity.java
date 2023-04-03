@@ -2,21 +2,49 @@ package com.zyq.parttime.loginreg;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
+import com.zyq.parttime.sp.StuRegister;
 import com.zyq.parttime.util.DateData;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RegActivity extends AppCompatActivity {
     @Override
@@ -27,12 +55,26 @@ public class RegActivity extends AppCompatActivity {
 
         ImageView back = findViewById(R.id.back);
         AppCompatButton reg = findViewById(R.id.btn_reg);
+        EditText name_edit = findViewById(R.id.name_edit);
+        RadioGroup gender_edit = findViewById(R.id.gender_edit);
+        AtomicReference<RadioButton> gender = new AtomicReference<>();
+        EditText telephone_edit = findViewById(R.id.telephone_edit);
+        EditText emails_edit = findViewById(R.id.emails_edit);
+        EditText pwd_edit = findViewById(R.id.pwd_edit);
+        EditText pwd2_edit = findViewById(R.id.pwd2_edit);
         Spinner yearSpinner = findViewById(R.id.year);
         Spinner monthSpinner = findViewById(R.id.month);
+        EditText school_edit = findViewById(R.id.school_edit);
+        EditText sno_edit = findViewById(R.id.sno_edit);
         Spinner startYearSpinner = findViewById(R.id.start_year);
         Spinner startMonthSpinner = findViewById(R.id.start_month);
         Spinner endYearSpinner = findViewById(R.id.end_year);
         Spinner endMonthSpinner = findViewById(R.id.end_month);
+
+        //给RadioGroup性别设置选中项改变监听
+        gender_edit.setOnCheckedChangeListener((radioGroup, i) -> {
+
+        });
 
         //创建DateData类，并配置默认值
         DateData dateData = new DateData(1900, 1, 1900, 1, 1900, 1);
@@ -71,9 +113,8 @@ public class RegActivity extends AppCompatActivity {
         ArrayAdapter<Integer> monthadapter = new ArrayAdapter<>(this,
                 R.layout.date_item, month);//把月份的列表添加到适配器中，使用自定义的item样式
         monthadapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
-        runOnUiThread(() -> {
-            monthSpinner.setAdapter(monthadapter);//设置适配器
-        });
+        monthSpinner.setAdapter(monthadapter);//设置适配器
+
         //监听下拉框
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -113,9 +154,7 @@ public class RegActivity extends AppCompatActivity {
         ArrayAdapter<Integer> startMonthAdapter = new ArrayAdapter<>(this,
                 R.layout.date_item, month);//把月份的列表添加到适配器中，使用自定义的item样式
         startMonthAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
-        runOnUiThread(() -> {
-            startMonthSpinner.setAdapter(startMonthAdapter);//设置适配器
-        });
+        startMonthSpinner.setAdapter(startMonthAdapter);//设置适配器
         //监听下拉框
         startMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -155,9 +194,7 @@ public class RegActivity extends AppCompatActivity {
         ArrayAdapter<Integer> endMonthAdapter = new ArrayAdapter<>(this,
                 R.layout.date_item, month);//把月份的列表添加到适配器中，使用自定义的item样式
         endMonthAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
-        runOnUiThread(() -> {
-            endMonthSpinner.setAdapter(endMonthAdapter);//设置适配器
-        });
+        endMonthSpinner.setAdapter(endMonthAdapter);//设置适配器
         //监听下拉框
         endMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -184,15 +221,257 @@ public class RegActivity extends AppCompatActivity {
         //注册按钮
         reg.setOnClickListener(v -> {
             //获取表单数据
+            gender.set((RadioButton) findViewById(gender_edit.getCheckedRadioButtonId()));//getCheckedRadioButtonId()找到RadioGroup中被选中的radiobutton
+            String data_gender;
+            if (gender.get() == null) {
+                data_gender = "";
+            } else {
+                data_gender = gender.get().getText().toString();
+            }
+            String username = name_edit.getText().toString();
+            String telephone = telephone_edit.getText().toString();
+            String emails = emails_edit.getText().toString();
+            String pwd = pwd_edit.getText().toString();
+            String pwd2 = pwd2_edit.getText().toString();
+            String school_name = school_edit.getText().toString();
+            String sno = sno_edit.getText().toString();
 
+            //前端对表单进行检验
+            int a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0, a7 = 0;
+            if (username == null || username.equals("")) {
+                a1 = 1;
+            }
+            if (data_gender == null || data_gender.equals("")) {
+                a2 = 1;
+            }
+            if (telephone == null || telephone.equals("")) {
+                a3 = 1;
+            }
+            if (emails == null || emails.equals("")) {
+                a4 = 1;
+            }
+            if (pwd == null || pwd.equals("")) {
+                a5 = 1;
+            }
+            if (pwd2 == null || pwd2.equals("")) {
+                a6 = 1;
+            }
+            if (school_name == null || school_name.equals("")) {
+                a7 = 1;
+            }
+            if (a1 == 0 && a2 == 0 && a3 == 0 && a4 == 0 && a5 == 0 && a6 == 0 && a7 == 0
+                    && pwd.equals(pwd2) && telephone.length() == 11 && isEmail(emails) == true
+                    && ((isSno(sno) == true && sno.length() > 0) || sno.length() == 0)) {
+                //调用接口存到DB中
+                new Thread(() -> {
+                    try {
+                        OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                        StuRegister stuRegister = new StuRegister();
+                        stuRegister.setTelephone(telephone);
+                        if (data_gender.equals("男")) {
+                            stuRegister.setGender(1);
+                        } else if (data_gender.equals("女")) {
+                            stuRegister.setGender(0);
+                        }
+                        stuRegister.setStu_name(username);
+                        stuRegister.setEmails(emails);
+                        stuRegister.setPwd(pwd);
+                        stuRegister.setPwd2(pwd2);
+                        stuRegister.setSchool_name(school_name);
+                        stuRegister.setSno(sno);
 
-            //调用接口存到DB中
+                        //构造年龄、入学、毕业时间
+                        int y1 = dateData.getBirthYear();
+                        int m1 = dateData.getBirthMonth();
+                        int y2 = dateData.getStartYear();
+                        int m2 = dateData.getStartMonth();
+                        int y3 = dateData.getEndYear();
+                        int m3 = dateData.getEndMonth();
 
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+                        int newAge = 0;
+                        String start = "", end = "";
+                        Date birth;
+                        try {
+                            //出生日期
+                            if (m1 >= 1 && m1 <= 9) {
+                                birth = sdf.parse(y1 + "-0" + m1);
+                            } else {
+                                birth = sdf.parse(y1 + "-" + m1);
+                            }
+                            //当前
+                            Date now = new Date();
+                            Calendar c1 = Calendar.getInstance();
+                            Calendar c2 = Calendar.getInstance();
+                            c1.setTime(birth);
+                            c2.setTime(now);
+                            int tmp1 = c2.get(Calendar.DATE) - c1.get(Calendar.DATE);
+                            int tmp2 = c2.get(Calendar.MONTH) - c1.get(Calendar.MONTH);
+                            int tmp3 = c2.get(Calendar.YEAR) - c1.get(Calendar.YEAR);
+                            if (tmp2 > 0) {//月份更大
+                                tmp2 = 1;//最后要+1
+                            } else if (tmp2 == 0) {//月份相同
+                                tmp2 = tmp1 <= 0 ? 0 : 1;//判断日期，前面日期更小，最后月份要+1
+                            } else {//月份更小，不用+1
+                                tmp2 = 0;
+                            }
+                            newAge = tmp3 + tmp2;
+                            dateData.setAge(newAge);
 
-            //跳转到登录页
-            Intent intent = new Intent(RegActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
+                            //入学时间，毕业时间
+                            if (m2 >= 1 && m2 <= 9) {
+                                start = y2 + "-0" + m2;
+                                dateData.setStart(start);
+                            } else {
+                                start = y2 + "-" + m2;
+                                dateData.setStart(start);
+                            }
+                            if (m3 >= 1 && m3 <= 9) {
+                                end = y3 + "-0" + m3;
+                                dateData.setEnd(end);
+                            } else {
+                                end = y3 + "-" + m3;
+                                dateData.setEnd(end);
+                            }
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        Log.i("age", newAge + "");
+                        Log.i("start", start);
+                        Log.i("end", end);
+                        stuRegister.setAge(newAge);
+                        stuRegister.setEntrance_date(start);
+                        stuRegister.setGraduation_date(end);
+                        //注册时间
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        String reg_time = sdf2.format(new Date());
+                        stuRegister.setReg_date(reg_time);
+
+                        String json = JSON.toJSONString(stuRegister);//dto转string
+                        Request request = new Request.Builder()
+                                .url("http://114.55.239.213:8082/register/stu")
+                                .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                .build();//创建Http请求
+                        client.newBuilder()
+                                .connectTimeout(20, TimeUnit.SECONDS)
+                                .readTimeout(20, TimeUnit.SECONDS)
+                                .writeTimeout(20, TimeUnit.SECONDS)
+                                .build()
+                                .newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                Log.i("error", "数据获取失败");
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                if (response.isSuccessful()) {//调用成功
+                                    try {
+                                        com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                        JSONObject data_register = JSON.parseObject(jsonObj.getString("data"));
+                                        Log.i("data_register实体", data_register.toString());
+
+                                        runOnUiThread(() -> {
+                                            //跳转到登录页
+                                            Intent intent = new Intent(RegActivity.this, LoginActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        });
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {//调用失败
+                                    Log.i("error", response.toString());
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();//要start才会启动
+            }
+
+            //校验
+            if (a1 == 1) {
+                runOnUiThread(() -> {
+                    name_edit.setError("不能为空");
+                });
+            }
+            if (a2 == 1) {
+                runOnUiThread(() -> {
+                    Toast toast = Toast.makeText(getBaseContext(), "请选择性别", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                    toast.show();
+                });
+            }
+            if (a3 == 1) {
+                runOnUiThread(() -> {
+                    telephone_edit.setError("不能为空");
+                });
+            }
+            if (a4 == 1) {
+                runOnUiThread(() -> {
+                    emails_edit.setError("不能为空");
+                });
+            }
+            if (a5 == 1) {
+                runOnUiThread(() -> {
+                    pwd_edit.setError("不能为空");
+                });
+            }
+            if (a6 == 1) {
+                runOnUiThread(() -> {
+                    pwd2_edit.setError("不能为空");
+                });
+            }
+            if (a7 == 1) {
+                runOnUiThread(() -> {
+                    school_edit.setError("不能为空");
+                });
+            }
+            if (isEmail(emails) == false) {
+                runOnUiThread(() -> {
+                    emails_edit.setError("请输入正确的邮箱");
+                });
+            }
+            if (!pwd.equals(pwd2)) {
+                runOnUiThread(() -> {
+                    pwd_edit.setError("请保证两次输入的密码一致");
+                    pwd2_edit.setError("请保证两次输入的密码一致");
+                });
+            }
+            if (telephone.length() != 11) {
+                runOnUiThread(() -> {
+                    telephone_edit.setError("请输入正确的手机号");
+                });
+            }
+            if (isSno(sno) == false && sno.length() > 0) {
+                runOnUiThread(() -> {
+                    sno_edit.setError("请输入正确的学号");
+                });
+            }
         });
+    }
+
+    public static boolean isEmail(String emails) {
+        boolean flag = false;
+        try {
+            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+            Pattern regex = Pattern.compile(check);
+            Matcher matcher = regex.matcher(emails);
+            flag = matcher.matches();
+        } catch (Exception e) {
+            flag = false;
+        }
+        return flag;
+    }
+
+    public static boolean isSno(String sno) {
+        boolean flag = false;
+        if (sno.length() == 8) {
+            flag = true;
+        }
+        return flag;
     }
 }

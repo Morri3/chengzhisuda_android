@@ -70,53 +70,47 @@ public class MarkActivity extends AppCompatActivity {
 
         //定义事件
         float point[] = new float[8];
-        r2_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+        runOnUiThread(() -> {
+            r2_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
+
                 point[1] = 2 * ratingBar.getRating();
                 Log.i("专业契合度", point[1] + "分");
                 num2_1.setText(point[1] + "");
             });
-        });
-        r2_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r2_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[2] = 2 * ratingBar.getRating();
                 Log.i("薪资水平", point[2] + "分");
                 num2_2.setText("" + point[2]);
             });
-        });
-        r3_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r3_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[3] = 2 * ratingBar.getRating();
                 Log.i("工作环境", point[3] + "分");
                 num3_1.setText("" + point[3]);
+
             });
-        });
-        r3_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r3_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[4] = 2 * ratingBar.getRating();
                 Log.i("闲时待遇", point[4] + "分");
                 num3_2.setText("" + point[4]);
+
             });
-        });
-        r4_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r4_1.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[5] = 2 * ratingBar.getRating();
                 Log.i("岗前培训", point[5] + "分");
                 num4_1.setText("" + point[5]);
+
             });
-        });
-        r4_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r4_2.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[6] = 2 * ratingBar.getRating();
                 Log.i("专业技能满意度", point[6] + "分");
                 num4_2.setText("" + point[6]);
+
             });
-        });
-        r4_3.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
-            runOnUiThread(() -> {
+            r4_3.setOnRatingBarChangeListener((ratingBar, v, b1) -> {
                 point[7] = 2 * ratingBar.getRating();
                 Log.i("总体收获满意度", point[7] + "分");
                 num4_3.setText("" + point[7]);
+
             });
         });
 

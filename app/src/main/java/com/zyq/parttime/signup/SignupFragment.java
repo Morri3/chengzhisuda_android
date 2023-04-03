@@ -25,6 +25,7 @@ import com.zyq.parttime.form.Signup;
 import com.zyq.parttime.home.HomeAdapter;
 import com.zyq.parttime.sp.HistoryDto;
 import com.zyq.parttime.sp.SignupDto;
+import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -91,7 +92,7 @@ public class SignupFragment extends Fragment {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 HistoryDto historyDto = new HistoryDto();
-                historyDto.setTelephone("13800000001");//TODO 后面改为当前用户
+                historyDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
 
                 String json = JSON.toJSONString(historyDto);//dto转json
                 Request request = new Request.Builder()
@@ -146,7 +147,7 @@ public class SignupFragment extends Fragment {
                                 }
 
                                 getActivity().runOnUiThread(() -> {
-                                    //5s延时
+                                    //2s延时
                                     try {
                                         Thread.sleep(2000);
                                     } catch (InterruptedException e) {
@@ -204,7 +205,7 @@ public class SignupFragment extends Fragment {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                     HistoryDto historyDto = new HistoryDto();
-                    historyDto.setTelephone("13800000001");//TODO 后面改为当前用户
+                    historyDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
 
                     String json = JSON.toJSONString(historyDto);//dto转json
                     Request request = new Request.Builder()
@@ -303,7 +304,7 @@ public class SignupFragment extends Fragment {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                     //TODO 后面改为当前用户
-                    String telephone = "13800000001";
+                    String telephone = Constants.telephone;
                     String signup_status = "已报名";
                     Request request = new Request.Builder()
                             .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
@@ -401,7 +402,7 @@ public class SignupFragment extends Fragment {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                     //TODO 后面改为当前用户
-                    String telephone = "13800000001";
+                    String telephone = Constants.telephone;
                     String signup_status = "已录取";
                     Request request = new Request.Builder()
                             .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
@@ -499,7 +500,7 @@ public class SignupFragment extends Fragment {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                     //TODO 后面改为当前用户
-                    String telephone = "13800000001";
+                    String telephone = Constants.telephone;
                     String signup_status = "已结束";
                     Request request = new Request.Builder()
                             .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
@@ -546,24 +547,87 @@ public class SignupFragment extends Fragment {
                                     }
                                     Log.i("报名数据", list.toString());
 
-                                    //2s延时
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
+                                    //获取已取消的报名
+                                    new Thread(() -> {
+                                        try {
+                                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                            //TODO 后面改为当前用户
+                                            String telephone = Constants.telephone;
+                                            String signup_status = "已取消";
+                                            Request request = new Request.Builder()
+                                                    .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
+                                                            "&signup_status=" + signup_status)
+                                                    .get()
+                                                    .build();//创建Http请求
+                                            client.newBuilder()
+                                                    .connectTimeout(20, TimeUnit.SECONDS)
+                                                    .readTimeout(20, TimeUnit.SECONDS)
+                                                    .writeTimeout(20, TimeUnit.SECONDS)
+                                                    .build()
+                                                    .newCall(request).enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                    Log.i("error", "数据获取失败");
+                                                    e.printStackTrace();
+                                                }
 
-                                    getActivity().runOnUiThread(() -> {
-                                        //适配器的定义与设置
-                                        Log.i("报名数据2", list.toString());
-                                        //配置布局管理器、分割线、适配器
-                                        rv = view.findViewById(R.id.rv_signup);
-                                        //第一步：设置布局管理器
-                                        rv.setLayoutManager(new LinearLayoutManager(context));
-                                        //第二步：设置适配器
-                                        signupAdapter = new SignupAdapter(context, list);
-                                        rv.setAdapter(signupAdapter);
-                                    });
+                                                @Override
+                                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                    if (response.isSuccessful()) {//调用成功
+                                                        try {
+                                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                            Log.i("data_signup3", jsonObj.getString("data"));
+                                                            JSONArray data = JSON.parseArray(jsonObj.getString("data"));
+                                                            Log.i("data_signup4", data.toString());
+
+                                                            //构造list
+                                                            for (int i = 0; i < data.size(); i++) {
+                                                                Signup signup = new Signup();
+                                                                JSONObject obj = data.getJSONObject(i);
+                                                                int p_id = obj.getIntValue("p_id");
+                                                                int s_id = obj.getIntValue("s_id");
+                                                                String signup_status = obj.getString("signup_status");
+                                                                String stu_id = obj.getString("stu_id");
+                                                                Date create_time = obj.getDate("create_time");
+                                                                signup.setSignup_status(signup_status);
+                                                                signup.setCreate_time(create_time);
+                                                                signup.setS_id(s_id);
+                                                                signup.setP_id(p_id);
+                                                                signup.setStu_id(stu_id);
+                                                                list.add(signup);
+                                                            }
+                                                            Log.i("报名数据3", list.toString());
+
+                                                            //2s延时
+                                                            try {
+                                                                Thread.sleep(2000);
+                                                            } catch (InterruptedException e) {
+                                                                e.printStackTrace();
+                                                            }
+
+                                                            getActivity().runOnUiThread(() -> {
+                                                                //适配器的定义与设置
+                                                                Log.i("报名数据3", list.toString());
+                                                                //配置布局管理器、分割线、适配器
+                                                                rv = view.findViewById(R.id.rv_signup);
+                                                                //第一步：设置布局管理器
+                                                                rv.setLayoutManager(new LinearLayoutManager(context));
+                                                                //第二步：设置适配器
+                                                                signupAdapter = new SignupAdapter(context, list);
+                                                                rv.setAdapter(signupAdapter);
+                                                            });
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    } else {//调用失败
+                                                        Log.i("error", response.toString());
+                                                    }
+                                                }
+                                            });
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }).start();//要start才会启动
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

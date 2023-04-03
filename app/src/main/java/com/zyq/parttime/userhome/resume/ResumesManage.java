@@ -33,6 +33,7 @@ import com.zyq.parttime.form.Resume;
 import com.zyq.parttime.form.ResumeDetail;
 import com.zyq.parttime.form.Student;
 import com.zyq.parttime.signup.MarkActivity;
+import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -136,7 +137,7 @@ public class ResumesManage extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 //TODO 后面改为当前登录用户
-                String telephone = "13800000001";
+                String telephone = Constants.telephone;
 //                String json = "{\"telephone\":\"" + telephone + "\"}";
 //                Log.i("json", json);
 
@@ -226,7 +227,7 @@ public class ResumesManage extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 //TODO 后面改为当前登录用户
-                String telephone = "13800000001";
+                String telephone = Constants.telephone;
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8082/users/resumes/get?telephone=" + telephone)
                         .get()

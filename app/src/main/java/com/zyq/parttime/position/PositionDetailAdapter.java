@@ -2,6 +2,7 @@ package com.zyq.parttime.position;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Gravity;
@@ -24,6 +25,7 @@ import com.zyq.parttime.form.Position;
 import com.zyq.parttime.sp.EmpInfo;
 import com.zyq.parttime.sp.MarkInfo;
 import com.zyq.parttime.sp.SignupDto;
+import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +46,26 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private EmpInfo empInfo;
     private MarkInfo markInfo;
     private int flag = 0;//判断是否可以报名
+
+    //    private static Activity findActivity(Context cont) {
+//        if (cont == null)
+//            return null;
+//        else if (cont instanceof Activity)
+//            return (Activity) cont;
+//        else if (cont instanceof ContextWrapper)
+//            return findActivity(((ContextWrapper) cont).getBaseContext());
+//        return null;
+//    }
+    public static Activity getActivityFromView(View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
 
     public PositionDetailAdapter(Context context, Position data, EmpInfo empInfo, MarkInfo markInfo) {
         this.context = context;
@@ -291,7 +313,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         try {
             if (holder instanceof HeaderViewHolder) {//属于头部
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                Log.i("data_position", data.toString());//test
+                Log.i("data_position实体", data.toString());
 
                 headerViewHolder.name.setText(data.getPosition_name());
                 headerViewHolder.settlement.setText(data.getSettlement());
@@ -327,7 +349,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         try {
                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                             SignupDto signupDto = new SignupDto();
-                            signupDto.setTelephone("13800000001");//TODO 后面改为当前用户
+                            signupDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
                             signupDto.setP_id(data.getP_id());
 
                             String json = JSON.toJSONString(signupDto);//dto转json
@@ -352,11 +374,12 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                     if (response.isSuccessful()) {//调用成功
                                         try {
                                             com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                            JSONObject data_mark = JSON.parseObject(jsonObj.getString("data"));
-                                            Log.i("data_mark", data_mark.toString());
+                                            JSONObject data_signup = JSON.parseObject(jsonObj.getString("data"));
+                                            Log.i("data_signup实体", data_signup.toString());
 
-                                            if (data_mark.getString("memo").equals("该用户已报名")) {
+                                            if (data_signup.getString("memo").equals("该用户已报名")) {
                                                 flag = 1;
+                                                Log.i("flag", flag + "");
                                             }
 
                                             try {
@@ -377,21 +400,34 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         }
                     }).start();//要start才会启动
 
+                    //延时5s，以显示ui的更新
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Log.i("flag2", flag + "");
                     if (flag == 1) {
                         //不能报名
                         Toast toast = Toast.makeText(context, "该用户已报名", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
-                    }
+                    } else {
+                        //能报名
+                        Toast toast = Toast.makeText(context, "报名成功", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
 
-                    //跳转到首页
-                    Log.i("btn", "点击了报名按钮");
-                    Intent i = new Intent();
-                    i.setClass(context, HomeActivity.class);
-                    //一定要指定是第几个pager，这里填写1
-                    i.putExtra("id", 1);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(i);
+                        //跳转到首页
+                        Log.i("btn", "点击了报名按钮");
+                        Intent i = new Intent();
+                        i.setClass(context, HomeActivity.class);
+                        //一定要指定是第几个pager，这里填写1
+                        i.putExtra("id", 1);
+                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//
+                        context.startActivity(i);
+                    }
                 });
 
 
@@ -438,4 +474,5 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             return -1;
         }
     }
+
 }

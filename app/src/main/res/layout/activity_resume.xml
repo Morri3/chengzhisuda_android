@@ -202,7 +202,7 @@
     <TextView
         android:id="@+id/emails_resume"
         android:layout_width="127dp"
-        android:layout_height="wrap_content"
+        android:layout_height="22dp"
         app:layout_constraintLeft_toRightOf="@id/head"
         app:layout_constraintTop_toBottomOf="@id/age_resume"
         android:text="111@qq.com"

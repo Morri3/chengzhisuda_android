@@ -10,6 +10,10 @@ public class DateData {
     private int startMonth;//毕业年份
     private int endMonth;//毕业月份
 
+    private int age;//年龄
+    private String start;//入学日期
+    private String end;//毕业日期
+
     public DateData(int birthYear, int birthMonth, int startYear, int endYear, int startMonth, int endMonth) {
         this.birthYear = birthYear;
         this.birthMonth = birthMonth;
@@ -81,5 +85,29 @@ public class DateData {
 
     public void setEndMonth(int endMonth) {
         this.endMonth = endMonth;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
     }
 }

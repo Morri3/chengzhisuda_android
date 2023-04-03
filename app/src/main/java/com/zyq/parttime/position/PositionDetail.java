@@ -49,9 +49,11 @@ public class PositionDetail extends AppCompatActivity {
 
         //获取传来的数据
         Intent editpro = getIntent();
-        int pos = editpro.getIntExtra("pos", -1);
+        int p_id = editpro.getIntExtra("p_id", -1);//兼职id
+        int pos = editpro.getIntExtra("pos", -1);//当前选择的item的下标
         list = (List<Position>) editpro.getSerializableExtra("position_data");//获得传来的列表
 
+        Log.i("p_id", p_id + "");
         Log.i("pos", pos + "");
         Log.i("list", list.toString());
 
@@ -62,7 +64,7 @@ public class PositionDetail extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8082/users/info/get_emp?telephone="
-                                + list.get(pos - 1).getOp_id())
+                                + list.get(pos).getOp_id())
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -92,8 +94,8 @@ public class PositionDetail extends AppCompatActivity {
                                 String telephone = data.getString("telephone");
                                 String jno = data.getString("jno");
                                 String unit_name = data.getString("unit_name");
-                                String unit_descriptions = data.getString("descriptions");
-                                String unit_loc = data.getString("loc");
+                                String unit_descriptions = data.getString("unit_descriptions");
+                                String unit_loc = data.getString("unit_loc");
                                 int job_nums = data.getIntValue("job_nums");
 
                                 empInfo.setEmp_name(emp_name);
@@ -128,7 +130,7 @@ public class PositionDetail extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/mark/getAll?p_id=" + list.get(pos - 1).getP_id())
+                        .url("http://114.55.239.213:8082/mark/getAll?p_id=" + list.get(pos).getP_id())
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -181,7 +183,7 @@ public class PositionDetail extends AppCompatActivity {
                                     //第一步：设置布局管理器
                                     rv.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
-                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos - 1), empInfo, markInfo);//传入当前的item
+                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos), empInfo, markInfo);//传入当前的item
                                     rv.setAdapter(positionDetailAdapter);
 
                                     //返回
