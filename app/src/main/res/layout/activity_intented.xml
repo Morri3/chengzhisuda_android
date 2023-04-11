@@ -233,7 +233,7 @@
         android:id="@+id/name2"
         android:layout_width="138dp"
         android:layout_height="66dp"
-        android:text="学生助教"
+        android:text="学生助理"
         android:textColor="@color/text_black_color"
         android:gravity="center"
         app:layout_constraintRight_toLeftOf="@id/item3"

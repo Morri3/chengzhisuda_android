@@ -2,10 +2,12 @@ package com.zyq.parttime;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -98,9 +100,9 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.userhome://个人中心
             case R.id.icon_userhome:
                 reset();//重置文本、图片选中状态
+                changeColors("userhome");//图片、文字选中的样式
 //                text_userhome.setSelected(true);//文字选中
 //                icon_userhome.setSelected(true);//图片选中
-                changeColors("userhome");//图片、文字选中的样式
 
                 if (userhomeFragment == null) {//fragment为空
                     userhomeFragment = new UserhomeFragment();//创建一个fragment

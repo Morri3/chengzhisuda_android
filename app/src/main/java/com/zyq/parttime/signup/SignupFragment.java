@@ -3,11 +3,13 @@ package com.zyq.parttime.signup;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -92,7 +94,7 @@ public class SignupFragment extends Fragment {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 HistoryDto historyDto = new HistoryDto();
-                historyDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
+                historyDto.setTelephone(Constants.telephone);//TODO 改为当前用户
 
                 String json = JSON.toJSONString(historyDto);//dto转json
                 Request request = new Request.Builder()
@@ -116,9 +118,8 @@ public class SignupFragment extends Fragment {
                         if (response.isSuccessful()) {//调用成功
                             try {
                                 com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                Log.i("data_signup", jsonObj.getString("data"));
                                 JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                Log.i("data_signup2", data.toString());
+                                Log.i("data_signup", data.toString());
 
                                 //构造list
                                 list.clear();//清空
@@ -205,7 +206,7 @@ public class SignupFragment extends Fragment {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                     HistoryDto historyDto = new HistoryDto();
-                    historyDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
+                    historyDto.setTelephone(Constants.telephone);//TODO 改为当前用户
 
                     String json = JSON.toJSONString(historyDto);//dto转json
                     Request request = new Request.Builder()
@@ -229,9 +230,8 @@ public class SignupFragment extends Fragment {
                             if (response.isSuccessful()) {//调用成功
                                 try {
                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                    Log.i("data_signup", jsonObj.getString("data"));
                                     JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                    Log.i("data_signup2", data.toString());
+                                    Log.i("data_signup", data.toString());
 
                                     //构造list
                                     list.clear();//清空
@@ -298,12 +298,12 @@ public class SignupFragment extends Fragment {
                 line4.setVisibility(View.INVISIBLE);
             });
 
-            //调用“已报名”状态的数据  TODO
+            //调用“已报名”状态的数据
             s = 2;
             new Thread(() -> {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                    //TODO 后面改为当前用户
+                    //TODO 改为当前用户
                     String telephone = Constants.telephone;
                     String signup_status = "已报名";
                     Request request = new Request.Builder()
@@ -328,9 +328,8 @@ public class SignupFragment extends Fragment {
                             if (response.isSuccessful()) {//调用成功
                                 try {
                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                    Log.i("data_signup", jsonObj.getString("data"));
                                     JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                    Log.i("data_signup2", data.toString());
+                                    Log.i("data_signup", data.toString());
 
                                     //构造list
                                     list.clear();//清空
@@ -396,7 +395,7 @@ public class SignupFragment extends Fragment {
                 line4.setVisibility(View.INVISIBLE);
             });
 
-            //调用“已录取”状态的数据  TODO
+            //调用“已录取”状态的数据
             s = 3;
             new Thread(() -> {
                 try {
@@ -426,9 +425,8 @@ public class SignupFragment extends Fragment {
                             if (response.isSuccessful()) {//调用成功
                                 try {
                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                    Log.i("data_signup", jsonObj.getString("data"));
                                     JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                    Log.i("data_signup2", data.toString());
+                                    Log.i("data_signup", data.toString());
 
                                     //构造list
                                     list.clear();//清空
@@ -494,12 +492,12 @@ public class SignupFragment extends Fragment {
                 line4.setVisibility(View.VISIBLE);
             });
 
-            //调用“已结束”状态的数据  TODO
+            //调用“已结束”状态的数据
             s = 4;
             new Thread(() -> {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                    //TODO 后面改为当前用户
+                    //TODO 改为当前用户
                     String telephone = Constants.telephone;
                     String signup_status = "已结束";
                     Request request = new Request.Builder()
@@ -524,9 +522,8 @@ public class SignupFragment extends Fragment {
                             if (response.isSuccessful()) {//调用成功
                                 try {
                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                    Log.i("data_signup", jsonObj.getString("data"));
                                     JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                    Log.i("data_signup2", data.toString());
+                                    Log.i("data_signup", data.toString());
 
                                     //构造list
                                     list.clear();//清空
@@ -551,7 +548,7 @@ public class SignupFragment extends Fragment {
                                     new Thread(() -> {
                                         try {
                                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                                            //TODO 后面改为当前用户
+                                            //TODO 改为当前用户
                                             String telephone = Constants.telephone;
                                             String signup_status = "已取消";
                                             Request request = new Request.Builder()
@@ -576,9 +573,8 @@ public class SignupFragment extends Fragment {
                                                     if (response.isSuccessful()) {//调用成功
                                                         try {
                                                             com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                            Log.i("data_signup3", jsonObj.getString("data"));
                                                             JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                                            Log.i("data_signup4", data.toString());
+                                                            Log.i("data_signup2", data.toString());
 
                                                             //构造list
                                                             for (int i = 0; i < data.size(); i++) {
@@ -643,5 +639,4 @@ public class SignupFragment extends Fragment {
         });
         return view;
     }
-
 }

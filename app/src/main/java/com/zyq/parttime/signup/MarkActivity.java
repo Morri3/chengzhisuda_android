@@ -116,7 +116,7 @@ public class MarkActivity extends AppCompatActivity {
 
         //确定按钮，将点击的分数存到DB中
         btn_mark.setOnClickListener(v -> {
-            //调api，将数组存到DB中  TODO
+            //调api，将数组存到DB中
             Log.i("评分", point.toString());
             new Thread(() -> {
                 try {
@@ -159,7 +159,7 @@ public class MarkActivity extends AppCompatActivity {
                                     Log.i("data_mark_post实体", data_mark_post.toString());
 
                                     runOnUiThread(() -> {
-                                        Toast toast = Toast.makeText(getBaseContext(), "评分成功", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getBaseContext(), "评分成功！请耐心等待~", Toast.LENGTH_SHORT);
                                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                         toast.show();
 

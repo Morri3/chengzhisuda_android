@@ -1,16 +1,21 @@
 package com.zyq.parttime.userhome;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -119,7 +124,7 @@ public class UserInfo extends AppCompatActivity {
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                String phone = Constants.telephone;//TODO  后面改为当前登录用户
+                String phone = Constants.telephone;//TODO  改为当前登录用户
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8082/users/info/get_stu?telephone=" + phone)
                         .get()
@@ -167,6 +172,10 @@ public class UserInfo extends AppCompatActivity {
                                 studentInfo.setGraduation_date(data_graduation_date);
 
                                 runOnUiThread(() -> {
+                                    Toast toast = Toast.makeText(getBaseContext(), "用户信息获取成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                    toast.show();
+
                                     //set到组件中
                                     age.setText(data_age + "");
                                     emails.setText(data_emails);
@@ -521,7 +530,7 @@ public class UserInfo extends AppCompatActivity {
                     try {
                         OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                         EditInfo editInfo = new EditInfo();
-                        editInfo.setTelephone(Constants.telephone);//TODO 后面改为当前用户
+                        editInfo.setTelephone(Constants.telephone);//TODO 改为当前用户
                         editInfo.setAge(dateData.getAge());
                         if (t2.equals("男")) {
                             editInfo.setGender(1);
@@ -558,6 +567,10 @@ public class UserInfo extends AppCompatActivity {
 
                                         //切回原来的
                                         runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(getApplicationContext(), "保存成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+
                                             username.setVisibility(View.VISIBLE);
                                             gender.setVisibility(View.VISIBLE);
                                             emails.setVisibility(View.VISIBLE);
@@ -594,7 +607,7 @@ public class UserInfo extends AppCompatActivity {
                                                 gender.setText("男");
                                             }
                                             emails.setText(data_userinfo_edit.getString("emails"));
-                                            age.setText(data_userinfo_edit.getIntValue("age")+"");
+                                            age.setText(data_userinfo_edit.getIntValue("age") + "");
                                             grade.setText(data_userinfo_edit.getString("grade"));
                                         });
                                     } catch (JSONException e) {
@@ -622,5 +635,45 @@ public class UserInfo extends AppCompatActivity {
             i.putExtra("id", 3);
             startActivity(i);
         });
+    }
+
+    //点击键盘外区域关闭软键盘
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            //判断是否要隐藏
+            if (isShouldHideInput(v, ev)) {
+                //使用InputMethodManager管理类，进行隐藏
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        if (getWindow().superDispatchTouchEvent(ev)) {//不能缺少这步，以免所有组件丢失点击事件
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+    //是否需要隐藏
+    public boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] leftTop = {0, 0};//获取输入框当前的location位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];//左
+            int top = leftTop[1];//上
+            int bottom = top + v.getHeight();//下=上+高度
+            int right = left + v.getWidth();//右=左+宽度
+            if (event.getX() > left && event.getX() < right && event.getY() > top
+                    && event.getY() < bottom) {//点击区域在输入框内，保留点击EditText的事件
+                return false;
+            } else {//否则不保留点击事件
+                return true;
+            }
+        }
+        return false;
     }
 }

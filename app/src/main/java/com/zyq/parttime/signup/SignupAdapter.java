@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -384,6 +385,18 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                 headerViewHolder.salary.setText(salary);
                                                 headerViewHolder.work_time.setText(work_time);
                                                 headerViewHolder.status.setText(data.getSignup_status());
+
+                                                //设置状态字段的颜色
+                                                if (data.getSignup_status().equals("已报名")) {
+                                                    headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_1));
+                                                } else if (data.getSignup_status().equals("已录取")) {
+                                                    headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_2));
+                                                } else if (data.getSignup_status().equals("已结束")) {
+                                                    headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_3));
+                                                } else if (data.getSignup_status().equals("已取消")) {
+                                                    headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_4));
+                                                }
+
                                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss");
                                                 String update = sdf.format(data.getCreate_time());
                                                 headerViewHolder.update_time.setText(update);
@@ -723,6 +736,10 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                                                     ((Activity) context).runOnUiThread(() -> {
                                                         if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
+                                                            Toast toast = Toast.makeText(context, "已成功取消报名！", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+
                                                             //移除组件
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
@@ -807,7 +824,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             if (response.isSuccessful()) {//调用成功
                                                 try {
                                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-//                                        Log.i("data_mark实体", jsonObj.getString("data"));
                                                     JSONObject data_cancel = JSON.parseObject(jsonObj.getString("data"));
                                                     Log.i("data_cancel实体", data_cancel.toString());
 
@@ -820,6 +836,10 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                                                     ((Activity) context).runOnUiThread(() -> {
                                                         if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
+                                                            Toast toast = Toast.makeText(context, "已成功取消报名！", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+
                                                             //移除组件
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
@@ -906,7 +926,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             if (response.isSuccessful()) {//调用成功
                                                 try {
                                                     com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-//                                        Log.i("data_mark实体", jsonObj.getString("data"));
                                                     JSONObject data_comment_post = JSON.parseObject(jsonObj.getString("data"));
                                                     Log.i("data_comment_post实体", data_comment_post.toString());
 
@@ -919,6 +938,10 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                                                     ((Activity) context).runOnUiThread(() -> {
                                                         if (data_comment_post.getString("memo").equals("评论成功")) {
+                                                            Toast toast = Toast.makeText(context, "评论成功！", Toast.LENGTH_SHORT);
+                                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                            toast.show();
+
                                                             //确定按钮+输入框，显示TextView，隐藏按钮,移除组件
                                                             headerViewHolder.comment_content_after.setText(content);
                                                             headerViewHolder.comment_time.setVisibility(View.VISIBLE);
@@ -1002,5 +1025,4 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             return -1;
         }
     }
-
 }

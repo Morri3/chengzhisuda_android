@@ -29,7 +29,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:hintAnimationEnabled="true"
-        app:boxStrokeErrorColor="#FF0000"
+        app:boxStrokeErrorColor="@color/main_purple"
         app:boxStrokeWidth="0.5dp"
         app:counterEnabled="true"
         app:counterMaxLength="11"
@@ -52,6 +52,7 @@
             android:layout_gravity="center_horizontal"
             android:textStyle="bold"
             android:gravity="left"
+            android:maxLength="11"
             android:background="@drawable/login_edit_bg"
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -67,7 +68,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/telephone_layout"
         app:hintAnimationEnabled="true"
-        app:boxStrokeErrorColor="#FF0000"
+        app:boxStrokeErrorColor="@color/main_purple"
         app:boxStrokeWidth="0.5dp"
         app:counterEnabled="true"
         app:counterMaxLength="11"

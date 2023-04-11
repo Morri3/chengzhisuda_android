@@ -1,11 +1,14 @@
 package com.zyq.parttime.loginreg;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -238,25 +241,25 @@ public class RegActivity extends AppCompatActivity {
 
             //前端对表单进行检验
             int a1 = 0, a2 = 0, a3 = 0, a4 = 0, a5 = 0, a6 = 0, a7 = 0;
-            if (username == null || username.equals("")) {
+            if (username.length() == 0) {
                 a1 = 1;
             }
-            if (data_gender == null || data_gender.equals("")) {
+            if (data_gender.length() == 0) {
                 a2 = 1;
             }
-            if (telephone == null || telephone.equals("")) {
+            if (telephone.length() == 0) {
                 a3 = 1;
             }
-            if (emails == null || emails.equals("")) {
+            if (emails.length() == 0) {
                 a4 = 1;
             }
-            if (pwd == null || pwd.equals("")) {
+            if (pwd.length() == 0) {
                 a5 = 1;
             }
-            if (pwd2 == null || pwd2.equals("")) {
+            if (pwd2.length() == 0) {
                 a6 = 1;
             }
-            if (school_name == null || school_name.equals("")) {
+            if (school_name.length() == 0) {
                 a7 = 1;
             }
             if (a1 == 0 && a2 == 0 && a3 == 0 && a4 == 0 && a5 == 0 && a6 == 0 && a7 == 0
@@ -373,6 +376,10 @@ public class RegActivity extends AppCompatActivity {
                                         Log.i("data_register实体", data_register.toString());
 
                                         runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(getApplicationContext(), "注册成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+
                                             //跳转到登录页
                                             Intent intent = new Intent(RegActivity.this, LoginActivity.class);
                                             startActivity(intent);
@@ -454,6 +461,7 @@ public class RegActivity extends AppCompatActivity {
         });
     }
 
+    //是否是邮箱格式
     public static boolean isEmail(String emails) {
         boolean flag = false;
         try {
@@ -467,11 +475,52 @@ public class RegActivity extends AppCompatActivity {
         return flag;
     }
 
+    //是否是学号
     public static boolean isSno(String sno) {
         boolean flag = false;
         if (sno.length() == 8) {
             flag = true;
         }
         return flag;
+    }
+
+    //点击键盘外区域关闭软键盘
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            //判断是否要隐藏
+            if (isShouldHideInput(v, ev)) {
+                //使用InputMethodManager管理类，进行隐藏
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
+            return super.dispatchTouchEvent(ev);
+        }
+        if (getWindow().superDispatchTouchEvent(ev)) {//不能缺少这步，以免所有组件丢失点击事件
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+    //是否需要隐藏
+    public boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v != null && (v instanceof EditText)) {
+            int[] leftTop = {0, 0};//获取输入框当前的location位置
+            v.getLocationInWindow(leftTop);
+            int left = leftTop[0];//左
+            int top = leftTop[1];//上
+            int bottom = top + v.getHeight();//下=上+高度
+            int right = left + v.getWidth();//右=左+宽度
+            if (event.getX() > left && event.getX() < right && event.getY() > top
+                    && event.getY() < bottom) {//点击区域在输入框内，保留点击EditText的事件
+                return false;
+            } else {//否则不保留点击事件
+                return true;
+            }
+        }
+        return false;
     }
 }
