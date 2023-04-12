@@ -18,11 +18,13 @@ import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
 import com.zyq.parttime.form.Position;
+import com.zyq.parttime.sp.CommentInfo;
 import com.zyq.parttime.sp.EmpInfo;
 import com.zyq.parttime.sp.MarkInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -124,7 +126,7 @@ public class PositionDetail extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        //调api，获取该职位的点评数据
+        //调api，获取该职位的评分数据
         MarkInfo markInfo = new MarkInfo();
         new Thread(() -> {
             try {
@@ -176,6 +178,85 @@ public class PositionDetail extends AppCompatActivity {
                                 markInfo.setTotal_score(total_score);
                                 markInfo.setWe(we);
 
+//                                //适配器的定义与设置
+//                                runOnUiThread(() -> {
+//                                    //配置布局管理器、分割线、适配器
+//                                    rv = (RecyclerView) findViewById(R.id.rv2);
+//                                    //第一步：设置布局管理器
+//                                    rv.setLayoutManager(new LinearLayoutManager(context));
+//                                    //第二步：设置适配器
+//                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos), empInfo, markInfo);//传入当前的item
+//                                    rv.setAdapter(positionDetailAdapter);
+//
+//                                    //返回
+//                                    back = findViewById(R.id.back);
+//                                    back.setOnClickListener(v -> {
+//                                        Log.i("back", "返回到上一页");
+//                                        //跳转到首页
+//                                        Intent i = new Intent();
+//                                        i.setClass(PositionDetail.this, HomeActivity.class);
+//                                        //一定要指定是第几个pager，这里填写1
+//                                        i.putExtra("id", 1);
+//                                        startActivity(i);
+//                                    });
+//                                });
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {//调用失败
+                            Log.i("error", response.toString());
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();//要start才会启动
+
+        //3s延时
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //调api，获取该职位的评论数据
+        CommentInfo commentInfo = new CommentInfo();
+        new Thread(() -> {
+            try {
+                OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                Request request = new Request.Builder()
+                        .url("http://114.55.239.213:8082/comments/getAll?p_id=" + list.get(pos).getP_id())
+                        .get()
+                        .build();//创建Http请求
+                client.newBuilder()
+                        .connectTimeout(15, TimeUnit.SECONDS)
+                        .readTimeout(15, TimeUnit.SECONDS)
+                        .writeTimeout(15, TimeUnit.SECONDS)
+                        .build()
+                        .newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                        Log.i("error", "数据获取失败");
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if (response.isSuccessful()) {//调用成功
+                            try {
+                                com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                JSONObject data_comment = JSON.parseObject(jsonObj.getString("data"));
+                                Log.i("data_comment", data_comment.toString());
+
+                                int p_id = data_comment.getIntValue("p_id");
+                                String content = data_comment.getString("content");
+                                String memo = data_comment.getString("memo");
+
+                                commentInfo.setP_id(p_id);
+                                commentInfo.setContent(content);
+                                commentInfo.setMemo(memo);
+
                                 //适配器的定义与设置
                                 runOnUiThread(() -> {
                                     //配置布局管理器、分割线、适配器
@@ -183,7 +264,8 @@ public class PositionDetail extends AppCompatActivity {
                                     //第一步：设置布局管理器
                                     rv.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
-                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos), empInfo, markInfo);//传入当前的item
+                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos),
+                                            empInfo, markInfo, commentInfo);//传入当前的item
                                     rv.setAdapter(positionDetailAdapter);
 
                                     //返回

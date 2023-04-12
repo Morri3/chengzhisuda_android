@@ -90,6 +90,7 @@ public class SignupFragment extends Fragment {
             line4.setVisibility(View.INVISIBLE);
         });
 
+        //调api，获取该用户的所有报名
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
@@ -117,7 +118,7 @@ public class SignupFragment extends Fragment {
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (response.isSuccessful()) {//调用成功
                             try {
-                                com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                JSONObject jsonObj = JSON.parseObject(response.body().string());
                                 JSONArray data = JSON.parseArray(jsonObj.getString("data"));
                                 Log.i("data_signup", data.toString());
 
@@ -187,6 +188,7 @@ public class SignupFragment extends Fragment {
         }
 
         //点击事件
+        //状态1
         status1.setOnClickListener(v -> {
             Log.i("状态", "1");
             getActivity().runOnUiThread(() -> {
@@ -285,6 +287,7 @@ public class SignupFragment extends Fragment {
             }).start();//要start才会启动
         });
 
+        //状态2
         status2.setOnClickListener(v -> {
             Log.i("状态", "2");
             getActivity().runOnUiThread(() -> {
@@ -382,6 +385,7 @@ public class SignupFragment extends Fragment {
             }).start();//要start才会启动
         });
 
+        //状态3
         status3.setOnClickListener(v -> {
             Log.i("状态", "3");
             getActivity().runOnUiThread(() -> {
@@ -479,6 +483,7 @@ public class SignupFragment extends Fragment {
             }).start();//要start才会启动
         });
 
+        //状态4
         status4.setOnClickListener(v -> {
             Log.i("状态", "4");
             getActivity().runOnUiThread(() -> {

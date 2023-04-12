@@ -162,7 +162,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                 //查看详情按钮
                 headerViewHolder.detail_text.setOnClickListener(view -> {
-                    Toast toast = Toast.makeText(context, "点击了查看详情按钮", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                     toast.show();
 
@@ -175,7 +175,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     context.startActivity(editpro);
                 });
                 headerViewHolder.detail_icon.setOnClickListener(view -> {
-                    Toast toast = Toast.makeText(context, "点击了查看详情按钮", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                     toast.show();
 

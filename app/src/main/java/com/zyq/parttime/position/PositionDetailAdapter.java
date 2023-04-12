@@ -22,9 +22,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
 import com.zyq.parttime.form.Position;
+import com.zyq.parttime.sp.CommentInfo;
 import com.zyq.parttime.sp.EmpInfo;
 import com.zyq.parttime.sp.MarkInfo;
 import com.zyq.parttime.sp.SignupDto;
+import com.zyq.parttime.sp.SignupWithUser;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
@@ -45,7 +47,8 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private Position data; //数据列表
     private EmpInfo empInfo;
     private MarkInfo markInfo;
-    private int flag = 0;//判断是否可以报名
+    private CommentInfo commentInfo;
+//    private int flag = 0;//判断是否可以报名
 
     //    private static Activity findActivity(Context cont) {
 //        if (cont == null)
@@ -67,11 +70,12 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return null;
     }
 
-    public PositionDetailAdapter(Context context, Position data, EmpInfo empInfo, MarkInfo markInfo) {
+    public PositionDetailAdapter(Context context, Position data, EmpInfo empInfo, MarkInfo markInfo, CommentInfo commentInfo) {
         this.context = context;
         this.data = data;
         this.markInfo = markInfo;
         this.empInfo = empInfo;
+        this.commentInfo = commentInfo;
     }
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder {
@@ -85,7 +89,16 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView name, settlement, salary, area, exp, content, requirement, employer_name,
                 slogan, unit_name, descriptions, job_nums, unit_area;
         private TextView num1, num2, num3, num4, num5, num6, num7, num8;
+        private TextView comments;
         private AppCompatButton btn_signup;
+
+        public TextView getComments() {
+            return comments;
+        }
+
+        public void setComments(TextView comments) {
+            this.comments = comments;
+        }
 
         public TextView getNum1() {
             return num1;
@@ -299,7 +312,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             positionDetailHolder.num8 = headerView.findViewById(R.id.num8);
 
             //评论数据
-
+            positionDetailHolder.comments = headerView.findViewById(R.id.comments);
 
             positionDetailHolder.btn_signup = headerView.findViewById(R.id.btn_signup);
             return positionDetailHolder;
@@ -329,9 +342,8 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 headerViewHolder.unit_area.setText(empInfo.getUnit_loc());
                 headerViewHolder.descriptions.setText(empInfo.getUnit_descriptions());
                 headerViewHolder.job_nums.setText("在招职位" + empInfo.getJob_nums() + "个");
-                //数量要变颜色
 
-
+                //评分
                 headerViewHolder.num1.setText(markInfo.getTotal_score() + "");
                 headerViewHolder.num2.setText(markInfo.getPf() + "");
                 headerViewHolder.num3.setText(markInfo.getPl() + "");
@@ -341,17 +353,143 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 headerViewHolder.num7.setText(markInfo.getOds() + "");
                 headerViewHolder.num8.setText(markInfo.getDsps() + "");
 
+                //评论
+                headerViewHolder.comments.setText(commentInfo.getContent());
+
                 //报名按钮
                 headerViewHolder.btn_signup.setOnClickListener(v -> {
                     Log.i("报名", "报名");
-                    //调api
+
+//                    //先调api，判断该兼职是否已报名
+//                    //   1.若已报名，但状态是已结束/已取消，则可以报名
+//                    //   2.若未报名，则可以报名
+//                    //再调api
+//                    new Thread(() -> {
+//                        try {
+//                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+//                            Request request = new Request.Builder()
+//                                    .url("http://114.55.239.213:8082/parttime/stu/signup_special?telephone="
+//                                            + Constants.telephone + "&p_id=" + data.getP_id())
+//                                    .get()
+//                                    .build();//创建Http请求
+//                            client.newBuilder()
+//                                    .connectTimeout(20, TimeUnit.SECONDS)
+//                                    .readTimeout(20, TimeUnit.SECONDS)
+//                                    .writeTimeout(20, TimeUnit.SECONDS)
+//                                    .build()
+//                                    .newCall(request).enqueue(new Callback() {
+//                                @Override
+//                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                                    Log.i("error", "数据获取失败");
+//                                    e.printStackTrace();
+//                                }
+//
+//                                @Override
+//                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                                    if (response.isSuccessful()) {//调用成功
+//                                        try {
+//                                            JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                            JSONObject data_flag = JSON.parseObject(jsonObj.getString("data"));
+//                                            Log.i("data_flag实体", data_flag.toString());
+//
+//                                            //不是这两种异常情况
+//                                            if (!data_flag.getString("memo").equals("输入有误") &&
+//                                                    !data_flag.getString("memo").equals("该账号不存在")) {
+//
+//                                                if (data_flag.getBooleanValue("flag") == false) {
+//                                                    //不可以报名
+//                                                    Toast toast = Toast.makeText(context, "暂时无法报名", Toast.LENGTH_SHORT);
+//                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                                    toast.show();
+//                                                }else{
+//                                                    //可以报名
+//
+//                                                    //再调api，报名
+//                                                    new Thread(() -> {
+//                                                        try {
+//                                                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+//                                                            SignupDto signupDto = new SignupDto();
+//                                                            signupDto.setTelephone(Constants.telephone);//TODO 改为当前用户
+//                                                            signupDto.setP_id(data.getP_id());
+//                                                            String json = JSON.toJSONString(signupDto);//dto转json
+//                                                            Request request = new Request.Builder()
+//                                                                    .url("http://114.55.239.213:8082/parttime/stu/signup")
+//                                                                    .post(RequestBody.create(MediaType.parse("application/json"), json))
+//                                                                    .build();//创建Http请求
+//                                                            client.newBuilder()
+//                                                                    .connectTimeout(20, TimeUnit.SECONDS)
+//                                                                    .readTimeout(20, TimeUnit.SECONDS)
+//                                                                    .writeTimeout(20, TimeUnit.SECONDS)
+//                                                                    .build()
+//                                                                    .newCall(request).enqueue(new Callback() {
+//                                                                @Override
+//                                                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                                                                    Log.i("error", "数据获取失败");
+//                                                                    e.printStackTrace();
+//                                                                }
+//
+//                                                                @Override
+//                                                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                                                                    if (response.isSuccessful()) {//调用成功
+//                                                                        try {
+//                                                                            JSONObject jsonObj = JSON.parseObject(response.body().string());
+//                                                                            JSONObject data_signup = JSON.parseObject(jsonObj.getString("data"));
+//                                                                            Log.i("data_signup实体", data_signup.toString());
+//
+//                                                                            if (data_signup.getString("memo").equals("该用户已报名")) {
+//
+//                                                                                flag = 1;
+//                                                                                Log.i("flag", flag + "");
+//                                                                            }
+//
+////                                            try {
+////                                                Thread.sleep(2000);
+////                                            } catch (InterruptedException e) {
+////                                                e.printStackTrace();
+////                                            }
+//                                                                        } catch (JSONException e) {
+//                                                                            e.printStackTrace();
+//                                                                        }
+//                                                                    } else {//调用失败
+//                                                                        Log.i("error", response.toString());
+//                                                                    }
+//                                                                }
+//                                                            });
+//                                                        } catch (Exception e) {
+//                                                            e.printStackTrace();
+//                                                        }
+//                                                    }).start();//要start才会启动
+//
+//                                                }
+//                                            }
+//
+////                                            try {
+////                                                Thread.sleep(2000);
+////                                            } catch (InterruptedException e) {
+////                                                e.printStackTrace();
+////                                            }
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    } else {//调用失败
+//                                        Log.i("error", response.toString());
+//                                    }
+//                                }
+//                            });
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                    }).start();//要start才会启动
+
+
+                    //调api，报名
+                    SignupWithUser signupWithUser = new SignupWithUser();
                     new Thread(() -> {
                         try {
                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                             SignupDto signupDto = new SignupDto();
-                            signupDto.setTelephone(Constants.telephone);//TODO 后面改为当前用户
+                            signupDto.setTelephone(Constants.telephone);//TODO 改为当前用户
                             signupDto.setP_id(data.getP_id());
-
                             String json = JSON.toJSONString(signupDto);//dto转json
                             Request request = new Request.Builder()
                                     .url("http://114.55.239.213:8082/parttime/stu/signup")
@@ -373,20 +511,40 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                                 public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                                     if (response.isSuccessful()) {//调用成功
                                         try {
-                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                            JSONObject jsonObj = JSON.parseObject(response.body().string());
                                             JSONObject data_signup = JSON.parseObject(jsonObj.getString("data"));
                                             Log.i("data_signup实体", data_signup.toString());
 
-                                            if (data_signup.getString("memo").equals("该用户已报名")) {
-                                                flag = 1;
-                                                Log.i("flag", flag + "");
-                                            }
-
+                                            //延时3s
                                             try {
-                                                Thread.sleep(2000);
+                                                Thread.sleep(3000);
                                             } catch (InterruptedException e) {
                                                 e.printStackTrace();
                                             }
+
+                                            signupWithUser.setStu_id(Constants.telephone);
+                                            if (data_signup.getString("memo").equals("请先完成正在进行的兼职")) {
+                                                //不可以报名
+                                                signupWithUser.setCanSignup(1);
+                                            } else if (data_signup.getString("memo").equals("不存在该兼职")) {
+                                                //不可以报名
+                                                signupWithUser.setCanSignup(2);
+                                            } else if (data_signup.getString("memo").equals("报名失败")) {
+                                                //不可以报名
+                                                signupWithUser.setCanSignup(3);
+                                            } else if (data_signup.getString("memo").equals("该账号不存在")) {
+                                                //不可以报名
+                                                signupWithUser.setCanSignup(4);
+                                            } else if (data_signup.getString("memo").equals("报名成功")) {
+                                                //可以报名
+                                                signupWithUser.setCanSignup(5);
+                                            }
+
+//                                            try {
+//                                                Thread.sleep(2000);
+//                                            } catch (InterruptedException e) {
+//                                                e.printStackTrace();
+//                                            }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -400,37 +558,81 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                         }
                     }).start();//要start才会启动
 
-                    //延时5s，以显示ui的更新
+                    //延时6s，以显示ui的更新
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(6000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
 
-                    Log.i("flag2", flag + "");
-                    if (flag == 1) {
-                        //不能报名
-                        Toast toast = Toast.makeText(context, "该用户已报名", Toast.LENGTH_SHORT);
+                    if (signupWithUser.getCanSignup() == 1) {
+                        //不可以报名
+//                        ((Activity) context).runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(context, "请先完成正在进行的兼职", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
-                    } else {
-                        //能报名
+//                        });
+                    } else if (signupWithUser.getCanSignup() == 2) {
+                        //不可以报名
+//                        ((Activity) context).runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(context, "不存在该兼职", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
+//                        });
+                    } else if (signupWithUser.getCanSignup() == 3) {
+                        //不可以报名
+//                        ((Activity) context).runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(context, "报名失败", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
+//                        });
+                    } else if (signupWithUser.getCanSignup() == 4) {
+                        //不可以报名
+//                        ((Activity) context).runOnUiThread(() -> {
+                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
+//                        });
+                    } else if (signupWithUser.getCanSignup() == 5) {
+                        //可以报名
+//                        ((Activity) context).runOnUiThread(() -> {
                         Toast toast = Toast.makeText(context, "报名成功", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
 
                         //跳转到首页
-                        Log.i("btn", "点击了报名按钮");
+                        Log.i("button", "点击了报名按钮");
                         Intent i = new Intent();
                         i.setClass(context, HomeActivity.class);
                         //一定要指定是第几个pager，这里填写1
                         i.putExtra("id", 1);
                         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//
                         context.startActivity(i);
+//                        });
                     }
+//
+//                    Log.i("flag2", flag + "");
+//                    if (flag == 1) {
+//                        //不能报名
+//                        Toast toast = Toast.makeText(context, "该用户已报名", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                        toast.show();
+//                    } else {
+//                        //能报名
+//                        Toast toast = Toast.makeText(context, "报名成功", Toast.LENGTH_SHORT);
+//                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                        toast.show();
+//
+//                        //跳转到首页
+//                        Log.i("button", "点击了报名按钮");
+//                        Intent i = new Intent();
+//                        i.setClass(context, HomeActivity.class);
+//                        //一定要指定是第几个pager，这里填写1
+//                        i.putExtra("id", 1);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);//
+//                        context.startActivity(i);
+//                    }
                 });
-
-
             }
         } catch (Exception e) {
             e.printStackTrace();

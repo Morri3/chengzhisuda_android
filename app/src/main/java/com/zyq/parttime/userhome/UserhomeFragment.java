@@ -23,6 +23,7 @@ import com.zyq.parttime.R;
 import com.zyq.parttime.sp.EditInfo;
 import com.zyq.parttime.userhome.intented.IntentedManage;
 import com.zyq.parttime.userhome.resume.ResumesManage;
+import com.zyq.parttime.userhome.setting.SettingManage;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
@@ -138,11 +139,10 @@ public class UserhomeFragment extends Fragment {
             startActivity(i);
         });
         right4.setOnClickListener(v -> {
-//            Intent i = new Intent();
-//            i.setClass(context, IntentedManage.class);
-//            startActivity(i);
+            Intent i = new Intent();
+            i.setClass(context, SettingManage.class);
+            startActivity(i);
         });
-
 
         return view;
     }

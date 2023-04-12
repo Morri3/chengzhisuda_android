@@ -371,7 +371,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             String position_status = data.getSignup_status();
                                             positionInfo.setPosition_status(position_status);
 
-                                            //延时3s
+                                            //延时1.5s
                                             try {
                                                 Thread.sleep(1500);
                                             } catch (Exception e) {
@@ -457,7 +457,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             JSONObject data_comment = JSON.parseObject(jsonObj.getString("data"));
                                             Log.i("data_comment实体", data_comment.toString());
 
-                                            //延时3s
+                                            //延时1.5s
                                             try {
                                                 Thread.sleep(1500);
                                             } catch (Exception e) {
@@ -535,7 +535,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             JSONObject data_mark = JSON.parseObject(jsonObj.getString("data"));
                                             Log.i("data_mark实体", data_mark.toString());
 
-                                            //4s延时
+                                            //延时1.5s
                                             try {
                                                 Thread.sleep(1500);
                                             } catch (InterruptedException e) {
@@ -611,7 +611,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }).start();//要start才会启动
 
-                    //延时3s
+                    //延时1.5s
                     try {
                         Thread.sleep(1500);
                     } catch (Exception e) {
@@ -727,7 +727,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     JSONObject data_cancel = JSON.parseObject(jsonObj.getString("data"));
                                                     Log.i("data_cancel实体", data_cancel.toString());
 
-                                                    //延时3s
+                                                    //延时1.5s
                                                     try {
                                                         Thread.sleep(1500);
                                                     } catch (Exception e) {
@@ -735,16 +735,17 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     }
 
                                                     ((Activity) context).runOnUiThread(() -> {
-                                                        if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
-                                                            Toast toast = Toast.makeText(context, "已成功取消报名！", Toast.LENGTH_SHORT);
+                                                        if (data_cancel.getString("memo").equals("取消成功")) {
+                                                            Toast toast = Toast.makeText(context, "取消成功", Toast.LENGTH_SHORT);
                                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                             toast.show();
+
+                                                            headerViewHolder.status.setText("已取消");
+                                                            headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_4));
 
                                                             //移除组件
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
-
-                                                            headerViewHolder.status.setText("已取消");
                                                         } else {
                                                             //第一个参数：设置toast在屏幕中显示的位置。这里设置是居中靠顶
                                                             //第二个参数：相对于第一个参数设置toast位置的横向X轴的偏移量，正数向右偏移，负数向左偏移
@@ -827,7 +828,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     JSONObject data_cancel = JSON.parseObject(jsonObj.getString("data"));
                                                     Log.i("data_cancel实体", data_cancel.toString());
 
-                                                    //延时3s
+                                                    //延时1.5s
                                                     try {
                                                         Thread.sleep(1500);
                                                     } catch (Exception e) {
@@ -835,10 +836,13 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     }
 
                                                     ((Activity) context).runOnUiThread(() -> {
-                                                        if (!data_cancel.getString("memo").equals("不存在报名或报名不能取消")) {
-                                                            Toast toast = Toast.makeText(context, "已成功取消报名！", Toast.LENGTH_SHORT);
+                                                        if (data_cancel.getString("memo").equals("取消成功")) {
+                                                            Toast toast = Toast.makeText(context, "取消成功", Toast.LENGTH_SHORT);
                                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                             toast.show();
+
+                                                            headerViewHolder.status.setText("已取消");
+                                                            headerViewHolder.status.setTextColor(context.getResources().getColor(R.color.status_4));
 
                                                             //移除组件
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel);
@@ -929,7 +933,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     JSONObject data_comment_post = JSON.parseObject(jsonObj.getString("data"));
                                                     Log.i("data_comment_post实体", data_comment_post.toString());
 
-                                                    //延时3s
+                                                    //延时1.5s
                                                     try {
                                                         Thread.sleep(1500);
                                                     } catch (Exception e) {
@@ -972,7 +976,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         });
                     });
                 } else {
-                    //延时3s
+                    //延时1.5s
                     try {
                         Thread.sleep(1500);
                     } catch (Exception e) {

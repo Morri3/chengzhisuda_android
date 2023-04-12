@@ -68,6 +68,10 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".userhome.setting.SettingManage"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".userhome.resume.UploadResume"
             android:exported="true">
             <!-- Register as a system camera app -->

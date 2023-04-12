@@ -23,12 +23,12 @@
 
     <TextView
         android:id="@+id/name"
-        android:layout_width="220dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:text="图书馆助理"
         android:textSize="22dp"
         android:textColor="@color/text_black_color"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="25dp"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo"
@@ -37,10 +37,13 @@
         android:shadowDy="10"
         android:shadowRadius="10"
         android:shadowColor="@color/text_shadow_color"
+        android:ellipsize="end"
+        android:maxEms="5"
+        android:maxLines="1"
         />
     <TextView
         android:id="@+id/settlement"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="wrap_content"
         android:text="月结"
         android:textSize="12dp"
@@ -59,8 +62,8 @@
         android:textColor="@color/main_purple"
         android:textStyle="bold"
         android:textSize="16dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginRight="18dp"
+        android:layout_marginTop="17dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/logo"
         />
@@ -72,12 +75,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="10dp"
         android:src="@drawable/icon_area"
-        android:layout_marginLeft="27dp"
+        android:layout_marginLeft="22dp"
         >
     </ImageView>
     <TextView
         android:id="@+id/area"
-        android:layout_width="170dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="图书馆"
         android:textColor="@color/text_black_color"
@@ -92,10 +95,10 @@
         android:layout_width="17dp"
         android:layout_height="17dp"
         app:layout_constraintTop_toBottomOf="@+id/name"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/icon1"
         android:layout_marginTop="10dp"
         android:src="@drawable/icon_requirement"
-        android:layout_marginLeft="240dp"
+        android:layout_marginLeft="160dp"
         >
     </ImageView>
     <TextView
@@ -114,12 +117,13 @@
     <!--分割线-->
     <View
         android:id="@+id/divider1"
-        android:layout_width="362dp"
+        android:layout_width="320dp"
         android:layout_height="2dp"
         app:layout_constraintTop_toBottomOf="@id/area"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:background="@color/divider"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
         />
 
@@ -131,7 +135,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider1"
         android:src="@drawable/icon_title"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/content_text"
@@ -152,12 +156,12 @@
         />
     <TextView
         android:id="@+id/content"
-        android:layout_width="310dp"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:text="1. 负责图书、期刊的上架，读架，倒架，整理书架等。2. 完成老师发放的其他任务。"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/content_text"
@@ -166,7 +170,7 @@
     <!--分割线-->
     <View
         android:id="@+id/divider2"
-        android:layout_width="362dp"
+        android:layout_width="320dp"
         android:layout_height="2dp"
         app:layout_constraintTop_toBottomOf="@id/content"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -183,7 +187,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider2"
         android:src="@drawable/icon_title"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/requirement_text"
@@ -204,12 +208,12 @@
         />
     <TextView
         android:id="@+id/requirement"
-        android:layout_width="310dp"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:text="无"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/requirement_text"
@@ -218,7 +222,7 @@
     <!--分割线-->
     <View
         android:id="@+id/divider3"
-        android:layout_width="362dp"
+        android:layout_width="320dp"
         android:layout_height="2dp"
         app:layout_constraintTop_toBottomOf="@id/requirement"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -235,7 +239,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider3"
         android:src="@drawable/icon_title"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:shadowDx="10"
         android:shadowDy="10"
@@ -266,7 +270,7 @@
         android:text="陈老师"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -274,12 +278,12 @@
         />
     <TextView
         android:id="@+id/slogan"
-        android:layout_width="310dp"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:text="欢迎所有有兴趣且有时间的同学报名参加！"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/employer_name"
@@ -291,7 +295,7 @@
         android:text="浙大城市学院图书馆"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:textStyle="bold"
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -299,12 +303,12 @@
         />
     <TextView
         android:id="@+id/descriptions"
-        android:layout_width="310dp"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:text="为城院师生提供图书资源"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/unit_name"
@@ -314,9 +318,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="在招职位3个"
-        android:textColor="@color/text_black_color"
+        android:textColor="@color/text_orange_color"
         android:textSize="14dp"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/descriptions"
@@ -327,7 +331,7 @@
         android:layout_height="18dp"
         app:layout_constraintTop_toBottomOf="@id/descriptions"
         app:layout_constraintLeft_toRightOf="@id/job_nums"
-        android:layout_marginLeft="80dp"
+        android:layout_marginLeft="70dp"
         android:background="@color/divider"
         android:layout_marginTop="6dp"/>
     <TextView
@@ -337,7 +341,7 @@
         android:text="杭州"
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
-        android:layout_marginLeft="80dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toRightOf="@id/divider4"
         app:layout_constraintTop_toBottomOf="@id/descriptions"
@@ -346,7 +350,7 @@
     <!--分割线-->
     <View
         android:id="@+id/divider5"
-        android:layout_width="362dp"
+        android:layout_width="320dp"
         android:layout_height="2dp"
         app:layout_constraintTop_toBottomOf="@id/job_nums"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -363,7 +367,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/divider5"
         android:src="@drawable/icon_title"
-        android:layout_marginLeft="25dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"/>
     <TextView
         android:id="@+id/rate_text"
@@ -389,7 +393,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rate_text"
         android:src="@drawable/icon_rate"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -406,7 +410,7 @@
         />
     <TextView
         android:id="@+id/num1"
-        android:layout_width="40dp"
+        android:layout_width="45dp"
         android:layout_height="18dp"
         android:text="9.50"
         android:textColor="@color/main_purple"
@@ -426,7 +430,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rate1"
         android:src="@drawable/icon_rate"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -460,7 +464,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rate2"
         android:src="@drawable/icon_rate"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -494,7 +498,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rate3"
         android:src="@drawable/icon_rate"
-        android:layout_marginLeft="50dp"
+        android:layout_marginLeft="45dp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -528,7 +532,7 @@
         app:layout_constraintLeft_toRightOf="@id/num1"
         app:layout_constraintTop_toBottomOf="@id/rate_text"
         android:src="@drawable/icon_rate"
-        android:layout_marginLeft="13dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="10dp"
         />
     <TextView
@@ -658,6 +662,34 @@
         app:layout_constraintTop_toBottomOf="@id/rate7"
         />
 
+    <!--评论-->
+    <TextView
+        android:id="@+id/comments_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="👇 评论 👇"
+        android:textStyle="bold"
+        android:textColor="@color/text_black_color"
+        android:textSize="16dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="7dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rate4"
+        />
+    <TextView
+        android:id="@+id/comments"
+        android:layout_width="310dp"
+        android:layout_height="wrap_content"
+        android:text="这是评论"
+        android:textColor="@color/text_black_color"
+        android:textSize="14dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="7dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/comments_text"
+        />
+
     <!--报名按钮-->
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_signup"
@@ -665,7 +697,7 @@
         android:layout_height="42dp"
         android:layout_gravity="center"
         android:background="@drawable/btn_signup"
-        app:layout_constraintTop_toBottomOf="@id/num8"
+        app:layout_constraintTop_toBottomOf="@id/comments"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="30dp"
