@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -61,6 +63,7 @@ public class ResumesManage extends AppCompatActivity {
     private ResumeEducationAdapter adapter2;
     private ResumeProjectAdapter adapter3;
     private ResumeSkillsAdapter adapter4;
+//    private RecyclerView rv, rv2, rv3, rv4;
     private Context context;
 
     @Override
@@ -101,6 +104,8 @@ public class ResumesManage extends AppCompatActivity {
         ImageView edit5 = findViewById(R.id.edit5);
         ImageView save5 = findViewById(R.id.save5);
         RecyclerView rv4 = findViewById(R.id.rv_skills);
+        //刷新
+        ImageView refresh = findViewById(R.id.refresh);
 
         //初始组件显示隐藏
         runOnUiThread(() -> {
@@ -110,21 +115,21 @@ public class ResumesManage extends AppCompatActivity {
             phone.setVisibility(View.VISIBLE);
             emails.setVisibility(View.VISIBLE);
             exp.setVisibility(View.VISIBLE);
-            exp_edit.setVisibility(View.INVISIBLE);
+            exp_edit.setVisibility(View.INVISIBLE);//隐藏
             current_area.setVisibility(View.VISIBLE);
-            current_area_edit.setVisibility(View.INVISIBLE);
-            save1.setVisibility(View.INVISIBLE);
+            current_area_edit.setVisibility(View.INVISIBLE);//隐藏
+            save1.setVisibility(View.INVISIBLE);//隐藏
             edit1.setVisibility(View.VISIBLE);
-            save2.setVisibility(View.INVISIBLE);
+            save2.setVisibility(View.INVISIBLE);//隐藏
             edit2.setVisibility(View.VISIBLE);
             rv.setVisibility(View.VISIBLE);
-            save3.setVisibility(View.INVISIBLE);
+            save3.setVisibility(View.INVISIBLE);//隐藏
             edit3.setVisibility(View.VISIBLE);
             rv2.setVisibility(View.VISIBLE);
-            save4.setVisibility(View.INVISIBLE);
+            save4.setVisibility(View.INVISIBLE);//隐藏
             edit4.setVisibility(View.VISIBLE);
             rv3.setVisibility(View.VISIBLE);
-            save5.setVisibility(View.INVISIBLE);
+            save5.setVisibility(View.INVISIBLE);//隐藏
             edit5.setVisibility(View.VISIBLE);
             rv4.setVisibility(View.VISIBLE);
         });
@@ -132,26 +137,15 @@ public class ResumesManage extends AppCompatActivity {
         //调api获取个人信息数据
         Student student = new Student();//学生数据
 
-//        getStuInfo();
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                //TODO 后面改为当前登录用户
+                //TODO 改为当前登录用户
                 String telephone = Constants.telephone;
-//                String json = "{\"telephone\":\"" + telephone + "\"}";
-//                Log.i("json", json);
-
-//                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8082/users/info/get_stu?telephone=" + telephone)
                         .get()
                         .build();//创建Http请求
-//                FormBody.Builder params = new FormBody.Builder();
-//                params.add("telephone",telephone);
-//                Request request = new Request.Builder()
-//                        .url("http://114.55.239.213:8080/users/info/get_stu")
-//                        .post(params.build())
-//                        .build();
                 client.newBuilder()
                         .connectTimeout(20, TimeUnit.SECONDS)
                         .readTimeout(20, TimeUnit.SECONDS)
@@ -168,7 +162,6 @@ public class ResumesManage extends AppCompatActivity {
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                         if (response.isSuccessful()) {//调用成功
                             try {
-//                                Log.i("数据", response.body().string());
                                 JSONObject jsonObj = JSON.parseObject(response.body().string());
                                 Log.i("data", jsonObj.getString("data"));
                                 JSONObject data = JSON.parseObject(jsonObj.getString("data"));
@@ -226,7 +219,7 @@ public class ResumesManage extends AppCompatActivity {
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                //TODO 后面改为当前登录用户
+                //TODO 改为当前登录用户
                 String telephone = Constants.telephone;
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8082/users/resumes/get?telephone=" + telephone)
@@ -234,7 +227,7 @@ public class ResumesManage extends AppCompatActivity {
                         .build();//创建Http请求
                 client.newBuilder()
                         .connectTimeout(30, TimeUnit.SECONDS)
-                        .readTimeout(40, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
                         .writeTimeout(30, TimeUnit.SECONDS)
                         .build()
                         .newCall(request).enqueue(new Callback() {
@@ -252,16 +245,17 @@ public class ResumesManage extends AppCompatActivity {
                                 Log.i("get data", jsonObj.getString("data"));
                                 JSONObject data = JSON.parseObject(jsonObj.getString("data"));
 
-                                if(data.get("memo").equals("请填写简历")){
-                                    Log.i("bnc","ajs");
+                                if (data.get("memo").equals("请填写简历")) {
                                     //简历不存在
+                                    Log.i("简历", "简历不存在");
+
                                     //当前时间
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     String now = sdf.format(new Date());
 
                                     FormBody.Builder params = new FormBody.Builder();
-                                    params.add("telephone",telephone);
-                                    params.add("upload_time",now);
+                                    params.add("telephone", telephone);
+                                    params.add("upload_time", now);
 
                                     Request request = new Request.Builder()
                                             .url("http://114.55.239.213:8082/users/resumes/create")
@@ -290,7 +284,7 @@ public class ResumesManage extends AppCompatActivity {
                                                     //获取obj中的数据
                                                     String exp_data = data.getString("exp");
                                                     String current_area_data = data.getString("current_area");
-                                                    String phone=data.getString("telephone");
+                                                    String phone = data.getString("telephone");
                                                     resume.setTelephone(phone);
 
                                                     //第一个list
@@ -491,12 +485,14 @@ public class ResumesManage extends AppCompatActivity {
                                             }
                                         }
                                     });
-                                } else{//简历存在
-                                    Log.i("abc","anc");
+                                } else {
+                                    //简历存在
+                                    Log.i("简历", "简历存在");
+
                                     //获取obj中的数据
                                     String exp_data = data.getString("exp");
                                     String current_area_data = data.getString("current_area");
-                                    String phone=data.getString("telephone");
+                                    String phone = data.getString("telephone");
                                     resume.setTelephone(phone);
 
                                     //第一个list
@@ -696,6 +692,7 @@ public class ResumesManage extends AppCompatActivity {
                                     exp.setText(resume.getExp());
                                     current_area.setText(resume.getCurrent_area());
 
+
                                     //校园经历
                                     //第一步：设置布局管理器
                                     rv.setLayoutManager(new LinearLayoutManager(context));
@@ -704,6 +701,7 @@ public class ResumesManage extends AppCompatActivity {
                                     rv.setAdapter(adapter);
                                     ///第三步：添加动画
                                     rv.setItemAnimator(new DefaultItemAnimator());
+
 
                                     //教育背景
                                     //第一步：设置布局管理器
@@ -714,6 +712,7 @@ public class ResumesManage extends AppCompatActivity {
                                     ///第三步：添加动画
                                     rv2.setItemAnimator(new DefaultItemAnimator());
 
+
                                     //项目经历
                                     //第一步：设置布局管理器
                                     rv3.setLayoutManager(new LinearLayoutManager(context));
@@ -722,6 +721,7 @@ public class ResumesManage extends AppCompatActivity {
                                     rv3.setAdapter(adapter3);
                                     ///第三步：添加动画
                                     rv3.setItemAnimator(new DefaultItemAnimator());
+
 
                                     //专业技能
                                     //第一步：设置布局管理器
@@ -788,13 +788,11 @@ public class ResumesManage extends AppCompatActivity {
             new Thread(() -> {
                 try {
                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-
                     //dto
                     EditPersonalDto dto = new EditPersonalDto();
                     dto.setTelephone(student.getTelephone());
                     dto.setCurrent_area(resume.getCurrent_area());
                     dto.setExp(resume.getExp());
-
                     String json = JSON.toJSONString(dto);//dto转json
                     Request request = new Request.Builder()
                             .url("http://114.55.239.213:8082/users/resumes/edit_personal")
@@ -900,21 +898,26 @@ public class ResumesManage extends AppCompatActivity {
 
         //上传
         upload.setOnClickListener(v -> {
-            Log.i("telephone",resume.getTelephone());
+            Log.i("telephone", resume.getTelephone());
             Intent i = new Intent();
             i.setClass(context, UploadResume.class);
-            i.putExtra("telephone",resume.getTelephone());
+            i.putExtra("telephone", resume.getTelephone());
             startActivity(i);
         });
         upload_text.setOnClickListener(v -> {
-            Log.i("telephone",resume.getTelephone());
+            Log.i("telephone", resume.getTelephone());
             Intent i = new Intent();
             i.setClass(context, UploadResume.class);
-            i.putExtra("telephone",resume.getTelephone());
+            i.putExtra("telephone", resume.getTelephone());
             startActivity(i);
         });
 
+        //返回
         back.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(context, "即将跳转...", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+            toast.show();
+
             //跳转到个人中心页
             Intent i = new Intent();
             i.setClass(context, HomeActivity.class);
@@ -923,5 +926,33 @@ public class ResumesManage extends AppCompatActivity {
             startActivity(i);
         });
 
+        //刷新
+        refresh.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(context, "正在刷新中", Toast.LENGTH_SHORT);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+            toast.show();
+
+            rv.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+            rv2.setAdapter(adapter2);
+            adapter2.notifyDataSetChanged();
+            rv3.setAdapter(adapter3);
+            adapter3.notifyDataSetChanged();
+            rv4.setAdapter(adapter4);
+            adapter4.notifyDataSetChanged();
+        });
+
+    }
+
+    //刷新
+    public void notifyData() {
+//        rv.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//        rv2.setAdapter(adapter2);
+//        adapter2.notifyDataSetChanged();
+//        rv3.setAdapter(adapter3);
+//        adapter3.notifyDataSetChanged();
+//        rv4.setAdapter(adapter4);
+//        adapter4.notifyDataSetChanged();
     }
 }

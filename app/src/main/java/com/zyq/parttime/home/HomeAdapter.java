@@ -53,7 +53,17 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         private TextView detail_text;
         private ImageView detail_icon;
 
+        private TextView no_position;
+
         //getter、setter方法
+        public TextView getNo_position() {
+            return no_position;
+        }
+
+        public void setNo_position(TextView no_position) {
+            this.no_position = no_position;
+        }
+
         public TextView getName() {
             return name;
         }
@@ -135,6 +145,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             headerHolder.divider = headerView.findViewById(R.id.divider);
             headerHolder.detail_text = headerView.findViewById(R.id.detail_text);
             headerHolder.detail_icon = headerView.findViewById(R.id.detail_icon);
+            headerHolder.no_position = headerView.findViewById(R.id.no_position);
             return headerHolder;
         } else {
             return null;
@@ -146,48 +157,76 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         try {
             if (holder instanceof HeaderViewHolder) {//属于头部
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-                Position data = dataList.get(pos);//获取当前item的数据
-                Log.i("data_adapter", data.toString());//test
 
-                headerViewHolder.name.setText(data.getPosition_name());
-                headerViewHolder.area.setText(data.getArea());
-                headerViewHolder.settlement.setText(data.getSettlement());
-                headerViewHolder.work_time.setText(data.getWork_time());
-                headerViewHolder.salary.setText(data.getSalary());
+                //初始，”暂无兼职“字样不显示
+                headerViewHolder.no_position.setVisibility(View.INVISIBLE);
+                headerViewHolder.name.setVisibility(View.VISIBLE);
+                headerViewHolder.area.setVisibility(View.VISIBLE);
+                headerViewHolder.settlement.setVisibility(View.VISIBLE);
+                headerViewHolder.work_time.setVisibility(View.VISIBLE);
+                headerViewHolder.salary.setVisibility(View.VISIBLE);
+                headerViewHolder.detail_text.setVisibility(View.VISIBLE);
+                headerViewHolder.detail_icon.setVisibility(View.VISIBLE);
+                headerViewHolder.divider.setVisibility(View.VISIBLE);
 
-                //最后一个不显示分割线
-                if (pos == dataList.size() - 1) {
+                //获取第一个兼职
+                Position position = dataList.get(0);
+                if (!position.getContent().equals("暂无兼职")) {
+                    //有兼职数据
+                    Position data = dataList.get(pos);//获取当前item的数据
+                    Log.i("data_adapter", data.toString());//test
+
+                    headerViewHolder.name.setText(data.getPosition_name());
+                    headerViewHolder.area.setText(data.getArea());
+                    headerViewHolder.settlement.setText(data.getSettlement());
+                    headerViewHolder.work_time.setText(data.getWork_time());
+                    headerViewHolder.salary.setText(data.getSalary());
+
+                    //最后一个不显示分割线
+                    if (pos == dataList.size() - 1) {
+                        headerViewHolder.divider.setVisibility(View.INVISIBLE);
+                    }
+
+                    //查看详情按钮
+                    headerViewHolder.detail_text.setOnClickListener(view -> {
+                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
+
+                        //跳转到兼职详细界面
+                        Intent editpro = new Intent(context, PositionDetail.class);
+                        editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
+                        editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+                        //获取该position在list中的位置（下标），传过去
+                        editpro.putExtra("pos", pos);//传递当前选中的报名的下标
+                        context.startActivity(editpro);
+                    });
+                    headerViewHolder.detail_icon.setOnClickListener(view -> {
+                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                        toast.show();
+
+                        //跳转到兼职详细界面
+                        Intent editpro = new Intent(context, PositionDetail.class);
+                        editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
+                        editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+                        //获取该position在list中的位置（下标），传过去
+                        editpro.putExtra("pos", pos);//传递当前选中的报名的下标
+                        context.startActivity(editpro);
+                    });
+                } else {
+                    //没有兼职，显示”暂无兼职“字样
+                    headerViewHolder.no_position.setVisibility(View.VISIBLE);
+                    headerViewHolder.name.setVisibility(View.INVISIBLE);
+                    headerViewHolder.area.setVisibility(View.INVISIBLE);
+                    headerViewHolder.settlement.setVisibility(View.INVISIBLE);
+                    headerViewHolder.work_time.setVisibility(View.INVISIBLE);
+                    headerViewHolder.salary.setVisibility(View.INVISIBLE);
+                    headerViewHolder.detail_text.setVisibility(View.INVISIBLE);
+                    headerViewHolder.detail_icon.setVisibility(View.INVISIBLE);
                     headerViewHolder.divider.setVisibility(View.INVISIBLE);
+
                 }
-
-                //查看详情按钮
-                headerViewHolder.detail_text.setOnClickListener(view -> {
-                    Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                    toast.show();
-
-                    //跳转到兼职详细界面
-                    Intent editpro = new Intent(context, PositionDetail.class);
-                    editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
-                    //获取该position在list中的位置（下标），传过去
-                    editpro.putExtra("pos", pos);//传递当前选中的报名的下标
-                    context.startActivity(editpro);
-                });
-                headerViewHolder.detail_icon.setOnClickListener(view -> {
-                    Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                    toast.show();
-
-                    //跳转到兼职详细界面
-                    Intent editpro = new Intent(context, PositionDetail.class);
-                    editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
-                    editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
-                    //获取该position在list中的位置（下标），传过去
-                    editpro.putExtra("pos", pos);//传递当前选中的报名的下标
-                    context.startActivity(editpro);
-                });
-
             }
         } catch (Exception e) {
             e.printStackTrace();

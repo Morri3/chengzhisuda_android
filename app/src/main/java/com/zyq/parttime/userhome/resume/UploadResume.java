@@ -137,7 +137,6 @@ public class UploadResume extends AppCompatActivity {
                             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                                 if (response.isSuccessful()) {//调用成功
                                     try {
-//                                Log.i("数据", response.body().string());
                                         JSONObject jsonObj = JSON.parseObject(response.body().string());
                                         Log.i("data", jsonObj.getString("data"));
 //                                        JSONObject data = JSON.parseObject(jsonObj.getString("data"));
@@ -152,12 +151,10 @@ public class UploadResume extends AppCompatActivity {
                                                 .addFormDataPart("file", theFile.getName(),
                                                         RequestBody.create(new File(theFile.getAbsolutePath()), MediaType.parse("multipart/form-data")))
                                                 .build();
-
                                         Request request = new Request.Builder()
                                                 .url("http://114.55.239.213:8082/users/resumes/upload")
                                                 .post(body)
                                                 .build();//创建Http请求
-
                                         client.newBuilder()
                                                 .connectTimeout(60, TimeUnit.SECONDS)
                                                 .readTimeout(60, TimeUnit.SECONDS)
@@ -175,7 +172,7 @@ public class UploadResume extends AppCompatActivity {
                                                 if (response.isSuccessful()) {//调用成功
                                                     try {
                                                         JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                        Log.i("data", jsonObj.getString("data"));
+                                                        Log.i("data_upload", jsonObj.getString("data"));
 //                                                        JSONObject data = JSON.parseObject(jsonObj.getString("data"));
 
                                                         //获取obj中的数据
@@ -336,7 +333,6 @@ public class UploadResume extends AppCompatActivity {
         });
 
         back.setOnClickListener(v -> {
-
             //跳转简历页
             Intent i = new Intent();
             i.setClass(context, ResumesManage.class);

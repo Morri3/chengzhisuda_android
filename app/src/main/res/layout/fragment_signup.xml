@@ -36,7 +36,7 @@
             app:layout_constraintRight_toRightOf="@id/topBox"
             app:layout_constraintTop_toTopOf="@id/topBox"
             app:layout_constraintBottom_toBottomOf="@id/topBox"
-            android:text="城职速达"
+            android:text="我的报名"
             android:textColor="@color/text_black_color"
             android:textSize="18dp"
             android:gravity="center"
@@ -127,7 +127,7 @@
 
         <View
             android:id="@+id/line1"
-            android:layout_width="52dp"
+            android:layout_width="51dp"
             android:layout_height="4dp"
             android:background="@color/main_purple"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -139,7 +139,7 @@
 
         <View
             android:id="@+id/line2"
-            android:layout_width="52dp"
+            android:layout_width="54dp"
             android:layout_height="4dp"
             android:background="@color/main_purple"
             app:layout_constraintTop_toBottomOf="@+id/status2"
@@ -150,7 +150,7 @@
             />
         <View
             android:id="@+id/line3"
-            android:layout_width="52dp"
+            android:layout_width="54dp"
             android:layout_height="4dp"
             android:background="@color/main_purple"
             app:layout_constraintTop_toBottomOf="@+id/status3"
@@ -161,7 +161,7 @@
             />
         <View
             android:id="@+id/line4"
-            android:layout_width="52dp"
+            android:layout_width="54dp"
             android:layout_height="4dp"
             android:background="@color/main_purple"
             app:layout_constraintTop_toBottomOf="@+id/status4"

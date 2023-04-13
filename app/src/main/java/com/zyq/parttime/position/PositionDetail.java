@@ -177,29 +177,6 @@ public class PositionDetail extends AppCompatActivity {
                                 markInfo.setPt(pt);
                                 markInfo.setTotal_score(total_score);
                                 markInfo.setWe(we);
-
-//                                //适配器的定义与设置
-//                                runOnUiThread(() -> {
-//                                    //配置布局管理器、分割线、适配器
-//                                    rv = (RecyclerView) findViewById(R.id.rv2);
-//                                    //第一步：设置布局管理器
-//                                    rv.setLayoutManager(new LinearLayoutManager(context));
-//                                    //第二步：设置适配器
-//                                    positionDetailAdapter = new PositionDetailAdapter(context, list.get(pos), empInfo, markInfo);//传入当前的item
-//                                    rv.setAdapter(positionDetailAdapter);
-//
-//                                    //返回
-//                                    back = findViewById(R.id.back);
-//                                    back.setOnClickListener(v -> {
-//                                        Log.i("back", "返回到上一页");
-//                                        //跳转到首页
-//                                        Intent i = new Intent();
-//                                        i.setClass(PositionDetail.this, HomeActivity.class);
-//                                        //一定要指定是第几个pager，这里填写1
-//                                        i.putExtra("id", 1);
-//                                        startActivity(i);
-//                                    });
-//                                });
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

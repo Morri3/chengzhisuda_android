@@ -598,8 +598,12 @@
         android:layout_height="40dp"
         android:text="这是内容"
         android:textColor="@color/text_black_color"
-        android:textSize="16dp"
+        android:textSize="12dp"
         android:layout_marginTop="5dp"
+        android:paddingLeft="7dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:paddingRight="1dp"
         android:ellipsize="end"
         android:maxEms="5"
         android:maxLines="2"
@@ -611,7 +615,10 @@
         android:id="@+id/comment_content"
         android:layout_width="332dp"
         android:layout_height="40dp"
-        android:padding="3dp"
+        android:paddingLeft="6dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:paddingRight="1dp"
         android:minLines="2"
         android:gravity="top"
         android:layout_marginTop="7dp"
@@ -620,7 +627,7 @@
         app:layout_constraintTop_toBottomOf="@id/comment_time_text"
         android:background="@drawable/comment_bg"
         android:textColor="@color/text_black_color"
-        android:textSize="14dp"/>
+        android:textSize="12dp"/>
 
     <TextView
         android:id="@+id/no_content"

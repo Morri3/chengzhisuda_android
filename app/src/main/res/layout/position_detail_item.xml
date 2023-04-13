@@ -667,7 +667,7 @@
         android:id="@+id/comments_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="👇 评论 👇"
+        android:text="👇 评论"
         android:textStyle="bold"
         android:textColor="@color/text_black_color"
         android:textSize="16dp"

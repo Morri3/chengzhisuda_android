@@ -90,6 +90,7 @@ public class SignupFragment extends Fragment {
             line4.setVisibility(View.INVISIBLE);
         });
 
+        list.clear();//清空
         //调api，获取该用户的所有报名
         new Thread(() -> {
             try {
@@ -124,20 +125,42 @@ public class SignupFragment extends Fragment {
 
                                 //构造list
                                 list.clear();//清空
-                                for (int i = 0; i < data.size(); i++) {
-                                    Signup signup = new Signup();
-                                    JSONObject obj = data.getJSONObject(i);
-                                    int p_id = obj.getIntValue("p_id");
-                                    int s_id = obj.getIntValue("s_id");
-                                    String signup_status = obj.getString("signup_status");
-                                    String stu_id = obj.getString("stu_id");
-                                    Date create_time = obj.getDate("create_time");
-                                    signup.setSignup_status(signup_status);
-                                    signup.setCreate_time(create_time);
-                                    signup.setS_id(s_id);
-                                    signup.setP_id(p_id);
-                                    signup.setStu_id(stu_id);
-                                    list.add(signup);
+                                JSONObject obj0 = (JSONObject) data.get(0);
+                                if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                    for (int i = 0; i < data.size(); i++) {
+                                        Signup signup = new Signup();
+                                        JSONObject obj = data.getJSONObject(i);
+                                        int p_id = obj.getIntValue("p_id");
+                                        int s_id = obj.getIntValue("s_id");
+                                        String signup_status = obj.getString("signup_status");
+                                        String stu_id = obj.getString("stu_id");
+                                        Date create_time = obj.getDate("create_time");
+                                        signup.setSignup_status(signup_status);
+                                        signup.setCreate_time(create_time);
+                                        signup.setS_id(s_id);
+                                        signup.setP_id(p_id);
+                                        signup.setStu_id(stu_id);
+                                        list.add(signup);
+                                    }
+                                } else if (obj0.getString("memo").equals("获取历史记录失败")) {
+                                    //没数据
+                                    getActivity().runOnUiThread(() -> {
+                                        Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                        toast.show();
+                                    });
+                                } else if (obj0.getString("memo").equals("该账号不存在")) {
+                                    getActivity().runOnUiThread(() -> {
+                                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                        toast.show();
+                                    });
+                                } else if (obj0.getString("memo").equals("输入有误")) {
+                                    getActivity().runOnUiThread(() -> {
+                                        Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                        toast.show();
+                                    });
                                 }
                                 Log.i("报名数据", list.toString());
 
@@ -190,6 +213,8 @@ public class SignupFragment extends Fragment {
         //点击事件
         //状态1
         status1.setOnClickListener(v -> {
+            list.clear();//清空
+
             Log.i("状态", "1");
             getActivity().runOnUiThread(() -> {
                 status1.setTextColor(context.getResources().getColor(R.color.main_purple));
@@ -237,20 +262,42 @@ public class SignupFragment extends Fragment {
 
                                     //构造list
                                     list.clear();//清空
-                                    for (int i = 0; i < data.size(); i++) {
-                                        Signup signup = new Signup();
-                                        JSONObject obj = data.getJSONObject(i);
-                                        int p_id = obj.getIntValue("p_id");
-                                        int s_id = obj.getIntValue("s_id");
-                                        String signup_status = obj.getString("signup_status");
-                                        String stu_id = obj.getString("stu_id");
-                                        Date create_time = obj.getDate("create_time");
-                                        signup.setSignup_status(signup_status);
-                                        signup.setCreate_time(create_time);
-                                        signup.setS_id(s_id);
-                                        signup.setP_id(p_id);
-                                        signup.setStu_id(stu_id);
-                                        list.add(signup);
+                                    JSONObject obj0 = (JSONObject) data.get(0);
+                                    if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                        for (int i = 0; i < data.size(); i++) {
+                                            Signup signup = new Signup();
+                                            JSONObject obj = data.getJSONObject(i);
+                                            int p_id = obj.getIntValue("p_id");
+                                            int s_id = obj.getIntValue("s_id");
+                                            String signup_status = obj.getString("signup_status");
+                                            String stu_id = obj.getString("stu_id");
+                                            Date create_time = obj.getDate("create_time");
+                                            signup.setSignup_status(signup_status);
+                                            signup.setCreate_time(create_time);
+                                            signup.setS_id(s_id);
+                                            signup.setP_id(p_id);
+                                            signup.setStu_id(stu_id);
+                                            list.add(signup);
+                                        }
+                                    } else if (obj0.getString("memo").equals("获取历史记录失败")) {
+                                        //没数据
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("该账号不存在")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("输入有误")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -289,6 +336,8 @@ public class SignupFragment extends Fragment {
 
         //状态2
         status2.setOnClickListener(v -> {
+            list.clear();//清空
+
             Log.i("状态", "2");
             getActivity().runOnUiThread(() -> {
                 status2.setTextColor(context.getResources().getColor(R.color.main_purple));
@@ -336,20 +385,42 @@ public class SignupFragment extends Fragment {
 
                                     //构造list
                                     list.clear();//清空
-                                    for (int i = 0; i < data.size(); i++) {
-                                        Signup signup = new Signup();
-                                        JSONObject obj = data.getJSONObject(i);
-                                        int p_id = obj.getIntValue("p_id");
-                                        int s_id = obj.getIntValue("s_id");
-                                        String signup_status = obj.getString("signup_status");
-                                        String stu_id = obj.getString("stu_id");
-                                        Date create_time = obj.getDate("create_time");
-                                        signup.setSignup_status(signup_status);
-                                        signup.setCreate_time(create_time);
-                                        signup.setS_id(s_id);
-                                        signup.setP_id(p_id);
-                                        signup.setStu_id(stu_id);
-                                        list.add(signup);
+                                    JSONObject obj0 = (JSONObject) data.get(0);
+                                    if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                        for (int i = 0; i < data.size(); i++) {
+                                            Signup signup = new Signup();
+                                            JSONObject obj = data.getJSONObject(i);
+                                            int p_id = obj.getIntValue("p_id");
+                                            int s_id = obj.getIntValue("s_id");
+                                            String signup_status = obj.getString("signup_status");
+                                            String stu_id = obj.getString("stu_id");
+                                            Date create_time = obj.getDate("create_time");
+                                            signup.setSignup_status(signup_status);
+                                            signup.setCreate_time(create_time);
+                                            signup.setS_id(s_id);
+                                            signup.setP_id(p_id);
+                                            signup.setStu_id(stu_id);
+                                            list.add(signup);
+                                        }
+                                    } else if (obj0.getString("memo").equals("获取历史记录失败")) {
+                                        //没数据
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("该账号不存在")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("输入有误")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -387,6 +458,8 @@ public class SignupFragment extends Fragment {
 
         //状态3
         status3.setOnClickListener(v -> {
+            list.clear();//清空
+
             Log.i("状态", "3");
             getActivity().runOnUiThread(() -> {
                 status3.setTextColor(context.getResources().getColor(R.color.main_purple));
@@ -434,20 +507,42 @@ public class SignupFragment extends Fragment {
 
                                     //构造list
                                     list.clear();//清空
-                                    for (int i = 0; i < data.size(); i++) {
-                                        Signup signup = new Signup();
-                                        JSONObject obj = data.getJSONObject(i);
-                                        int p_id = obj.getIntValue("p_id");
-                                        int s_id = obj.getIntValue("s_id");
-                                        String signup_status = obj.getString("signup_status");
-                                        String stu_id = obj.getString("stu_id");
-                                        Date create_time = obj.getDate("create_time");
-                                        signup.setSignup_status(signup_status);
-                                        signup.setCreate_time(create_time);
-                                        signup.setS_id(s_id);
-                                        signup.setP_id(p_id);
-                                        signup.setStu_id(stu_id);
-                                        list.add(signup);
+                                    JSONObject obj0 = (JSONObject) data.get(0);
+                                    if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                        for (int i = 0; i < data.size(); i++) {
+                                            Signup signup = new Signup();
+                                            JSONObject obj = data.getJSONObject(i);
+                                            int p_id = obj.getIntValue("p_id");
+                                            int s_id = obj.getIntValue("s_id");
+                                            String signup_status = obj.getString("signup_status");
+                                            String stu_id = obj.getString("stu_id");
+                                            Date create_time = obj.getDate("create_time");
+                                            signup.setSignup_status(signup_status);
+                                            signup.setCreate_time(create_time);
+                                            signup.setS_id(s_id);
+                                            signup.setP_id(p_id);
+                                            signup.setStu_id(stu_id);
+                                            list.add(signup);
+                                        }
+                                    } else if (obj0.getString("memo").equals("获取历史记录失败")) {
+                                        //没数据
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("该账号不存在")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("输入有误")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -485,6 +580,8 @@ public class SignupFragment extends Fragment {
 
         //状态4
         status4.setOnClickListener(v -> {
+            list.clear();//清空
+
             Log.i("状态", "4");
             getActivity().runOnUiThread(() -> {
                 status4.setTextColor(context.getResources().getColor(R.color.main_purple));
@@ -532,20 +629,43 @@ public class SignupFragment extends Fragment {
 
                                     //构造list
                                     list.clear();//清空
-                                    for (int i = 0; i < data.size(); i++) {
-                                        Signup signup = new Signup();
-                                        JSONObject obj = data.getJSONObject(i);
-                                        int p_id = obj.getIntValue("p_id");
-                                        int s_id = obj.getIntValue("s_id");
-                                        String signup_status = obj.getString("signup_status");
-                                        String stu_id = obj.getString("stu_id");
-                                        Date create_time = obj.getDate("create_time");
-                                        signup.setSignup_status(signup_status);
-                                        signup.setCreate_time(create_time);
-                                        signup.setS_id(s_id);
-                                        signup.setP_id(p_id);
-                                        signup.setStu_id(stu_id);
-                                        list.add(signup);
+                                    JSONObject obj0 = (JSONObject) data.get(0);
+                                    if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                        //有数据
+                                        for (int i = 0; i < data.size(); i++) {
+                                            Signup signup = new Signup();
+                                            JSONObject obj = data.getJSONObject(i);
+                                            int p_id = obj.getIntValue("p_id");
+                                            int s_id = obj.getIntValue("s_id");
+                                            String signup_status = obj.getString("signup_status");
+                                            String stu_id = obj.getString("stu_id");
+                                            Date create_time = obj.getDate("create_time");
+                                            signup.setSignup_status(signup_status);
+                                            signup.setCreate_time(create_time);
+                                            signup.setS_id(s_id);
+                                            signup.setP_id(p_id);
+                                            signup.setStu_id(stu_id);
+                                            list.add(signup);
+                                        }
+                                    } else if (obj0.getString("memo").equals("获取历史记录失败")) {
+                                        //没数据
+//                                        getActivity().runOnUiThread(() -> {
+//                                            Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+//                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                            toast.show();
+//                                        });
+                                    } else if (obj0.getString("memo").equals("该账号不存在")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
+                                    } else if (obj0.getString("memo").equals("输入有误")) {
+                                        getActivity().runOnUiThread(() -> {
+                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                            toast.show();
+                                        });
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -578,24 +698,40 @@ public class SignupFragment extends Fragment {
                                                     if (response.isSuccessful()) {//调用成功
                                                         try {
                                                             com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                            JSONArray data = JSON.parseArray(jsonObj.getString("data"));
-                                                            Log.i("data_signup2", data.toString());
+                                                            JSONArray data2 = JSON.parseArray(jsonObj.getString("data"));
+                                                            Log.i("data_signup2", data2.toString());
 
                                                             //构造list
-                                                            for (int i = 0; i < data.size(); i++) {
-                                                                Signup signup = new Signup();
-                                                                JSONObject obj = data.getJSONObject(i);
-                                                                int p_id = obj.getIntValue("p_id");
-                                                                int s_id = obj.getIntValue("s_id");
-                                                                String signup_status = obj.getString("signup_status");
-                                                                String stu_id = obj.getString("stu_id");
-                                                                Date create_time = obj.getDate("create_time");
-                                                                signup.setSignup_status(signup_status);
-                                                                signup.setCreate_time(create_time);
-                                                                signup.setS_id(s_id);
-                                                                signup.setP_id(p_id);
-                                                                signup.setStu_id(stu_id);
-                                                                list.add(signup);
+                                                            JSONObject obj2 = (JSONObject) data2.get(0);
+                                                            if (obj2.getString("memo").equals("获取历史记录成功")) {
+                                                                for (int i = 0; i < data2.size(); i++) {
+                                                                    Signup signup = new Signup();
+                                                                    JSONObject obj = data2.getJSONObject(i);
+                                                                    int p_id = obj.getIntValue("p_id");
+                                                                    int s_id = obj.getIntValue("s_id");
+                                                                    String signup_status = obj.getString("signup_status");
+                                                                    String stu_id = obj.getString("stu_id");
+                                                                    Date create_time = obj.getDate("create_time");
+                                                                    signup.setSignup_status(signup_status);
+                                                                    signup.setCreate_time(create_time);
+                                                                    signup.setS_id(s_id);
+                                                                    signup.setP_id(p_id);
+                                                                    signup.setStu_id(stu_id);
+                                                                    list.add(signup);
+                                                                }
+                                                            } else if (obj2.getString("memo").equals("获取历史记录失败")) {
+                                                                //没数据
+                                                                Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                toast.show();
+                                                            } else if (obj2.getString("memo").equals("该账号不存在")) {
+                                                                Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                toast.show();
+                                                            } else if (obj2.getString("memo").equals("输入有误")) {
+                                                                Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                toast.show();
                                                             }
                                                             Log.i("报名数据3", list.toString());
 

@@ -2,12 +2,14 @@ package com.zyq.parttime.userhome.resume;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -151,7 +153,11 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                     headerViewHolder.delete2.setOnClickListener(v -> {
                         if (list.size() == 1) {//只有一条数据
-                            Log.i("error", "项目必须有一条数据");
+                            Toast toast = Toast.makeText(context, "最少需要一条数据~", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                            toast.show();
+
+                            Log.i("error", "最少需要一条数据~");
                         } else {
                             //删除自带默认动画
                             removeData(pos);

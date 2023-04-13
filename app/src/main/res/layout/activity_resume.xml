@@ -53,6 +53,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginLeft="18dp"
             />
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_refresh"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginRight="18dp"
+            />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ImageView
@@ -221,18 +231,18 @@
         android:layout_height="18dp"
         app:layout_constraintTop_toBottomOf="@id/age_resume"
         app:layout_constraintLeft_toRightOf="@id/emails_resume"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="9dp"
         android:background="@color/divider"
         android:layout_marginTop="6dp"/>
     <TextView
         android:id="@+id/exp"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         app:layout_constraintLeft_toRightOf="@id/line3"
         app:layout_constraintTop_toBottomOf="@id/age_resume"
         android:text="暂无工作经验"
         android:textColor="@color/text_black_color"
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:layout_marginTop="4dp"
         android:layout_marginLeft="10dp"
         android:gravity="left"
@@ -243,12 +253,12 @@
     <EditText
         android:id="@+id/exp_edit"
         android:layout_width="100dp"
-        android:layout_height="wrap_content"
+        android:layout_height="20dp"
         app:layout_constraintLeft_toRightOf="@id/line3"
         app:layout_constraintTop_toBottomOf="@id/age_resume"
         android:text="暂无工作经验"
         android:textColor="@color/text_black_color"
-        android:textSize="16dp"
+        android:textSize="14dp"
         android:background="@null"
         android:minLines="1"
         android:gravity="top"
@@ -260,34 +270,39 @@
     <TextView
         android:id="@+id/current_area"
         android:layout_width="350dp"
-        android:layout_height="wrap_content"
+        android:layout_height="21dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/head"
         android:text="无"
         android:textColor="@color/text_black_color"
-        android:textSize="16dp"
-        android:layout_marginTop="5dp"
+        android:textSize="14dp"
+        android:layout_marginTop="9dp"
         android:layout_marginLeft="30dp"
+        android:paddingLeft="3dp"
         android:gravity="left"
+
+        android:ellipsize="end"
+        android:lines="1"
         />
     <EditText
         android:id="@+id/current_area_edit"
         android:layout_width="350dp"
-        android:layout_height="wrap_content"
+        android:layout_height="21dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/head"
         android:text="无"
         android:background="@null"
+        android:paddingLeft="3dp"
         android:minLines="1"
         android:textColor="@color/text_black_color"
-        android:textSize="16dp"
-        android:layout_marginTop="5dp"
+        android:textSize="14dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="30dp"
         android:gravity="top"
         />
     <ImageView
         android:id="@+id/divider1"
-        android:layout_width="370dp"
+        android:layout_width="340dp"
         android:layout_height="25dp"
         app:layout_constraintTop_toBottomOf="@id/current_area"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -304,7 +319,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider1"
         android:text="校园经历"
         android:textColor="@color/text_black_color"
-        android:textSize="22dp"
+        android:textSize="20dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="30dp"
         android:gravity="center"
@@ -334,7 +349,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_campus"
         android:layout_width="353dp"
-        android:layout_height="50dp"
+        android:layout_height="75dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="3dp"
+        android:paddingTop="2dp"
         app:layout_constraintTop_toBottomOf="@id/title1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -343,7 +361,7 @@
 
     <ImageView
         android:id="@+id/divider2"
-        android:layout_width="370dp"
+        android:layout_width="340dp"
         android:layout_height="25dp"
         app:layout_constraintTop_toBottomOf="@id/rv_campus"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -360,7 +378,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider2"
         android:text="教育背景"
         android:textColor="@color/text_black_color"
-        android:textSize="22dp"
+        android:textSize="20dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="30dp"
         android:gravity="center"
@@ -389,16 +407,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_education"
         android:layout_width="353dp"
-        android:layout_height="50dp"
+        android:layout_height="75dp"
         app:layout_constraintTop_toBottomOf="@id/title2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:paddingLeft="12dp"
+        android:paddingTop="2dp"
+        android:paddingRight="3dp"
         >
     </androidx.recyclerview.widget.RecyclerView>
 
     <ImageView
         android:id="@+id/divider3"
-        android:layout_width="370dp"
+        android:layout_width="340dp"
         android:layout_height="25dp"
         app:layout_constraintTop_toBottomOf="@id/rv_education"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -415,7 +436,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider3"
         android:text="项目经历"
         android:textColor="@color/text_black_color"
-        android:textSize="24dp"
+        android:textSize="20dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="30dp"
         android:gravity="center"
@@ -444,16 +465,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_project"
         android:layout_width="353dp"
-        android:layout_height="50dp"
+        android:layout_height="75dp"
         app:layout_constraintTop_toBottomOf="@id/title3"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:paddingLeft="12dp"
+        android:paddingTop="2dp"
+        android:paddingRight="3dp"
         >
     </androidx.recyclerview.widget.RecyclerView>
 
     <ImageView
         android:id="@+id/divider4"
-        android:layout_width="370dp"
+        android:layout_width="340dp"
         android:layout_height="25dp"
         app:layout_constraintTop_toBottomOf="@id/rv_project"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -470,7 +494,7 @@
         app:layout_constraintTop_toBottomOf="@id/divider4"
         android:text="专业技能"
         android:textColor="@color/text_black_color"
-        android:textSize="22dp"
+        android:textSize="20dp"
         android:layout_marginTop="0dp"
         android:layout_marginLeft="30dp"
         android:gravity="center"
@@ -499,10 +523,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_skills"
         android:layout_width="353dp"
-        android:layout_height="50dp"
+        android:layout_height="55dp"
         app:layout_constraintTop_toBottomOf="@id/title4"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:paddingLeft="12dp"
+        android:paddingTop="2dp"
+        android:paddingRight="3dp"
         >
     </androidx.recyclerview.widget.RecyclerView>
 
