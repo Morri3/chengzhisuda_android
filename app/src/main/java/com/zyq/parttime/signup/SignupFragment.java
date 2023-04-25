@@ -100,7 +100,7 @@ public class SignupFragment extends Fragment {
 
                 String json = JSON.toJSONString(historyDto);//dto转json
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/parttime/stu/history")
+                        .url("http://114.55.239.213:8087/parttime/stu/history")
                         .post(RequestBody.create(MediaType.parse("application/json"), json))
                         .build();//创建Http请求
                 client.newBuilder()
@@ -237,7 +237,7 @@ public class SignupFragment extends Fragment {
 
                     String json = JSON.toJSONString(historyDto);//dto转json
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/parttime/stu/history")
+                            .url("http://114.55.239.213:8087/parttime/stu/history")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();//创建Http请求
                     client.newBuilder()
@@ -359,7 +359,7 @@ public class SignupFragment extends Fragment {
                     String telephone = Constants.telephone;
                     String signup_status = "已报名";
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
+                            .url("http://114.55.239.213:8087/parttime/stu/signup_one?telephone=" + telephone +
                                     "&signup_status=" + signup_status)
                             .get()
                             .build();//创建Http请求
@@ -481,7 +481,7 @@ public class SignupFragment extends Fragment {
                     String telephone = Constants.telephone;
                     String signup_status = "已录取";
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
+                            .url("http://114.55.239.213:8087/parttime/stu/signup_one?telephone=" + telephone +
                                     "&signup_status=" + signup_status)
                             .get()
                             .build();//创建Http请求
@@ -603,7 +603,7 @@ public class SignupFragment extends Fragment {
                     String telephone = Constants.telephone;
                     String signup_status = "已结束";
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
+                            .url("http://114.55.239.213:8087/parttime/stu/signup_one?telephone=" + telephone +
                                     "&signup_status=" + signup_status)
                             .get()
                             .build();//创建Http请求
@@ -677,7 +677,7 @@ public class SignupFragment extends Fragment {
                                             String telephone = Constants.telephone;
                                             String signup_status = "已取消";
                                             Request request = new Request.Builder()
-                                                    .url("http://114.55.239.213:8082/parttime/stu/signup_one?telephone=" + telephone +
+                                                    .url("http://114.55.239.213:8087/parttime/stu/signup_one?telephone=" + telephone +
                                                             "&signup_status=" + signup_status)
                                                     .get()
                                                     .build();//创建Http请求

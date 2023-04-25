@@ -37,7 +37,7 @@
             app:layout_constraintRight_toRightOf="@id/topBox"
             app:layout_constraintTop_toTopOf="@id/topBox"
             app:layout_constraintBottom_toBottomOf="@id/topBox"
-            android:text="城职速达"
+            android:text="兼职详情"
             android:textColor="@color/text_black_color"
             android:textSize="18dp"
             android:gravity="center"

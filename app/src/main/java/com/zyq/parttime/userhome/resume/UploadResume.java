@@ -118,7 +118,7 @@ public class UploadResume extends AppCompatActivity {
                         params.add("upload_time",now);
 
                         Request request = new Request.Builder()
-                                .url("http://114.55.239.213:8082/users/resumes/upload/stu_info")
+                                .url("http://114.55.239.213:8087/users/resumes/upload/stu_info")
                                 .post(params.build())
                                 .build();//创建Http请求
                         client.newBuilder()
@@ -152,7 +152,7 @@ public class UploadResume extends AppCompatActivity {
                                                         RequestBody.create(new File(theFile.getAbsolutePath()), MediaType.parse("multipart/form-data")))
                                                 .build();
                                         Request request = new Request.Builder()
-                                                .url("http://114.55.239.213:8082/users/resumes/upload")
+                                                .url("http://114.55.239.213:8087/users/resumes/upload")
                                                 .post(body)
                                                 .build();//创建Http请求
                                         client.newBuilder()

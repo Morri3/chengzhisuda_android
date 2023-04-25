@@ -70,7 +70,7 @@ public class SettingManage extends AppCompatActivity {
                     logout.setInput_telephone(Constants.telephone);//TODO 当前登录用户
                     String json = JSON.toJSONString(logout);//dto转json
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/logout/stu")
+                            .url("http://114.55.239.213:8087/logout/stu")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();//创建Http请求
                     client.newBuilder()

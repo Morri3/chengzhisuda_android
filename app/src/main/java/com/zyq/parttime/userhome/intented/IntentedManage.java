@@ -94,7 +94,7 @@ public class IntentedManage extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/intention/get?telephone=" + Constants.telephone)//TODO 当前登录用户
+                        .url("http://114.55.239.213:8087/users/intention/get?telephone=" + Constants.telephone)//TODO 当前登录用户
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -326,7 +326,7 @@ public class IntentedManage extends AppCompatActivity {
                     editIntention.setIntentions(intentedArr);
                     String json = JSON.toJSONString(editIntention);//dto转string
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/users/intention/edit")
+                            .url("http://114.55.239.213:8087/users/intention/edit")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();//创建Http请求
                     client.newBuilder()

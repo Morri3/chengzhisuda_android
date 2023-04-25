@@ -247,7 +247,7 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 String json = JSON.toJSONString(dto);//dto转json
                                 Request request = new Request.Builder()
-                                        .url("http://114.55.239.213:8082/users/resumes/edit_education")
+                                        .url("http://114.55.239.213:8087/users/resumes/edit_education")
                                         .post(RequestBody.create(MediaType.parse("application/json"), json))
                                         .build();//创建Http请求
                                 client.newBuilder()

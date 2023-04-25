@@ -368,7 +368,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //                        try {
 //                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 //                            Request request = new Request.Builder()
-//                                    .url("http://114.55.239.213:8082/parttime/stu/signup_special?telephone="
+//                                    .url("http://114.55.239.213:8087/parttime/stu/signup_special?telephone="
 //                                            + Constants.telephone + "&p_id=" + data.getP_id())
 //                                    .get()
 //                                    .build();//创建Http请求
@@ -413,7 +413,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 //                                                            signupDto.setP_id(data.getP_id());
 //                                                            String json = JSON.toJSONString(signupDto);//dto转json
 //                                                            Request request = new Request.Builder()
-//                                                                    .url("http://114.55.239.213:8082/parttime/stu/signup")
+//                                                                    .url("http://114.55.239.213:8087/parttime/stu/signup")
 //                                                                    .post(RequestBody.create(MediaType.parse("application/json"), json))
 //                                                                    .build();//创建Http请求
 //                                                            client.newBuilder()
@@ -492,7 +492,7 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                             signupDto.setP_id(data.getP_id());
                             String json = JSON.toJSONString(signupDto);//dto转json
                             Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/parttime/stu/signup")
+                                    .url("http://114.55.239.213:8087/parttime/stu/signup")
                                     .post(RequestBody.create(MediaType.parse("application/json"), json))
                                     .build();//创建Http请求
                             client.newBuilder()

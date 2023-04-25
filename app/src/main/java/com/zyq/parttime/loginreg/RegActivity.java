@@ -352,7 +352,7 @@ public class RegActivity extends AppCompatActivity {
 
                         String json = JSON.toJSONString(stuRegister);//dto转string
                         Request request = new Request.Builder()
-                                .url("http://114.55.239.213:8082/register/stu")
+                                .url("http://114.55.239.213:8087/register/stu")
                                 .post(RequestBody.create(MediaType.parse("application/json"), json))
                                 .build();//创建Http请求
                         client.newBuilder()

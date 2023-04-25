@@ -335,7 +335,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         try {
                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                             Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/parttime/stu/get_one?p_id=" + data.getP_id())
+                                    .url("http://114.55.239.213:8087/parttime/stu/get_one?p_id=" + data.getP_id())
                                     .get()
                                     .build();//创建Http请求
                             client.newBuilder()
@@ -434,7 +434,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         try {
                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                             Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/comments/get?s_id=" + data.getS_id())
+                                    .url("http://114.55.239.213:8087/comments/get?s_id=" + data.getS_id())
                                     .get()
                                     .build();//创建Http请求
                             client.newBuilder()
@@ -512,7 +512,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         try {
                             OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                             Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/mark/get?s_id=" + data.getS_id())
+                                    .url("http://114.55.239.213:8087/mark/get?s_id=" + data.getS_id())
                                     .get()
                                     .build();//创建Http请求
                             client.newBuilder()
@@ -704,7 +704,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     dto.setTelephone(data.getStu_id());
                                     String json = JSON.toJSONString(dto);//dto转json
                                     Request request = new Request.Builder()
-                                            .url("http://114.55.239.213:8082/parttime/stu/cancel")
+                                            .url("http://114.55.239.213:8087/parttime/stu/cancel")
                                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                                             .build();//创建Http请求
                                     client.newBuilder()
@@ -805,7 +805,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     dto.setTelephone(data.getStu_id());
                                     String json = JSON.toJSONString(dto);//dto转json
                                     Request request = new Request.Builder()
-                                            .url("http://114.55.239.213:8082/parttime/stu/cancel")
+                                            .url("http://114.55.239.213:8087/parttime/stu/cancel")
                                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                                             .build();//创建Http请求
                                     client.newBuilder()
@@ -910,7 +910,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                     dto.setCreate_time(now);
                                     String json = JSON.toJSONString(dto);//dto转json
                                     Request request = new Request.Builder()
-                                            .url("http://114.55.239.213:8082/comments/stu/post")
+                                            .url("http://114.55.239.213:8087/comments/stu/post")
                                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                                             .build();//创建Http请求
                                     client.newBuilder()

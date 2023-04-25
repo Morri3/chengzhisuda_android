@@ -65,7 +65,7 @@ public class PositionDetail extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/info/get_emp?telephone="
+                        .url("http://114.55.239.213:8087/users/info/get_emp?telephone="
                                 + list.get(pos).getOp_id())
                         .get()
                         .build();//创建Http请求
@@ -132,7 +132,7 @@ public class PositionDetail extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/mark/getAll?p_id=" + list.get(pos).getP_id())
+                        .url("http://114.55.239.213:8087/mark/getAll?p_id=" + list.get(pos).getP_id())
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -203,7 +203,7 @@ public class PositionDetail extends AppCompatActivity {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/comments/getAll?p_id=" + list.get(pos).getP_id())
+                        .url("http://114.55.239.213:8087/comments/getAll?p_id=" + list.get(pos).getP_id())
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()

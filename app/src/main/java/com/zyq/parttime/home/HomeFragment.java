@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/intention/get?telephone=" + Constants.telephone)//TODO 当前登录用户
+                        .url("http://114.55.239.213:8087/users/intention/get?telephone=" + Constants.telephone)//TODO 当前登录用户
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment {
                                         getPosition.setIntentions(intentions);//参数是意向兼职
                                         String json = JSON.toJSONString(getPosition);//dto转string
                                         Request request = new Request.Builder()
-                                                .url("http://114.55.239.213:8082/parttime/stu/get_intention")
+                                                .url("http://114.55.239.213:8087/parttime/stu/get_intention")
                                                 .post(RequestBody.create(MediaType.parse("application/json"), json))
                                                 .build();//创建Http请求
                                         client.newBuilder()
@@ -338,12 +338,12 @@ public class HomeFragment extends Fragment {
                             getPosition.setIntentions(intentions);//参数是意向兼职
                             String json = JSON.toJSONString(getPosition);//dto转string
                             request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/parttime/stu/get_intention")
+                                    .url("http://114.55.239.213:8087/parttime/stu/get_intention")
                                     .post(RequestBody.create(MediaType.parse("application/json"), json))
                                     .build();//创建Http请求
                         } else {//获取指定种类的兼职
                             request = new Request.Builder()
-                                    .url("http://114.55.239.213:8082/parttime/stu/get_category?category="
+                                    .url("http://114.55.239.213:8087/parttime/stu/get_category?category="
                                             + data.getCategory())
                                     .get()
                                     .build();//创建Http请求

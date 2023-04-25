@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
                         login.setPwd(stuLogin.getPwd());
                         String json = JSON.toJSONString(login);//dto转string
                         Request request = new Request.Builder()
-                                .url("http://114.55.239.213:8082/login/stu")
+                                .url("http://114.55.239.213:8087/login/stu")
                                 .post(RequestBody.create(MediaType.parse("application/json"), json))
                                 .build();//创建Http请求
                         client.newBuilder()

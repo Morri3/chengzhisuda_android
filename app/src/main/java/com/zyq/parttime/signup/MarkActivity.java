@@ -135,7 +135,7 @@ public class MarkActivity extends AppCompatActivity {
                     post.setCreate_time(now);
                     String json = JSON.toJSONString(post);//dto转json
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/mark/stu/post")
+                            .url("http://114.55.239.213:8087/mark/stu/post")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();//创建Http请求
                     client.newBuilder()

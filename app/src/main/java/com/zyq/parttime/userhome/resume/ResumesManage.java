@@ -143,7 +143,7 @@ public class ResumesManage extends AppCompatActivity {
                 //TODO 改为当前登录用户
                 String telephone = Constants.telephone;
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/info/get_stu?telephone=" + telephone)
+                        .url("http://114.55.239.213:8087/users/info/get_stu?telephone=" + telephone)
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -222,7 +222,7 @@ public class ResumesManage extends AppCompatActivity {
                 //TODO 改为当前登录用户
                 String telephone = Constants.telephone;
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/resumes/get?telephone=" + telephone)
+                        .url("http://114.55.239.213:8087/users/resumes/get?telephone=" + telephone)
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -258,7 +258,7 @@ public class ResumesManage extends AppCompatActivity {
                                     params.add("upload_time", now);
 
                                     Request request = new Request.Builder()
-                                            .url("http://114.55.239.213:8082/users/resumes/create")
+                                            .url("http://114.55.239.213:8087/users/resumes/create")
                                             .post(params.build())
                                             .build();//创建Http请求
                                     client.newBuilder()
@@ -795,7 +795,7 @@ public class ResumesManage extends AppCompatActivity {
                     dto.setExp(resume.getExp());
                     String json = JSON.toJSONString(dto);//dto转json
                     Request request = new Request.Builder()
-                            .url("http://114.55.239.213:8082/users/resumes/edit_personal")
+                            .url("http://114.55.239.213:8087/users/resumes/edit_personal")
                             .post(RequestBody.create(MediaType.parse("application/json"), json))
                             .build();//创建Http请求
                     client.newBuilder()

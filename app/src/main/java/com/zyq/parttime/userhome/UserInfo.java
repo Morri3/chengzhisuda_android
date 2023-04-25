@@ -126,7 +126,7 @@ public class UserInfo extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 String phone = Constants.telephone;//TODO  改为当前登录用户
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/info/get_stu?telephone=" + phone)
+                        .url("http://114.55.239.213:8087/users/info/get_stu?telephone=" + phone)
                         .get()
                         .build();//创建Http请求
                 client.newBuilder()
@@ -542,7 +542,7 @@ public class UserInfo extends AppCompatActivity {
                         editInfo.setGraduation_date(dateData.getEnd());
                         String json = JSON.toJSONString(editInfo);
                         Request request = new Request.Builder()
-                                .url("http://114.55.239.213:8082/users/info/edit_stu")
+                                .url("http://114.55.239.213:8087/users/info/edit_stu")
                                 .post(RequestBody.create(MediaType.parse("application/json"), json))
                                 .build();//创建Http请求
                         client.newBuilder()

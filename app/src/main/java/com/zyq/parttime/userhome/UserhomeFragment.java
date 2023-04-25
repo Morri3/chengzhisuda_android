@@ -66,7 +66,7 @@ public class UserhomeFragment extends Fragment {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                 Request request = new Request.Builder()
-                        .url("http://114.55.239.213:8082/users/info/get_stu?telephone="
+                        .url("http://114.55.239.213:8087/users/info/get_stu?telephone="
                                 + Constants.telephone)
                         .get()
                         .build();//创建Http请求
