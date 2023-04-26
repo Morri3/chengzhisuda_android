@@ -15,6 +15,7 @@ public class Resume implements Serializable {
     private List<EditSkills> professionalSkillList;
     private String status;
     private String memo;
+    private int r_id;
 
     @Override
     public String toString() {
@@ -29,7 +30,16 @@ public class Resume implements Serializable {
                 ", professionalSkillList=" + professionalSkillList +
                 ", status='" + status + '\'' +
                 ", memo='" + memo + '\'' +
+                ", r_id=" + r_id +
                 '}';
+    }
+
+    public int getR_id() {
+        return r_id;
+    }
+
+    public void setR_id(int r_id) {
+        this.r_id = r_id;
     }
 
     public String getTelephone() {

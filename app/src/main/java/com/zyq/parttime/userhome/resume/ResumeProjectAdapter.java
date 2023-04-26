@@ -18,10 +18,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
+import com.zyq.parttime.form.EditCampus;
 import com.zyq.parttime.form.EditEducation;
 import com.zyq.parttime.form.EditEducationDto;
 import com.zyq.parttime.form.EditProject;
 import com.zyq.parttime.form.EditProjectDto;
+import com.zyq.parttime.sp.AddDetail;
+import com.zyq.parttime.sp.DeleteDetail;
 
 import java.io.IOException;
 import java.util.List;
@@ -206,15 +209,22 @@ public class ResumeProjectAdapter extends RecyclerView.Adapter<RecyclerView.View
                     headerViewHolder.date2.setText(item.getDate());
                     headerViewHolder.content2.setText(item.getContent());
 
-//                    headerViewHolder.title2.setText("222");
-//                    headerViewHolder.date2.setText("2022-01-01 10:00:00");
-//                    headerViewHolder.content2.setText("asfasjfkjahsfjksa");
-
                     headerViewHolder.add2.setOnClickListener(v -> {
-                        addData(list.size());
+                        //添加一条空的
+                        EditProject i = new EditProject();
+                        i.setR_id(item.getR_id());
+                        i.setTelephone(item.getTelephone());
+                        i.setTitle("请输入标题");
+                        i.setDate("请输入日期");
+                        i.setContent("请输入内容");
+                        list.add(list.size(), i);
+
+                        //添加动画
+                        notifyItemInserted(list.size());
                     });
 
                     headerViewHolder.delete2.setOnClickListener(v -> {
+                        int thePos = pos;
                         if (list.size() == 1) {//只有一条数据
                             Toast toast = Toast.makeText(context, "最少需要一条数据~", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
@@ -223,7 +233,58 @@ public class ResumeProjectAdapter extends RecyclerView.Adapter<RecyclerView.View
                             Log.i("error", "最少需要一条数据~");
                         } else {
                             //删除自带默认动画
-                            removeData(pos);
+                            list.remove(thePos);
+
+                            //调api TODO
+                            new Thread(() -> {
+                                try {
+                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+
+                                    //dto
+                                    DeleteDetail dto = new DeleteDetail();
+                                    dto.setRd_id(item.getRd_id());
+                                    dto.setTelephone(item.getTelephone());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/delete_detail")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("删除", "删除成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();//要start才会启动
                         }
                     });
 
@@ -232,8 +293,9 @@ public class ResumeProjectAdapter extends RecyclerView.Adapter<RecyclerView.View
                         item.setTitle(headerViewHolder.title2.getText().toString());
                         item.setDate(headerViewHolder.date2.getText().toString());
                         item.setContent(headerViewHolder.content2.getText().toString());
+
+                        //UI界面添加该元素，并刷新适配器
                         saveData(pos,item);
-                        Log.i("aaa",list.get(pos).getTitle());
                         Log.i("b",list.toString());
 
                         //调api，根据id 修改数据库中的数据
@@ -241,55 +303,110 @@ public class ResumeProjectAdapter extends RecyclerView.Adapter<RecyclerView.View
                             try {
                                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 
-                                //dto
-                                EditProjectDto dto = new EditProjectDto();
-                                dto.setRd_id(item.getRd_id());
-                                dto.setTelephone(item.getTelephone());
-                                dto.setContent(item.getContent());
-                                dto.setTitle(item.getTitle());
-                                //时间处理
-                                String time = item.getDate();
-                                String[] a = time.split("-");
-                                dto.setStart_time(a[0]);
-                                dto.setEnd_time(a[1]);
+                                //根据initial变量的值，判断是 原有记录 还是 新增记录
+                                int initial = item.getInitial();
 
-                                String json = JSON.toJSONString(dto);//dto转json
-                                Request request = new Request.Builder()
-                                        .url("http://114.55.239.213:8087/users/resumes/edit_program")
-                                        .post(RequestBody.create(MediaType.parse("application/json"), json))
-                                        .build();//创建Http请求
-                                client.newBuilder()
-                                        .connectTimeout(20, TimeUnit.SECONDS)
-                                        .readTimeout(20, TimeUnit.SECONDS)
-                                        .writeTimeout(20, TimeUnit.SECONDS)
-                                        .build()
-                                        .newCall(request).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        Log.i("error", "数据更新失败");
-                                        e.printStackTrace();
-                                    }
+                                if (initial == 1) {
+                                    //原有记录
+                                    //dto
+                                    EditProjectDto dto = new EditProjectDto();
+                                    dto.setRd_id(item.getRd_id());
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setContent(item.getContent());
+                                    dto.setTitle(item.getTitle());
+                                    //时间处理
+                                    String time = item.getDate();
+                                    String[] a = time.split("-");
+                                    dto.setStart_time(a[0]);
+                                    dto.setEnd_time(a[1]);
 
-                                    @Override
-                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                        if (response.isSuccessful()) {//调用成功
-                                            try {
-                                                JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                Log.i("data", jsonObj.getString("data"));
-                                                JSONObject data = JSON.parseObject(jsonObj.getString("data"));
-
-                                                //获取obj中的数据
-                                                Log.i("rd_id", data.getString("rd_id"));
-                                                Log.i("修改", "修改成功！");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        } else {//调用失败
-                                            Log.i("error", response.toString());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/edit_program")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
                                         }
-                                    }
-                                });
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("修改", "修改成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                }else if (initial == 0) {
+                                    //新增记录
+
+                                    //dto
+                                    AddDetail dto = new AddDetail();
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setR_id(item.getR_id());
+                                    dto.setDate(item.getDate());//字符串类型
+                                    dto.setTitle(item.getTitle());
+                                    dto.setContent(item.getContent());
+                                    dto.setCategory("项目经历");
+                                    String json = JSON.toJSONString(dto);//dto转json
+
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/add_detail")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("新增", "新增成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -315,24 +432,5 @@ public class ResumeProjectAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void saveData(int position,EditProject editProject){
         list.set(position, editProject);
         notifyDataSetChanged();//刷新
-    }
-
-    //添加数据
-    public void addData(int position) {
-        EditProject i = new EditProject();
-        i.setTitle("请输入标题");
-        i.setDate("请输入日期");
-        i.setContent("请输入内容");
-        list.add(position, i);
-        //添加动画
-        notifyItemInserted(position);
-    }
-
-    //删除数据
-    public void removeData(int position) {
-        list.remove(position);
-        //删除动画
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
     }
 }

@@ -183,7 +183,7 @@
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:gravity="left"
         />
     <View
@@ -205,13 +205,13 @@
         android:textColor="@color/text_black_color"
         android:textSize="16dp"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="10dp"
         android:gravity="left"
         />
 
     <TextView
         android:id="@+id/emails_resume"
-        android:layout_width="118dp"
+        android:layout_width="125dp"
         android:layout_height="22dp"
         app:layout_constraintLeft_toRightOf="@id/head"
         app:layout_constraintTop_toBottomOf="@id/age_resume"
@@ -244,7 +244,7 @@
         android:textColor="@color/text_black_color"
         android:textSize="14dp"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="7dp"
         android:gravity="left"
 
         android:ellipsize="end"
@@ -263,7 +263,7 @@
         android:minLines="1"
         android:gravity="top"
         android:layout_marginTop="4dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="7dp"
         />
 
     <!--现居地-->

@@ -22,6 +22,7 @@ import com.zyq.parttime.form.EditCampus;
 import com.zyq.parttime.form.EditCampusDto;
 import com.zyq.parttime.form.EditEducation;
 import com.zyq.parttime.form.EditEducationDto;
+import com.zyq.parttime.sp.AddDetail;
 
 import java.io.IOException;
 import java.util.List;
@@ -190,8 +191,8 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     headerViewHolder.title2.setVisibility(View.VISIBLE);
                     headerViewHolder.date2.setVisibility(View.VISIBLE);
                     headerViewHolder.content2.setVisibility(View.VISIBLE);
-                    headerViewHolder.add2.setVisibility(View.VISIBLE);
-                    headerViewHolder.delete2.setVisibility(View.VISIBLE);
+                    headerViewHolder.add2.setVisibility(View.INVISIBLE);//不显示添加图标
+                    headerViewHolder.delete2.setVisibility(View.INVISIBLE);//不显示删除图标
                     headerViewHolder.save2.setVisibility(View.VISIBLE);
                     headerViewHolder.title.setVisibility(View.INVISIBLE);
                     headerViewHolder.date.setVisibility(View.INVISIBLE);
@@ -202,30 +203,15 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     headerViewHolder.date2.setText(item.getDate());
                     headerViewHolder.content2.setText(item.getContent());
 
-                    headerViewHolder.add2.setOnClickListener(v -> {
-                        addData(list.size());
-                    });
-
-                    headerViewHolder.delete2.setOnClickListener(v -> {
-                        if (list.size() == 1) {//只有一条数据
-                            Toast toast = Toast.makeText(context, "最少需要一条数据~", Toast.LENGTH_SHORT);
-                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                            toast.show();
-
-                            Log.i("error", "最少需要一条数据~");
-                        } else {
-                            //删除自带默认动画
-                            removeData(pos);
-                        }
-                    });
-
+                    //保存detail
                     headerViewHolder.save2.setOnClickListener(v -> {
                         //把修改的内容更新到list中
                         item.setTitle(headerViewHolder.title2.getText().toString());
                         item.setDate(headerViewHolder.date2.getText().toString());
                         item.setContent(headerViewHolder.content2.getText().toString());
+
+                        //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-                        Log.i("aaa", list.get(pos).getTitle());
                         Log.i("b", list.toString());
 
                         //调api，根据id 修改数据库中的数据
@@ -233,55 +219,61 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                             try {
                                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 
-                                //dto
-                                EditEducationDto dto = new EditEducationDto();
-                                dto.setRd_id(item.getRd_id());
-                                dto.setTelephone(item.getTelephone());
-                                dto.setContent(item.getContent());
-                                dto.setTitle(item.getTitle());
-                                //时间处理
-                                String time = item.getDate();
-                                String[] a = time.split("-");
-                                dto.setStart_time(a[0]);
-                                dto.setEnd_time(a[1]);
+                                //根据initial变量的值，判断是 原有记录 还是 新增记录
+                                int initial = item.getInitial();
 
-                                String json = JSON.toJSONString(dto);//dto转json
-                                Request request = new Request.Builder()
-                                        .url("http://114.55.239.213:8087/users/resumes/edit_education")
-                                        .post(RequestBody.create(MediaType.parse("application/json"), json))
-                                        .build();//创建Http请求
-                                client.newBuilder()
-                                        .connectTimeout(20, TimeUnit.SECONDS)
-                                        .readTimeout(20, TimeUnit.SECONDS)
-                                        .writeTimeout(20, TimeUnit.SECONDS)
-                                        .build()
-                                        .newCall(request).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        Log.i("error", "数据更新失败");
-                                        e.printStackTrace();
-                                    }
+                                if (initial == 1) {
+                                    //原有记录
+                                    //dto
+                                    EditEducationDto dto = new EditEducationDto();
+                                    dto.setRd_id(item.getRd_id());
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setContent(item.getContent());
+                                    dto.setTitle(item.getTitle());
+                                    //时间处理
+                                    String time = item.getDate();
+                                    String[] a = time.split("-");
+                                    dto.setStart_time(a[0]);
+                                    dto.setEnd_time(a[1]);
 
-                                    @Override
-                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                        if (response.isSuccessful()) {//调用成功
-                                            try {
-                                                JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                Log.i("data", jsonObj.getString("data"));
-                                                JSONObject data = JSON.parseObject(jsonObj.getString("data"));
-
-                                                //获取obj中的数据
-                                                Log.i("rd_id", data.getString("rd_id"));
-                                                Log.i("修改", "修改成功！");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        } else {//调用失败
-                                            Log.i("error", response.toString());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/edit_education")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
                                         }
-                                    }
-                                });
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("修改", "修改成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -307,24 +299,5 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void saveData(int position, EditEducation editEducation) {
         list.set(position, editEducation);
         notifyDataSetChanged();//刷新
-    }
-
-    //添加数据
-    public void addData(int position) {
-        EditEducation i = new EditEducation();
-        i.setTitle("请输入标题");
-        i.setDate("请输入日期");
-        i.setContent("请输入内容");
-        list.add(position, i);
-        //添加动画
-        notifyItemInserted(position);
-    }
-
-    //删除数据
-    public void removeData(int position) {
-        list.remove(position);
-        //删除动画
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
     }
 }

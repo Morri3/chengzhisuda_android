@@ -10,8 +10,8 @@
 
     <TextView
         android:id="@+id/content"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
+        android:layout_width="275dp"
+        android:layout_height="45dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:gravity="left"
@@ -31,8 +31,8 @@
     <!--编辑-->
     <EditText
         android:id="@+id/content_edit"
-        android:layout_width="310dp"
-        android:layout_height="50dp"
+        android:layout_width="275dp"
+        android:layout_height="45dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:minLines="2"

@@ -24,6 +24,10 @@ import com.zyq.parttime.R;
 import com.zyq.parttime.form.EditCampus;
 import com.zyq.parttime.form.EditCampusDto;
 import com.zyq.parttime.form.EditPersonalDto;
+import com.zyq.parttime.sp.AddDetail;
+import com.zyq.parttime.sp.DeleteDetail;
+import com.zyq.parttime.sp.EditIntention;
+import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -170,28 +174,8 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                 //设置焦点，实现走马灯
                 headerViewHolder.content.requestFocus();
-//                headerViewHolder.content.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
-//                headerViewHolder.content.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
-//                headerViewHolder.content.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
-//                headerViewHolder.content.setSingleLine(true); // 设置为单行显示
-//                headerViewHolder.content.setFocusable(true); // 获得焦点
-//                headerViewHolder.content.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
-
                 headerViewHolder.date.requestFocus();
-//                headerViewHolder.date.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
-//                headerViewHolder.date.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
-//                headerViewHolder.date.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
-//                headerViewHolder.date.setSingleLine(true); // 设置为单行显示
-//                headerViewHolder.date.setFocusable(true); // 获得焦点
-//                headerViewHolder.date.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
-
                 headerViewHolder.title.requestFocus();
-//                headerViewHolder.title.setMovementMethod(LinkMovementMethod.getInstance()); // 添加手动滑动功能
-//                headerViewHolder.title.setEllipsize(TextUtils.TruncateAt.valueOf("MARQUEE"));  // 添加跑马灯功能
-//                headerViewHolder.title.setMarqueeRepeatLimit(Integer.MAX_VALUE); // 跑马灯滚动次数，此处已设置最大值
-//                headerViewHolder.title.setSingleLine(true); // 设置为单行显示
-//                headerViewHolder.title.setFocusable(true); // 获得焦点
-//                headerViewHolder.title.setFocusableInTouchMode(true); // 通过触碰获取焦点的能力
 
                 if (isSave == 0) {
                     //隐藏编辑的控件
@@ -227,10 +211,21 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     headerViewHolder.content2.setText(item.getContent());
 
                     headerViewHolder.add2.setOnClickListener(v -> {
-                        addData(list.size());
+                        //添加一条空的
+                        EditCampus i = new EditCampus();
+                        i.setR_id(item.getR_id());
+                        i.setTelephone(item.getTelephone());
+                        i.setTitle("请输入标题");
+                        i.setDate("请输入日期");
+                        i.setContent("请输入内容");
+                        list.add(list.size(), i);
+
+                        //添加动画
+                        notifyItemInserted(list.size());
                     });
 
                     headerViewHolder.delete2.setOnClickListener(v -> {
+                        int thePos = pos;
                         if (list.size() == 1) {//只有一条数据
                             Toast toast = Toast.makeText(context, "最少需要一条数据~", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
@@ -239,7 +234,58 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             Log.i("error", "最少需要一条数据~");
                         } else {
                             //删除自带默认动画
-                            removeData(pos);
+                            list.remove(thePos);
+
+                            //调api TODO
+                            new Thread(() -> {
+                                try {
+                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+
+                                    //dto
+                                    DeleteDetail dto = new DeleteDetail();
+                                    dto.setRd_id(item.getRd_id());
+                                    dto.setTelephone(item.getTelephone());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/delete_detail")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("删除", "删除成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }).start();//要start才会启动
                         }
                     });
 
@@ -248,8 +294,9 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         item.setTitle(headerViewHolder.title2.getText().toString());
                         item.setDate(headerViewHolder.date2.getText().toString());
                         item.setContent(headerViewHolder.content2.getText().toString());
+
+                        //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-                        Log.i("a", list.get(pos).getTitle());
                         Log.i("b", list.toString());
 
                         //调api，根据id 修改数据库中的数据
@@ -257,55 +304,111 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             try {
                                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 
-                                //dto
-                                EditCampusDto dto = new EditCampusDto();
-                                dto.setRd_id(item.getRd_id());
-                                dto.setTelephone(item.getTelephone());
-                                dto.setContent(item.getContent());
-                                dto.setTitle(item.getTitle());
-                                //时间处理
-                                String time = item.getDate();
-                                String[] a = time.split("-");
-                                dto.setStart_time(a[0]);
-                                dto.setEnd_time(a[1]);
+                                //根据initial变量的值，判断是 原有记录 还是 新增记录
+                                int initial = item.getInitial();
 
-                                String json = JSON.toJSONString(dto);//dto转json
-                                Request request = new Request.Builder()
-                                        .url("http://114.55.239.213:8087/users/resumes/edit_campus")
-                                        .post(RequestBody.create(MediaType.parse("application/json"), json))
-                                        .build();//创建Http请求
-                                client.newBuilder()
-                                        .connectTimeout(20, TimeUnit.SECONDS)
-                                        .readTimeout(20, TimeUnit.SECONDS)
-                                        .writeTimeout(20, TimeUnit.SECONDS)
-                                        .build()
-                                        .newCall(request).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        Log.i("error", "数据更新失败");
-                                        e.printStackTrace();
-                                    }
+                                if (initial == 1) {
+                                    //原有记录
 
-                                    @Override
-                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                        if (response.isSuccessful()) {//调用成功
-                                            try {
-                                                JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                Log.i("data", jsonObj.getString("data"));
-                                                JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+                                    //dto
+                                    EditCampusDto dto = new EditCampusDto();
+                                    dto.setRd_id(item.getRd_id());
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setContent(item.getContent());
+                                    dto.setTitle(item.getTitle());
+                                    //时间处理
+                                    String time = item.getDate();
+                                    String[] a = time.split("-");
+                                    dto.setStart_time(a[0]);
+                                    dto.setEnd_time(a[1]);
 
-                                                //获取obj中的数据
-                                                Log.i("rd_id", data.getString("rd_id"));
-                                                Log.i("修改", "修改成功！");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        } else {//调用失败
-                                            Log.i("error", response.toString());
+                                    String json = JSON.toJSONString(dto);//dto转json
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/edit_campus")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
                                         }
-                                    }
-                                });
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("修改", "修改成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } else if (initial == 0) {
+                                    //新增记录
+
+                                    //dto
+                                    AddDetail dto = new AddDetail();
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setR_id(item.getR_id());
+                                    dto.setDate(item.getDate());//字符串类型
+                                    dto.setTitle(item.getTitle());
+                                    dto.setContent(item.getContent());
+                                    dto.setCategory("校园经历");
+                                    String json = JSON.toJSONString(dto);//dto转json
+
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/add_detail")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("新增", "新增成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -313,9 +416,11 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     });
                 }
             }
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             e.printStackTrace();
         }
+
     }
 
     @Override
@@ -331,31 +436,5 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void saveData(int position, EditCampus editCampus) {
         list.set(position, editCampus);
         notifyDataSetChanged();//刷新
-    }
-
-    //添加数据
-    public void addData(int position) {
-        EditCampus i = new EditCampus();
-        i.setTitle("请输入标题");
-        i.setDate("请输入日期");
-        i.setContent("请输入内容");
-        list.add(position, i);
-
-        //调api TODO
-
-        //添加动画
-        notifyItemInserted(position);
-    }
-
-    //删除数据
-    public void removeData(int position) {
-        list.remove(position);
-
-        //调api TODO
-
-
-        //删除动画
-        notifyItemRemoved(position);
-        notifyDataSetChanged();
     }
 }

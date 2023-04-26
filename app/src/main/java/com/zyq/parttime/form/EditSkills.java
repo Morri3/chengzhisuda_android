@@ -6,9 +6,26 @@ public class EditSkills implements Serializable {
     private String telephone;
     private int rd_id;
     private String content;
-
     private String memo;
     private String rd_status;
+    private int r_id;
+    private int initial;//判断是原来就有的resumedetail，还是通过增加一条新的得到的
+
+    public int getR_id() {
+        return r_id;
+    }
+
+    public void setR_id(int r_id) {
+        this.r_id = r_id;
+    }
+
+    public int getInitial() {
+        return initial;
+    }
+
+    public void setInitial(int initial) {
+        this.initial = initial;
+    }
 
     public String getContent() {
         return content;
@@ -58,6 +75,8 @@ public class EditSkills implements Serializable {
                 ", content='" + content + '\'' +
                 ", memo='" + memo + '\'' +
                 ", rd_status='" + rd_status + '\'' +
+                ", r_id=" + r_id +
+                ", initial=" + initial +
                 '}';
     }
 }

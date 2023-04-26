@@ -54,7 +54,6 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ResumesManage extends AppCompatActivity {
-    //    private List<EditCampus> list = new ArrayList<>();
     private List<EditEducation> list2 = new ArrayList<>();
     private List<EditProject> list3 = new ArrayList<>();
     private List<EditSkills> list4 = new ArrayList<>();
@@ -63,7 +62,7 @@ public class ResumesManage extends AppCompatActivity {
     private ResumeEducationAdapter adapter2;
     private ResumeProjectAdapter adapter3;
     private ResumeSkillsAdapter adapter4;
-//    private RecyclerView rv, rv2, rv3, rv4;
+    //    private RecyclerView rv, rv2, rv3, rv4;
     private Context context;
 
     @Override
@@ -72,6 +71,8 @@ public class ResumesManage extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);//取消默认顶部标题栏
         setContentView(R.layout.activity_resume);
         context = this.getBaseContext();
+
+        //返回等图标控件
         ImageView back = findViewById(R.id.back);
         ImageView upload = findViewById(R.id.upload);
         TextView upload_text = findViewById(R.id.upload_text);
@@ -242,7 +243,6 @@ public class ResumesManage extends AppCompatActivity {
                         if (response.isSuccessful()) {//调用成功
                             try {
                                 JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                Log.i("get data", jsonObj.getString("data"));
                                 JSONObject data = JSON.parseObject(jsonObj.getString("data"));
 
                                 if (data.get("memo").equals("请填写简历")) {
@@ -278,14 +278,16 @@ public class ResumesManage extends AppCompatActivity {
                                             if (response.isSuccessful()) {//调用成功
                                                 try {
                                                     JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                    Log.i("data", jsonObj.getString("data"));
+                                                    Log.i("get data", jsonObj.getString("data"));
                                                     JSONObject data = JSON.parseObject(jsonObj.getString("data"));
 
                                                     //获取obj中的数据
                                                     String exp_data = data.getString("exp");
                                                     String current_area_data = data.getString("current_area");
                                                     String phone = data.getString("telephone");
+                                                    int r_id=data.getIntValue("r_id");
                                                     resume.setTelephone(phone);
+                                                    resume.setR_id(r_id);//设置简历id，供添加删除detail时用
 
                                                     //第一个list
                                                     JSONArray arr1 = data.getJSONArray("campusExpList");
@@ -308,6 +310,7 @@ public class ResumesManage extends AppCompatActivity {
                                                             String date = obj.getString("time");
                                                             String content = obj.getString("content");
                                                             String rd_status = obj.getString("status");
+
                                                             if (!rd_status.equals("已删除")) {
                                                                 //不显示已删除的item
                                                                 campus.setTelephone(telephone);
@@ -315,7 +318,9 @@ public class ResumesManage extends AppCompatActivity {
                                                                 campus.setTitle(title);
                                                                 campus.setRd_status(rd_status);
                                                                 campus.setDate(date);
+                                                                campus.setR_id(r_id);
                                                                 campus.setRd_id(rd_id);
+                                                                campus.setInitial(1); //是原来就有的
                                                                 campusList.add(campus);
                                                             }
 
@@ -325,6 +330,8 @@ public class ResumesManage extends AppCompatActivity {
                                                             campus.setTitle("请输入标题");
                                                             campus.setDate("请输入日期");
                                                             campus.setContent("请输入内容");
+                                                            campus.setInitial(0); //新增
+                                                            campus.setR_id(r_id);//简历id
                                                             campus.setMemo("无数据");
                                                             campusList.add(campus);
                                                         }
@@ -343,8 +350,7 @@ public class ResumesManage extends AppCompatActivity {
                                                         String category = obj.getString("category");
                                                         String telephone = obj.getString("telephone");
                                                         int hasContent = obj.getIntValue("hasContent");
-                                                        Log.i("aavcs", hasContent + "");
-                                                        Log.i("ahuiash", category);
+
                                                         if (hasContent == 1 && category.equals("教育背景")) {
                                                             //有数据
                                                             Log.i("教育", "有数据");
@@ -353,6 +359,7 @@ public class ResumesManage extends AppCompatActivity {
                                                             String date = obj.getString("time");
                                                             String content = obj.getString("content");
                                                             String rd_status = obj.getString("status");
+
                                                             if (!rd_status.equals("已删除")) {
                                                                 //不显示已删除的item
                                                                 education.setTelephone(telephone);
@@ -361,6 +368,8 @@ public class ResumesManage extends AppCompatActivity {
                                                                 education.setRd_status(rd_status);
                                                                 education.setDate(date);
                                                                 education.setRd_id(rd_id);
+                                                                education.setR_id(r_id);
+                                                                education.setInitial(1); //是原来就有的
                                                                 educationList.add(education);
                                                             }
 
@@ -370,6 +379,8 @@ public class ResumesManage extends AppCompatActivity {
                                                             education.setTitle("请输入标题");
                                                             education.setDate("请输入日期");
                                                             education.setContent("请输入内容");
+                                                            education.setInitial(0); //新增
+                                                            education.setR_id(r_id);//简历id
                                                             education.setMemo("无数据");
                                                             educationList.add(education);
                                                         }
@@ -390,6 +401,7 @@ public class ResumesManage extends AppCompatActivity {
                                                         String category = obj.getString("category");
                                                         String telephone = obj.getString("telephone");
                                                         int hasContent = obj.getIntValue("hasContent");
+
                                                         if (hasContent == 1 && category.equals("项目经历")) {
                                                             //有数据
                                                             Log.i("项目", "有数据");
@@ -398,6 +410,7 @@ public class ResumesManage extends AppCompatActivity {
                                                             String date = obj.getString("time");
                                                             String content = obj.getString("content");
                                                             String rd_status = obj.getString("status");
+
                                                             if (!rd_status.equals("已删除")) {
                                                                 //不显示已删除的item
                                                                 project.setTelephone(telephone);
@@ -406,6 +419,8 @@ public class ResumesManage extends AppCompatActivity {
                                                                 project.setRd_status(rd_status);
                                                                 project.setDate(date);
                                                                 project.setRd_id(rd_id);
+                                                                project.setR_id(r_id);
+                                                                project.setInitial(1); //是原来就有的
                                                                 projectList.add(project);
                                                             }
 
@@ -415,6 +430,8 @@ public class ResumesManage extends AppCompatActivity {
                                                             project.setTitle("请输入标题");
                                                             project.setDate("请输入日期");
                                                             project.setContent("请输入内容");
+                                                            project.setInitial(0); //新增
+                                                            project.setR_id(r_id);//简历id
                                                             project.setMemo("无数据");
                                                             projectList.add(project);
                                                         }
@@ -435,20 +452,22 @@ public class ResumesManage extends AppCompatActivity {
                                                         String category = obj.getString("category");
                                                         String telephone = obj.getString("telephone");
                                                         int hasContent = obj.getIntValue("hasContent");
+
                                                         if (hasContent == 1 && category.equals("专业技能")) {
                                                             //有数据
                                                             Log.i("专业", "有数据");
                                                             int rd_id = obj.getIntValue("rd_id");
-                                                            String title = obj.getString("title");
-                                                            String date = obj.getString("time");
                                                             String content = obj.getString("content");
                                                             String rd_status = obj.getString("status");
+
                                                             if (!rd_status.equals("已删除")) {
                                                                 //不显示已删除的item
                                                                 skills.setTelephone(telephone);
                                                                 skills.setContent(content);
                                                                 skills.setRd_status(rd_status);
                                                                 skills.setRd_id(rd_id);
+                                                                skills.setR_id(r_id);
+                                                                skills.setInitial(1); //是原来就有的
                                                                 skillsList.add(skills);
                                                             }
 
@@ -456,6 +475,8 @@ public class ResumesManage extends AppCompatActivity {
                                                             //没数据
                                                             skills.setTelephone(telephone);
                                                             skills.setContent("请输入内容");
+                                                            skills.setInitial(0); //新增
+                                                            skills.setR_id(r_id);//简历id
                                                             skills.setMemo("无数据");
                                                             skillsList.add(skills);
                                                         }
@@ -477,6 +498,7 @@ public class ResumesManage extends AppCompatActivity {
                                                     }
                                                     resume.setCampusExpList(campusList);
                                                     Log.i("campusList", resume.getCampusExpList().toString());
+
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -493,7 +515,9 @@ public class ResumesManage extends AppCompatActivity {
                                     String exp_data = data.getString("exp");
                                     String current_area_data = data.getString("current_area");
                                     String phone = data.getString("telephone");
+                                    int r_id=data.getIntValue("r_id");
                                     resume.setTelephone(phone);
+                                    resume.setR_id(r_id);//设置简历id，供添加删除detail时用
 
                                     //第一个list
                                     JSONArray arr1 = data.getJSONArray("campusExpList");
@@ -524,6 +548,8 @@ public class ResumesManage extends AppCompatActivity {
                                                 campus.setRd_status(rd_status);
                                                 campus.setDate(date);
                                                 campus.setRd_id(rd_id);
+                                                campus.setR_id(r_id);
+                                                campus.setInitial(1); //是原来就有的
                                                 campusList.add(campus);
                                             }
 
@@ -533,11 +559,14 @@ public class ResumesManage extends AppCompatActivity {
                                             campus.setTitle("请输入标题");
                                             campus.setDate("请输入日期");
                                             campus.setContent("请输入内容");
+                                            campus.setInitial(0); //新增
+                                            campus.setR_id(r_id);
                                             campus.setMemo("无数据");
                                             campusList.add(campus);
                                         }
                                     }
-
+                                    resume.setCampusExpList(campusList);
+                                    Log.i("campusList", resume.getCampusExpList().toString());
 
                                     //第2个list
                                     JSONArray arr2 = data.getJSONArray("educationBgList");
@@ -551,8 +580,7 @@ public class ResumesManage extends AppCompatActivity {
                                         String category = obj.getString("category");
                                         String telephone = obj.getString("telephone");
                                         int hasContent = obj.getIntValue("hasContent");
-                                        Log.i("aavcs", hasContent + "");
-                                        Log.i("ahuiash", category);
+
                                         if (hasContent == 1 && category.equals("教育背景")) {
                                             //有数据
                                             Log.i("教育", "有数据");
@@ -561,6 +589,7 @@ public class ResumesManage extends AppCompatActivity {
                                             String date = obj.getString("time");
                                             String content = obj.getString("content");
                                             String rd_status = obj.getString("status");
+
                                             if (!rd_status.equals("已删除")) {
                                                 //不显示已删除的item
                                                 education.setTelephone(telephone);
@@ -568,7 +597,9 @@ public class ResumesManage extends AppCompatActivity {
                                                 education.setTitle(title);
                                                 education.setRd_status(rd_status);
                                                 education.setDate(date);
+                                                education.setR_id(r_id);
                                                 education.setRd_id(rd_id);
+                                                education.setInitial(1); //是原来就有的
                                                 educationList.add(education);
                                             }
 
@@ -578,6 +609,8 @@ public class ResumesManage extends AppCompatActivity {
                                             education.setTitle("请输入标题");
                                             education.setDate("请输入日期");
                                             education.setContent("请输入内容");
+                                            education.setInitial(0); //新增
+                                            education.setR_id(r_id);
                                             education.setMemo("无数据");
                                             educationList.add(education);
                                         }
@@ -598,6 +631,7 @@ public class ResumesManage extends AppCompatActivity {
                                         String category = obj.getString("category");
                                         String telephone = obj.getString("telephone");
                                         int hasContent = obj.getIntValue("hasContent");
+
                                         if (hasContent == 1 && category.equals("项目经历")) {
                                             //有数据
                                             Log.i("项目", "有数据");
@@ -614,6 +648,8 @@ public class ResumesManage extends AppCompatActivity {
                                                 project.setRd_status(rd_status);
                                                 project.setDate(date);
                                                 project.setRd_id(rd_id);
+                                                project.setR_id(r_id);
+                                                project.setInitial(1); //是原来就有的
                                                 projectList.add(project);
                                             }
 
@@ -623,6 +659,8 @@ public class ResumesManage extends AppCompatActivity {
                                             project.setTitle("请输入标题");
                                             project.setDate("请输入日期");
                                             project.setContent("请输入内容");
+                                            project.setInitial(0); //新增
+                                            project.setR_id(r_id);
                                             project.setMemo("无数据");
                                             projectList.add(project);
                                         }
@@ -643,6 +681,7 @@ public class ResumesManage extends AppCompatActivity {
                                         String category = obj.getString("category");
                                         String telephone = obj.getString("telephone");
                                         int hasContent = obj.getIntValue("hasContent");
+
                                         if (hasContent == 1 && category.equals("专业技能")) {
                                             //有数据
                                             Log.i("专业", "有数据");
@@ -651,12 +690,15 @@ public class ResumesManage extends AppCompatActivity {
                                             String date = obj.getString("time");
                                             String content = obj.getString("content");
                                             String rd_status = obj.getString("status");
+
                                             if (!rd_status.equals("已删除")) {
                                                 //不显示已删除的item
                                                 skills.setTelephone(telephone);
                                                 skills.setContent(content);
                                                 skills.setRd_status(rd_status);
                                                 skills.setRd_id(rd_id);
+                                                skills.setR_id(r_id);
+                                                skills.setInitial(1); //是原来就有的
                                                 skillsList.add(skills);
                                             }
 
@@ -664,6 +706,8 @@ public class ResumesManage extends AppCompatActivity {
                                             //没数据
                                             skills.setTelephone(telephone);
                                             skills.setContent("请输入内容");
+                                            skills.setInitial(0); //新增
+                                            skills.setR_id(r_id);
                                             skills.setMemo("无数据");
                                             skillsList.add(skills);
                                         }
@@ -683,8 +727,6 @@ public class ResumesManage extends AppCompatActivity {
                                     } else {
                                         resume.setCurrent_area(current_area_data);
                                     }
-                                    resume.setCampusExpList(campusList);
-                                    Log.i("campusList", resume.getCampusExpList().toString());
                                 }
 
                                 //设置list数据给adapter
@@ -693,7 +735,7 @@ public class ResumesManage extends AppCompatActivity {
                                     current_area.setText(resume.getCurrent_area());
 
 
-                                    //校园经历
+                                    //1.校园经历
                                     //第一步：设置布局管理器
                                     rv.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
@@ -703,7 +745,7 @@ public class ResumesManage extends AppCompatActivity {
                                     rv.setItemAnimator(new DefaultItemAnimator());
 
 
-                                    //教育背景
+                                    //2.教育背景
                                     //第一步：设置布局管理器
                                     rv2.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
@@ -713,7 +755,7 @@ public class ResumesManage extends AppCompatActivity {
                                     rv2.setItemAnimator(new DefaultItemAnimator());
 
 
-                                    //项目经历
+                                    //3.项目经历
                                     //第一步：设置布局管理器
                                     rv3.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
@@ -723,7 +765,7 @@ public class ResumesManage extends AppCompatActivity {
                                     rv3.setItemAnimator(new DefaultItemAnimator());
 
 
-                                    //专业技能
+                                    //4.专业技能
                                     //第一步：设置布局管理器
                                     rv4.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
@@ -904,6 +946,7 @@ public class ResumesManage extends AppCompatActivity {
             i.putExtra("telephone", resume.getTelephone());
             startActivity(i);
         });
+        //上传
         upload_text.setOnClickListener(v -> {
             Log.i("telephone", resume.getTelephone());
             Intent i = new Intent();
@@ -946,13 +989,5 @@ public class ResumesManage extends AppCompatActivity {
 
     //刷新
     public void notifyData() {
-//        rv.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-//        rv2.setAdapter(adapter2);
-//        adapter2.notifyDataSetChanged();
-//        rv3.setAdapter(adapter3);
-//        adapter3.notifyDataSetChanged();
-//        rv4.setAdapter(adapter4);
-//        adapter4.notifyDataSetChanged();
     }
 }
