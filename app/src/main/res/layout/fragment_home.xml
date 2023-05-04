@@ -52,7 +52,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="16dp"
-        android:src="@drawable/home_logo"
+        android:src="@drawable/logo_4"
         >
     </ImageView>
 
@@ -114,56 +114,56 @@
             app:layout_constraintBottom_toBottomOf="@id/search_position"
             android:layout_marginLeft="90dp"
             />
-        <ImageView
-            android:id="@+id/icon_recommend"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/icon_recommend"
-            app:layout_constraintLeft_toRightOf="@+id/search_position"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginLeft="15dp"
-            />
-        <TextView
-            android:id="@+id/title2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="星推榜"
-            android:textColor="@color/white"
-            app:layout_constraintLeft_toRightOf="@id/icon_recommend"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginLeft="3dp"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:shadowColor="@color/text_shadow_color"
-            android:shadowDx="5"
-            android:shadowDy="5"
-            android:shadowRadius="10"
-            >
-        </TextView>
-        <TextView
-            android:id="@+id/enter"
-            android:layout_width="56dp"
-            android:layout_height="22dp"
-            android:text="进入"
-            android:background="@drawable/white_round_bg"
-            android:textColor="@color/main_purple"
-            app:layout_constraintLeft_toRightOf="@id/title2"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginLeft="3dp"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            >
-        </TextView>
+<!--        <ImageView-->
+<!--            android:id="@+id/icon_recommend"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:src="@drawable/icon_recommend"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/search_position"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            android:layout_marginLeft="15dp"-->
+<!--            />-->
+<!--        <TextView-->
+<!--            android:id="@+id/title2"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="星推榜"-->
+<!--            android:textColor="@color/white"-->
+<!--            app:layout_constraintLeft_toRightOf="@id/icon_recommend"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            android:layout_marginLeft="3dp"-->
+<!--            android:textSize="14dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:shadowColor="@color/text_shadow_color"-->
+<!--            android:shadowDx="5"-->
+<!--            android:shadowDy="5"-->
+<!--            android:shadowRadius="10"-->
+<!--            >-->
+<!--        </TextView>-->
+<!--        <TextView-->
+<!--            android:id="@+id/enter"-->
+<!--            android:layout_width="56dp"-->
+<!--            android:layout_height="22dp"-->
+<!--            android:text="进入"-->
+<!--            android:background="@drawable/white_round_bg"-->
+<!--            android:textColor="@color/main_purple"-->
+<!--            app:layout_constraintLeft_toRightOf="@id/title2"-->
+<!--            app:layout_constraintTop_toTopOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            android:layout_marginLeft="3dp"-->
+<!--            android:textSize="14dp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textAlignment="center"-->
+<!--            >-->
+<!--        </TextView>-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:id="@+id/rv_bg"
         android:layout_width="352dp"
-        android:layout_height="290dp"
+        android:layout_height="360dp"
         app:layout_constraintTop_toBottomOf="@id/middle"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -174,7 +174,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv"
         android:layout_width="330dp"
-        android:layout_height="270dp"
+        android:layout_height="340dp"
         app:layout_constraintTop_toTopOf="@id/rv_bg"
         app:layout_constraintLeft_toLeftOf="@id/rv_bg"
         app:layout_constraintRight_toRightOf="@id/rv_bg"

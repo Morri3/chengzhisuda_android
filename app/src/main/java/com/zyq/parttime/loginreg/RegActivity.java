@@ -26,7 +26,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
-import com.zyq.parttime.sp.StuRegister;
+import com.zyq.parttime.form.StuRegister;
 import com.zyq.parttime.util.DateData;
 
 import java.io.IOException;
@@ -80,11 +80,14 @@ public class RegActivity extends AppCompatActivity {
         });
 
         //创建DateData类，并配置默认值
-        DateData dateData = new DateData(1900, 1, 1900, 1, 1900, 1);
+        DateData dateData = new DateData(1990, 1, 1990, 1, 1990, 1);
 
         //构造年份列表
         List<Integer> year = new ArrayList<>();//年份列表
-        for (int i = 1900; i <= 2023; i++) {
+        //获取当前年份
+        Calendar calendar = Calendar.getInstance();
+        int curYear = calendar.get(Calendar.YEAR);
+        for (int i = curYear - 30; i <= curYear + 4; i++) {//加4是为了实现23级学生
             year.add(i);
         }
         //适配器1
@@ -112,12 +115,12 @@ public class RegActivity extends AppCompatActivity {
         for (int i = 1; i <= 12; i++) {
             month.add(i);
         }
+
         //适配器2
         ArrayAdapter<Integer> monthadapter = new ArrayAdapter<>(this,
                 R.layout.date_item, month);//把月份的列表添加到适配器中，使用自定义的item样式
         monthadapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
         monthSpinner.setAdapter(monthadapter);//设置适配器
-
         //监听下拉框
         monthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -162,9 +165,9 @@ public class RegActivity extends AppCompatActivity {
         startMonthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                dateData.setStartMonth(monthadapter.getItem(position));
+                dateData.setStartMonth(startMonthAdapter.getItem(position));
                 runOnUiThread(() -> {
-                    monthSpinner.setSelection(position);//设置当前选中的item
+                    startMonthSpinner.setSelection(position);//设置当前选中的item
                 });
             }
 
@@ -224,6 +227,8 @@ public class RegActivity extends AppCompatActivity {
         //注册按钮
         reg.setOnClickListener(v -> {
             //获取表单数据
+
+            //处理性别字段
             gender.set((RadioButton) findViewById(gender_edit.getCheckedRadioButtonId()));//getCheckedRadioButtonId()找到RadioGroup中被选中的radiobutton
             String data_gender;
             if (gender.get() == null) {
@@ -231,6 +236,8 @@ public class RegActivity extends AppCompatActivity {
             } else {
                 data_gender = gender.get().getText().toString();
             }
+
+            //其他字段
             String username = name_edit.getText().toString();
             String telephone = telephone_edit.getText().toString();
             String emails = emails_edit.getText().toString();
@@ -265,15 +272,18 @@ public class RegActivity extends AppCompatActivity {
             if (a1 == 0 && a2 == 0 && a3 == 0 && a4 == 0 && a5 == 0 && a6 == 0 && a7 == 0
                     && pwd.equals(pwd2) && telephone.length() == 11 && isEmail(emails) == true
                     && ((isSno(sno) == true && sno.length() > 0) || sno.length() == 0)) {
+
                 //调用接口存到DB中
                 new Thread(() -> {
                     try {
                         OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+
+                        //构造dto
                         StuRegister stuRegister = new StuRegister();
                         stuRegister.setTelephone(telephone);
-                        if (data_gender.equals("男")) {
+                        if (data_gender.equals("男")) {//男1
                             stuRegister.setGender(1);
-                        } else if (data_gender.equals("女")) {
+                        } else if (data_gender.equals("女")) {//女0
                             stuRegister.setGender(0);
                         }
                         stuRegister.setStu_name(username);
@@ -293,16 +303,20 @@ public class RegActivity extends AppCompatActivity {
 
                         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
                         int newAge = 0;
-                        String start = "", end = "";
-                        Date birth;
+                        String birth_year = "", birth_month = "";//出生年月
+                        String start = "", end = "";//入学年月、毕业年月
+                        Date birth;//是出生年月
                         try {
                             //出生日期
+                            birth_year = y1 + "";//年份
                             if (m1 >= 1 && m1 <= 9) {
                                 birth = sdf.parse(y1 + "-0" + m1);
+                                birth_month = "0" + m1;//月份
                             } else {
                                 birth = sdf.parse(y1 + "-" + m1);
+                                birth_month = "" + m1;//月份
                             }
-                            //当前
+                            //当前时间
                             Date now = new Date();
                             Calendar c1 = Calendar.getInstance();
                             Calendar c2 = Calendar.getInstance();
@@ -320,6 +334,8 @@ public class RegActivity extends AppCompatActivity {
                             }
                             newAge = tmp3 + tmp2;
                             dateData.setAge(newAge);
+                            dateData.setBirthYear(Integer.parseInt(birth_year));
+                            dateData.setBirthMonth(Integer.parseInt(birth_month));
 
                             //入学时间，毕业时间
                             if (m2 >= 1 && m2 <= 9) {
@@ -340,11 +356,15 @@ public class RegActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         Log.i("age", newAge + "");
+                        Log.i("birth", birth_year + "-" + birth_month);
                         Log.i("start", start);
                         Log.i("end", end);
-                        stuRegister.setAge(newAge);
+                        stuRegister.setAge(newAge);//年龄
+                        stuRegister.setBirth_year(birth_year);//出生年份
+                        stuRegister.setBirth_month(birth_month);//出生月份
                         stuRegister.setEntrance_date(start);
                         stuRegister.setGraduation_date(end);
+
                         //注册时间
                         SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String reg_time = sdf2.format(new Date());
@@ -376,14 +396,30 @@ public class RegActivity extends AppCompatActivity {
                                         Log.i("data_register实体", data_register.toString());
 
                                         runOnUiThread(() -> {
-                                            Toast toast = Toast.makeText(getApplicationContext(), "注册成功！请稍等片刻~", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                            toast.show();
+                                            //根据memo分别显示对应toast
+                                            if ((data_register.getString("memo")).equals("该手机号已注册，请直接登录")) {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "该手机号已注册，请直接登录", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                toast.show();
+                                            } else if ((data_register.getString("memo")).equals("两次密码请输入正确")) {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "两次密码请输入正确", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                toast.show();
+                                            } else if ((data_register.getString("memo")).equals("请输入表单信息")) {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "请输入表单信息", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                toast.show();
+                                            } else if ((data_register.getString("memo")).equals("注册成功")) {
+                                                Toast toast = Toast.makeText(getApplicationContext(), "注册成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                toast.show();
 
-                                            //跳转到登录页
-                                            Intent intent = new Intent(RegActivity.this, LoginActivity.class);
-                                            startActivity(intent);
-                                            finish();
+                                                //跳转到登录页
+                                                Intent intent = new Intent(RegActivity.this, LoginActivity.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+
                                         });
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -465,7 +501,7 @@ public class RegActivity extends AppCompatActivity {
     public static boolean isEmail(String emails) {
         boolean flag = false;
         try {
-            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+            String check = "^([a-z0-9A-Z]+[-|_|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";//正则表达式
             Pattern regex = Pattern.compile(check);
             Matcher matcher = regex.matcher(emails);
             flag = matcher.matches();

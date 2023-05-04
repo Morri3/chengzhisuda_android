@@ -20,7 +20,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
-import com.zyq.parttime.sp.EditInfo;
+import com.zyq.parttime.userhome.info.UserInfo;
 import com.zyq.parttime.userhome.intented.IntentedManage;
 import com.zyq.parttime.userhome.resume.ResumesManage;
 import com.zyq.parttime.userhome.setting.SettingManage;
@@ -31,10 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class UserhomeFragment extends Fragment {
@@ -61,7 +59,7 @@ public class UserhomeFragment extends Fragment {
         ImageView right3 = view.findViewById(R.id.right3);
         ImageView right4 = view.findViewById(R.id.right4);
 
-        //调api获取name、head  TODO
+        //调api获取name、head
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
@@ -87,23 +85,44 @@ public class UserhomeFragment extends Fragment {
                         if (response.isSuccessful()) {//调用成功
                             try {
                                 com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                JSONObject data_userinfo_edit = JSON.parseObject(jsonObj.getString("data"));
-                                Log.i("data_userinfo_edit实体", data_userinfo_edit.toString());
+                                JSONObject data_userinfo_get = JSON.parseObject(jsonObj.getString("data"));
+                                Log.i("data_userinfo_get实体", data_userinfo_get.toString());
 
-                                //Toast
-                                getActivity().runOnUiThread(() -> {
-                                    Toast toast = Toast.makeText(context, "用户信息获取成功！请稍等片刻~", Toast.LENGTH_SHORT);
-                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                    toast.show();
+                                if ((data_userinfo_get.getString("memo")).equals("获取成功")) {
+                                    getActivity().runOnUiThread(() -> {
+                                        Toast toast = Toast.makeText(context, "用户信息获取成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                        toast.show();
 
-                                    name.setText(data_userinfo_edit.getString("stu_name"));//设置名称
+                                        //设置名称
+                                        name.setText(data_userinfo_get.getString("stu_name"));
 
-                                    if (data_userinfo_edit.getString("head").equals("0")) {//没有头像就设置默认头像
-                                        head.setImageResource(R.drawable.head);
-                                    } else {//设置用户自己的头像
-                                        head.setImageResource(Integer.valueOf(data_userinfo_edit.getString("head")));//设置头像
-                                    }
-                                });
+                                        // 处理头像
+                                        if (data_userinfo_get.getString("head").equals("0")) {//没有头像就设置默认头像
+                                            int gender = data_userinfo_get.getIntValue("gender");
+                                            if (gender == 1) {
+                                                //是男生
+                                                head.setImageResource(R.drawable.head1);//设置头像
+                                            } else {
+                                                //是女生
+                                                head.setImageResource(R.drawable.head2);//设置头像
+                                            }
+                                        } else {//设置用户自己的头像
+                                            head.setImageResource(Integer.valueOf(data_userinfo_get.getString("head")));//设置头像
+                                        }
+                                    });
+                                } else if ((data_userinfo_get.getString("memo")).equals("该账号不存在")) {
+                                    getActivity().runOnUiThread(() -> {
+                                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                        toast.show();
+
+                                        //设置名称
+                                        name.setText(data_userinfo_get.getString("用户名"));
+                                        //默认男生头像
+                                        head.setImageResource(R.drawable.head1);//设置头像
+                                    });
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -117,31 +136,44 @@ public class UserhomeFragment extends Fragment {
             }
         }).start();//要start才会启动
 
+        //to个人信息
         right1.setOnClickListener(v -> {
-            Intent i = new Intent();
-            i.setClass(context, UserInfo.class);
-            startActivity(i);
+            getActivity().runOnUiThread(() -> {
+                Intent i = new Intent();
+                i.setClass(context, UserInfo.class);
+                startActivity(i);
+            });
         });
+
+        //to简历管理
         right2.setOnClickListener(v -> {
             getActivity().runOnUiThread(() -> {
-                Toast toast = Toast.makeText(context, "数据加载中，请耐心等待~", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                 toast.show();
-            });
 
-            Intent i = new Intent();
-            i.setClass(context, ResumesManage.class);
-            startActivity(i);
+                Intent i = new Intent();
+                i.setClass(context, ResumesManage.class);
+                startActivity(i);
+            });
         });
+
+        //to意向兼职
         right3.setOnClickListener(v -> {
-            Intent i = new Intent();
-            i.setClass(context, IntentedManage.class);
-            startActivity(i);
+            getActivity().runOnUiThread(() -> {
+                Intent i = new Intent();
+                i.setClass(context, IntentedManage.class);
+                startActivity(i);
+            });
         });
+
+        //to设置
         right4.setOnClickListener(v -> {
-            Intent i = new Intent();
-            i.setClass(context, SettingManage.class);
-            startActivity(i);
+            getActivity().runOnUiThread(() -> {
+                Intent i = new Intent();
+                i.setClass(context, SettingManage.class);
+                startActivity(i);
+            });
         });
 
         return view;

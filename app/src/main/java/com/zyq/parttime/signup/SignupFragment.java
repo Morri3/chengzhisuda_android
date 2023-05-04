@@ -7,7 +7,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +21,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.Position;
 import com.zyq.parttime.form.Signup;
-import com.zyq.parttime.home.HomeAdapter;
-import com.zyq.parttime.sp.HistoryDto;
-import com.zyq.parttime.sp.SignupDto;
+import com.zyq.parttime.form.HistoryDto;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
@@ -48,6 +44,9 @@ public class SignupFragment extends Fragment {
     private List<Signup> list = new ArrayList();//存放recycleview的数据
     private RecyclerView rv; //RecyclerView布局
     private SignupAdapter signupAdapter;//适配器
+    //顶部的tab
+    private View line1, line2, line3, line4;
+    private TextView status1, status2, status3, status4;
 
     //判断是哪个状态
     private int s = 0;//1-4分别对应四个状态
@@ -66,20 +65,18 @@ public class SignupFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
         context = this.getActivity();
 
-        list.clear();//每次要清空list，否则会叠加
-
-        //初始化tab
-        View line1 = view.findViewById(R.id.line1);
-        View line2 = view.findViewById(R.id.line2);
-        View line3 = view.findViewById(R.id.line3);
-        View line4 = view.findViewById(R.id.line4);
-        TextView status1 = view.findViewById(R.id.status1);
-        TextView status2 = view.findViewById(R.id.status2);
-        TextView status3 = view.findViewById(R.id.status3);
-        TextView status4 = view.findViewById(R.id.status4);
-
-        //初始显示第一个
         getActivity().runOnUiThread(() -> {
+            //初始化tab
+            line1 = view.findViewById(R.id.line1);
+            line2 = view.findViewById(R.id.line2);
+            line3 = view.findViewById(R.id.line3);
+            line4 = view.findViewById(R.id.line4);
+            status1 = view.findViewById(R.id.status1);
+            status2 = view.findViewById(R.id.status2);
+            status3 = view.findViewById(R.id.status3);
+            status4 = view.findViewById(R.id.status4);
+
+            //初始显示第一个
             status1.setTextColor(context.getResources().getColor(R.color.main_purple));
             status2.setTextColor(context.getResources().getColor(R.color.text_black_color));
             status3.setTextColor(context.getResources().getColor(R.color.text_black_color));
@@ -90,15 +87,16 @@ public class SignupFragment extends Fragment {
             line4.setVisibility(View.INVISIBLE);
         });
 
-        list.clear();//清空
+        list.clear();//每次要清空list，否则会叠加
         //调api，获取该用户的所有报名
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+
                 HistoryDto historyDto = new HistoryDto();
                 historyDto.setTelephone(Constants.telephone);//TODO 改为当前用户
-
                 String json = JSON.toJSONString(historyDto);//dto转json
+
                 Request request = new Request.Builder()
                         .url("http://114.55.239.213:8087/parttime/stu/history")
                         .post(RequestBody.create(MediaType.parse("application/json"), json))
@@ -124,9 +122,10 @@ public class SignupFragment extends Fragment {
                                 Log.i("data_signup", data.toString());
 
                                 //构造list
-                                list.clear();//清空
+                                list.clear();//⭐清空
                                 JSONObject obj0 = (JSONObject) data.get(0);
                                 if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                    //获取成功，遍历数组，构造signup，加到列表中
                                     for (int i = 0; i < data.size(); i++) {
                                         Signup signup = new Signup();
                                         JSONObject obj = data.getJSONObject(i);
@@ -142,6 +141,7 @@ public class SignupFragment extends Fragment {
                                         signup.setStu_id(stu_id);
                                         list.add(signup);
                                     }
+
                                 } else if (obj0.getString("memo").equals("获取历史记录失败")) {
                                     //没数据
                                     getActivity().runOnUiThread(() -> {
@@ -149,12 +149,14 @@ public class SignupFragment extends Fragment {
                                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                         toast.show();
                                     });
+
                                 } else if (obj0.getString("memo").equals("该账号不存在")) {
                                     getActivity().runOnUiThread(() -> {
                                         Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                         toast.show();
                                     });
+
                                 } else if (obj0.getString("memo").equals("输入有误")) {
                                     getActivity().runOnUiThread(() -> {
                                         Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
@@ -172,12 +174,10 @@ public class SignupFragment extends Fragment {
                                 }
 
                                 getActivity().runOnUiThread(() -> {
-                                    //2s延时
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
+                                    //等待加载的toast
+                                    Toast toast = Toast.makeText(context, "数据加载中，请稍等~", Toast.LENGTH_SHORT);
+                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                    toast.show();
 
                                     //适配器的定义与设置
                                     Log.i("报名数据2", list.toString());
@@ -187,7 +187,8 @@ public class SignupFragment extends Fragment {
                                     rv.setLayoutManager(new LinearLayoutManager(context));
                                     //第二步：设置适配器
                                     signupAdapter = new SignupAdapter(context, list);
-                                    signupAdapter.setHasStableIds(true);//解决数据重复
+                                    //刷新适配器
+                                    signupAdapter.notifyDataSetChanged();
                                     rv.setAdapter(signupAdapter);
                                 });
                             } catch (JSONException e) {
@@ -215,7 +216,7 @@ public class SignupFragment extends Fragment {
         status1.setOnClickListener(v -> {
             list.clear();//清空
 
-            Log.i("状态", "1");
+            Log.i("状态", "全部");
             getActivity().runOnUiThread(() -> {
                 status1.setTextColor(context.getResources().getColor(R.color.main_purple));
                 status2.setTextColor(context.getResources().getColor(R.color.text_black_color));
@@ -225,6 +226,11 @@ public class SignupFragment extends Fragment {
                 line2.setVisibility(View.INVISIBLE);
                 line3.setVisibility(View.INVISIBLE);
                 line4.setVisibility(View.INVISIBLE);
+
+                //等待加载的toast
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等~", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                toast.show();
             });
 
             //调用“全部”状态的数据  TODO
@@ -264,6 +270,7 @@ public class SignupFragment extends Fragment {
                                     list.clear();//清空
                                     JSONObject obj0 = (JSONObject) data.get(0);
                                     if (obj0.getString("memo").equals("获取历史记录成功")) {
+                                        //获取成功
                                         for (int i = 0; i < data.size(); i++) {
                                             Signup signup = new Signup();
                                             JSONObject obj = data.getJSONObject(i);
@@ -279,6 +286,7 @@ public class SignupFragment extends Fragment {
                                             signup.setStu_id(stu_id);
                                             list.add(signup);
                                         }
+
                                     } else if (obj0.getString("memo").equals("获取历史记录失败")) {
                                         //没数据
                                         getActivity().runOnUiThread(() -> {
@@ -286,18 +294,21 @@ public class SignupFragment extends Fragment {
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("该账号不存在")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("输入有误")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -317,6 +328,7 @@ public class SignupFragment extends Fragment {
                                         rv.setLayoutManager(new LinearLayoutManager(context));
                                         //第二步：设置适配器
                                         signupAdapter = new SignupAdapter(context, list);
+                                        //刷新适配器
                                         signupAdapter.notifyDataSetChanged();
                                         rv.setAdapter(signupAdapter);
                                     });
@@ -338,7 +350,7 @@ public class SignupFragment extends Fragment {
         status2.setOnClickListener(v -> {
             list.clear();//清空
 
-            Log.i("状态", "2");
+            Log.i("状态", "已报名");
             getActivity().runOnUiThread(() -> {
                 status2.setTextColor(context.getResources().getColor(R.color.main_purple));
                 status1.setTextColor(context.getResources().getColor(R.color.text_black_color));
@@ -348,6 +360,11 @@ public class SignupFragment extends Fragment {
                 line2.setVisibility(View.VISIBLE);
                 line3.setVisibility(View.INVISIBLE);
                 line4.setVisibility(View.INVISIBLE);
+
+                //等待加载的toast
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等~", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                toast.show();
             });
 
             //调用“已报名”状态的数据
@@ -402,6 +419,7 @@ public class SignupFragment extends Fragment {
                                             signup.setStu_id(stu_id);
                                             list.add(signup);
                                         }
+
                                     } else if (obj0.getString("memo").equals("获取历史记录失败")) {
                                         //没数据
                                         getActivity().runOnUiThread(() -> {
@@ -409,12 +427,14 @@ public class SignupFragment extends Fragment {
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("该账号不存在")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("输入有误")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
@@ -440,6 +460,8 @@ public class SignupFragment extends Fragment {
                                         rv.setLayoutManager(new LinearLayoutManager(context));
                                         //第二步：设置适配器
                                         signupAdapter = new SignupAdapter(context, list);
+                                        //刷新适配器
+                                        signupAdapter.notifyDataSetChanged();
                                         rv.setAdapter(signupAdapter);
                                     });
                                 } catch (JSONException e) {
@@ -460,7 +482,7 @@ public class SignupFragment extends Fragment {
         status3.setOnClickListener(v -> {
             list.clear();//清空
 
-            Log.i("状态", "3");
+            Log.i("状态", "已录取");
             getActivity().runOnUiThread(() -> {
                 status3.setTextColor(context.getResources().getColor(R.color.main_purple));
                 status1.setTextColor(context.getResources().getColor(R.color.text_black_color));
@@ -470,6 +492,11 @@ public class SignupFragment extends Fragment {
                 line2.setVisibility(View.INVISIBLE);
                 line3.setVisibility(View.VISIBLE);
                 line4.setVisibility(View.INVISIBLE);
+
+                //等待加载的toast
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等~", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                toast.show();
             });
 
             //调用“已录取”状态的数据
@@ -524,6 +551,7 @@ public class SignupFragment extends Fragment {
                                             signup.setStu_id(stu_id);
                                             list.add(signup);
                                         }
+
                                     } else if (obj0.getString("memo").equals("获取历史记录失败")) {
                                         //没数据
                                         getActivity().runOnUiThread(() -> {
@@ -531,12 +559,14 @@ public class SignupFragment extends Fragment {
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("该账号不存在")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("输入有误")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
@@ -562,6 +592,8 @@ public class SignupFragment extends Fragment {
                                         rv.setLayoutManager(new LinearLayoutManager(context));
                                         //第二步：设置适配器
                                         signupAdapter = new SignupAdapter(context, list);
+                                        //刷新适配器
+                                        signupAdapter.notifyDataSetChanged();
                                         rv.setAdapter(signupAdapter);
                                     });
                                 } catch (JSONException e) {
@@ -582,7 +614,7 @@ public class SignupFragment extends Fragment {
         status4.setOnClickListener(v -> {
             list.clear();//清空
 
-            Log.i("状态", "4");
+            Log.i("状态", "已结束");
             getActivity().runOnUiThread(() -> {
                 status4.setTextColor(context.getResources().getColor(R.color.main_purple));
                 status1.setTextColor(context.getResources().getColor(R.color.text_black_color));
@@ -592,6 +624,11 @@ public class SignupFragment extends Fragment {
                 line2.setVisibility(View.INVISIBLE);
                 line3.setVisibility(View.INVISIBLE);
                 line4.setVisibility(View.VISIBLE);
+
+                //等待加载的toast
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等~", Toast.LENGTH_SHORT);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                toast.show();
             });
 
             //调用“已结束”状态的数据
@@ -647,19 +684,17 @@ public class SignupFragment extends Fragment {
                                             signup.setStu_id(stu_id);
                                             list.add(signup);
                                         }
+
                                     } else if (obj0.getString("memo").equals("获取历史记录失败")) {
-                                        //没数据
-//                                        getActivity().runOnUiThread(() -> {
-//                                            Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
-//                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-//                                            toast.show();
-//                                        });
+                                        //无”已结束“状态的报名数据，不做toast
+
                                     } else if (obj0.getString("memo").equals("该账号不存在")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         });
+
                                     } else if (obj0.getString("memo").equals("输入有误")) {
                                         getActivity().runOnUiThread(() -> {
                                             Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
@@ -699,7 +734,6 @@ public class SignupFragment extends Fragment {
                                                         try {
                                                             com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
                                                             JSONArray data2 = JSON.parseArray(jsonObj.getString("data"));
-                                                            Log.i("data_signup2", data2.toString());
 
                                                             //构造list
                                                             JSONObject obj2 = (JSONObject) data2.get(0);
@@ -719,19 +753,28 @@ public class SignupFragment extends Fragment {
                                                                     signup.setStu_id(stu_id);
                                                                     list.add(signup);
                                                                 }
+
                                                             } else if (obj2.getString("memo").equals("获取历史记录失败")) {
-                                                                //没数据
-                                                                Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
-                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                toast.show();
+                                                                getActivity().runOnUiThread(() -> {
+                                                                    //没数据
+                                                                    Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                    toast.show();
+                                                                });
+
                                                             } else if (obj2.getString("memo").equals("该账号不存在")) {
-                                                                Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
-                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                toast.show();
+                                                                getActivity().runOnUiThread(() -> {
+                                                                    Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                    toast.show();
+                                                                });
+
                                                             } else if (obj2.getString("memo").equals("输入有误")) {
-                                                                Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
-                                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                toast.show();
+                                                                getActivity().runOnUiThread(() -> {
+                                                                    Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                    toast.show();
+                                                                });
                                                             }
                                                             Log.i("报名数据3", list.toString());
 
@@ -751,6 +794,8 @@ public class SignupFragment extends Fragment {
                                                                 rv.setLayoutManager(new LinearLayoutManager(context));
                                                                 //第二步：设置适配器
                                                                 signupAdapter = new SignupAdapter(context, list);
+                                                                //刷新适配器
+                                                                signupAdapter.notifyDataSetChanged();
                                                                 rv.setAdapter(signupAdapter);
                                                             });
                                                         } catch (JSONException e) {

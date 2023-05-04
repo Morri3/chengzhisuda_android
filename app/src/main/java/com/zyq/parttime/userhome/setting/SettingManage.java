@@ -5,29 +5,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
 import com.zyq.parttime.loginreg.LoginActivity;
-import com.zyq.parttime.sp.EditIntention;
-import com.zyq.parttime.sp.Logout;
+import com.zyq.parttime.form.Logout;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -57,11 +51,9 @@ public class SettingManage extends AppCompatActivity {
 
         //点击事件
         right1.setOnClickListener(v -> {
-            Log.i("设置页", "点击了密码管理");
         });
-        right2.setOnClickListener(v -> {
-            Log.i("设置页", "点击了退出登录");
 
+        right2.setOnClickListener(v -> {
             //调api
             new Thread(() -> {
                 try {
@@ -104,7 +96,7 @@ public class SettingManage extends AppCompatActivity {
                                             i.setClass(context, LoginActivity.class);
                                             startActivity(i);
                                         } else {
-                                            Toast toast = Toast.makeText(getBaseContext(), "登出失败", Toast.LENGTH_SHORT);
+                                            Toast toast = Toast.makeText(getBaseContext(), "登出失败，请重试", Toast.LENGTH_SHORT);
                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                             toast.show();
                                         }
@@ -122,18 +114,25 @@ public class SettingManage extends AppCompatActivity {
                 }
             }).start();//要start才会启动
         });
+
         right3.setOnClickListener(v -> {
-            Log.i("设置页", "敬请期待");
         });
+
         right4.setOnClickListener(v -> {
-            Log.i("设置页", "敬请期待");
         });
+
         back.setOnClickListener(v -> {
-            //跳转个人中心
-            Intent i = new Intent();
-            i.setClass(context, HomeActivity.class);
-            i.putExtra("id", 3);
-            startActivity(i);
+            runOnUiThread(() -> {
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                toast.show();
+
+                //跳转个人中心
+                Intent i = new Intent();
+                i.setClass(context, HomeActivity.class);
+                i.putExtra("id", 3);
+                startActivity(i);
+            });
         });
     }
 }

@@ -96,7 +96,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="0dp"
-        android:text="目前支持png、jpg、jpeg格式的简历图片。"
+        android:text="目前支持jpg格式的简历图片。"
         android:textSize="16dp"
         android:textStyle="bold"
         android:textColor="@color/text_grey_color"

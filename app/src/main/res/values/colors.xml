@@ -11,15 +11,27 @@
     <color name="main_purple">#7F83F7</color>
     <color name="main_purple_opacity">#247F83F7</color>
     <color name="main_purple_shape">#607F83F7</color>
+    <color name="orange">#FFD785</color>
     <color name="text_black_color">#101010</color>
+<!--    <color name="text_blue_color">#2247FC</color>-->
+    <color name="text_white_color">#FFFFFF</color>
     <color name="text_grey_color">#BEBEBE</color>
     <color name="text_shadow_color">#67587686</color>
     <color name="sub_title_color">#9A9A9A</color>
     <color name="divider">#BBBBBB</color>
-    <color name="text_orange_color">#F8C20F</color>
+    <color name="text_orange_color">#F89B0F</color>
+    <color name="text_orange_color_opacity">#ECBC75</color>
+    <color name="text_blue_color">#1A6EEC</color>
+    <color name="text_blue_color_opacity">#75A5EC</color>
+    <color name="text_red_color">#FF1414</color>
+    <color name="text_red_color_opacity">#EC758D</color>
+    <color name="text_green_color">#00D64E</color>
+    <color name="text_green_color_opacity">#2EF30B</color>
+    <color name="text_yellow_color">#A6EC01</color>
+    <color name="text_yellow_color_opacity">#F1FF72</color>
     <!--报名状态颜色，1：已报名，2：已录取，3：已结束，4：已取消-->
-    <color name="status_1">#FFC404</color>
-    <color name="status_2">#FCC100</color>
+    <color name="status_1">#FCC100</color>
+    <color name="status_2">#14F118</color>
     <color name="status_3">#C2C2C2</color>
-    <color name="status_4">#E204FF</color>
+    <color name="status_4">#A792AA</color>
 </resources>

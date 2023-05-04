@@ -1,9 +1,6 @@
 package com.zyq.parttime.home;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -29,19 +26,14 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
 import com.zyq.parttime.form.Position;
-import com.zyq.parttime.loginreg.LoginActivity;
-import com.zyq.parttime.loginreg.RegActivity;
-import com.zyq.parttime.sp.GetPosition;
-import com.zyq.parttime.sp.StuRegister;
+import com.zyq.parttime.form.GetPosition;
 import com.zyq.parttime.util.Constants;
-import com.zyq.parttime.util.DateData;
 import com.zyq.parttime.util.PositionCategoryData;
 
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +51,7 @@ public class HomeFragment extends Fragment {
     private List<Position> list = new ArrayList();//存放recycleview的数据
     private RecyclerView rv; //RecyclerView布局
     private HomeAdapter homeAdapter;//适配器
-    private Spinner positionSpinner;//搜索下拉框
+    private Spinner positionSpinner;//筛选下拉框
     private ImageView down;//筛选确定图标
 
     public HomeFragment() {
@@ -79,9 +71,6 @@ public class HomeFragment extends Fragment {
         //搜索下拉框
         positionSpinner = view.findViewById(R.id.search_position);
         down = view.findViewById(R.id.down);
-
-//        //创建Constant常量类中的usersSignup列表
-//        Constants.usersSignup=new ArrayList<>();
 
         //获取意向兼职
         List<String> intentions = new ArrayList<>();//存放意向兼职
@@ -158,8 +147,8 @@ public class HomeFragment extends Fragment {
                                                         Log.i("data_position", data_position.toString());
 
                                                         //有兼职数据
-                                                        JSONObject obj= (JSONObject) data_position.get(0);
-                                                        Log.i("obj",obj.toString());
+                                                        JSONObject obj = (JSONObject) data_position.get(0);
+                                                        Log.i("obj", obj.toString());
                                                         if (obj.getString("memo").equals("兼职获取成功")) {//根据第一个item的memo的信息判断是否有数据
                                                             for (int i = 0; i < data_position.size(); i++) {
                                                                 int p_id = data_position.getJSONObject(i).getIntValue("p_id");
@@ -205,10 +194,9 @@ public class HomeFragment extends Fragment {
                                                                 position.setSlogan(slogan);
 
                                                                 list.add(position);//加到列表中
-
                                                                 Log.i("首页数据list", list.toString());//兼职数据输出
                                                             }
-                                                        } else if (data_position.getJSONObject(0).getString("memo").equals("暂无该类型兼职")) {
+                                                        } else if (data_position.getJSONObject(0).getString("memo").equals("暂无兼职数据")) {
                                                             //没有兼职数据
                                                             getActivity().runOnUiThread(() -> {
                                                                 Toast toast = Toast.makeText(context, "暂无兼职，请耐心等待~", Toast.LENGTH_SHORT);
@@ -227,13 +215,11 @@ public class HomeFragment extends Fragment {
                                                                 }
                                                                 position.setContent("暂无兼职");//content标记是否有兼职
                                                                 list.add(position);//加入list
-
-                                                                Log.i("暂无兼职", "暂无兼职");//兼职数据输出
                                                             });
-                                                        } else if (data_position.getJSONObject(0).getString("memo").equals("请选择兼职种类后再筛选")) {
+                                                        } else if (data_position.getJSONObject(0).getString("memo").equals("兼职信息获取失败")) {
                                                             //没有兼职数据
                                                             getActivity().runOnUiThread(() -> {
-                                                                Toast toast = Toast.makeText(context, "请选择兼职种类后再筛选", Toast.LENGTH_SHORT);
+                                                                Toast toast = Toast.makeText(context, "兼职信息获取失败", Toast.LENGTH_SHORT);
                                                                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                                 toast.show();
 
@@ -249,10 +235,19 @@ public class HomeFragment extends Fragment {
                                                                 }
                                                                 position.setContent("暂无兼职");//content标记是否有兼职
                                                                 list.add(position);//加入list
-
-                                                                Log.i("请选择兼职种类后再筛选", "请选择兼职种类后再筛选");//兼职数据输出
                                                             });
                                                         }
+
+                                                        //适配器的定义与设置，显示兼职列表
+                                                        getActivity().runOnUiThread(() -> {
+                                                            //配置布局管理器、分割线、适配器
+                                                            rv = view.findViewById(R.id.rv);
+                                                            //第一步：设置布局管理器
+                                                            rv.setLayoutManager(new LinearLayoutManager(getActivity()));
+                                                            //第二步：设置适配器
+                                                            homeAdapter = new HomeAdapter(getActivity(), list);
+                                                            rv.setAdapter(homeAdapter);
+                                                        });
                                                     } catch (JSONException e) {
                                                         e.printStackTrace();
                                                     }
@@ -279,12 +274,12 @@ public class HomeFragment extends Fragment {
             }
         }).start();//要start才会启动
 
-        //5s延时
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        //5s延时
+//        try {
+//            Thread.sleep(5000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //创建PositionCategoryData类，并配置默认值
         PositionCategoryData data = new PositionCategoryData("无");
@@ -301,30 +296,31 @@ public class HomeFragment extends Fragment {
         category.add("班助");
         category.add("服务员");
 
-        //适配器
-        ArrayAdapter<String> positionAdapter = new ArrayAdapter<>(context,
-                R.layout.position_item, category);//把种类的列表添加到适配器中，使用自定义的item样式
-        positionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
-        positionSpinner.setAdapter(positionAdapter);//设置适配器
-
-        //监听下拉框
-        positionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                data.setCategory(positionAdapter.getItem(pos));//用DateData对象来处理选中的年份
-                getActivity().runOnUiThread(() -> {
-                    positionSpinner.setSelection(pos);//设置当前选中的item
-                });
-                Log.i("选择的兼职种类", data.getCategory());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        //筛选下拉框实现【点击图标，实现筛选，调api】
+        //筛选部分
         getActivity().runOnUiThread(() -> {
+            //筛选下拉框的适配器
+            ArrayAdapter<String> positionAdapter = new ArrayAdapter<>(context,
+                    R.layout.position_item, category);//把种类的列表添加到适配器中，使用自定义的item样式
+            positionAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);//设置下拉选项内容
+            positionSpinner.setAdapter(positionAdapter);//设置适配器
+
+            //监听下拉框
+            positionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                    data.setCategory(positionAdapter.getItem(pos));//用DateData对象来处理选中的年份
+                    getActivity().runOnUiThread(() -> {
+                        positionSpinner.setSelection(pos);//设置当前选中的item
+                    });
+                    Log.i("选择的兼职种类", data.getCategory());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+            //筛选下拉框实现【点击图标，实现筛选，调api】
             down.setOnClickListener(v -> {
                 list.clear();//清空兼职列表
 
@@ -333,7 +329,7 @@ public class HomeFragment extends Fragment {
                         OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
                         Request request;
                         if (data.getCategory().equals("")) {//获取所有兼职
-                            //默认还是以意向兼职在开头
+                            //默认还是以 意向兼职 在开头
                             GetPosition getPosition = new GetPosition();//DTO
                             getPosition.setIntentions(intentions);//参数是意向兼职
                             String json = JSON.toJSONString(getPosition);//dto转string
@@ -370,7 +366,7 @@ public class HomeFragment extends Fragment {
                                         Log.i("data_position实体", data_position.toString());
 
                                         //有兼职数据
-                                        JSONObject obj= (JSONObject) data_position.get(0);
+                                        JSONObject obj = (JSONObject) data_position.get(0);
                                         if (obj.getString("memo").equals("兼职获取成功")) {//根据第一个item的memo的信息判断是否有数据
                                             for (int i = 0; i < data_position.size(); i++) {
                                                 int p_id = data_position.getJSONObject(i).getIntValue("p_id");
@@ -386,7 +382,7 @@ public class HomeFragment extends Fragment {
                                                 String position_status = data_position.getJSONObject(i).getString("position_status");
                                                 String salary = data_position.getJSONObject(i).getString("salary");
                                                 String settlement = data_position.getJSONObject(i).getString("settlement");
-                                                String signup_ddl = data_position.getJSONObject(i).getString("signup_ddl");
+                                                Date signup_ddl = data_position.getJSONObject(i).getDate("signup_ddl");
                                                 String slogan = data_position.getJSONObject(i).getString("slogan");
 
                                                 Position position = new Position();
@@ -406,9 +402,11 @@ public class HomeFragment extends Fragment {
                                                 Date ddl = new Date();
                                                 try {
                                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                                                    //创建时间
                                                     create = sdf.parse(create_time);
                                                     position.setCreate_time(create);
-                                                    ddl = sdf.parse(signup_ddl);
+                                                    //ddl
+                                                    ddl = sdf.parse(sdf.format(signup_ddl));
                                                     position.setSignup_ddl(ddl);
                                                 } catch (ParseException e) {
                                                     Log.i("error", "日期转换错误");
@@ -416,12 +414,11 @@ public class HomeFragment extends Fragment {
                                                 position.setSlogan(slogan);
 
                                                 list.add(position);//加到列表中
-
                                                 Log.i("筛选后的首页数据list", list.toString());//兼职数据输出
                                             }
 
-                                        } else if (data_position.getJSONObject(0).getString("memo").equals("暂无该类型兼职")) {
-                                            //没有兼职数据
+                                        } else if (data_position.getJSONObject(0).getString("memo").equals("暂无兼职数据")) {
+                                            //没有兼职数据（按意向兼职的那个接口）
                                             getActivity().runOnUiThread(() -> {
                                                 Toast toast = Toast.makeText(context, "暂无兼职，请耐心等待~", Toast.LENGTH_SHORT);
                                                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
@@ -439,11 +436,29 @@ public class HomeFragment extends Fragment {
                                                 }
                                                 position.setContent("暂无兼职");//content标记是否有兼职
                                                 list.add(position);//加入list
+                                            });
+                                        } else if (data_position.getJSONObject(0).getString("memo").equals("暂无该类型兼职")) {
+                                            //没有兼职数据（筛选的那个接口）
+                                            getActivity().runOnUiThread(() -> {
+                                                Toast toast = Toast.makeText(context, "暂无兼职，请耐心等待~", Toast.LENGTH_SHORT);
+                                                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                toast.show();
 
-                                                Log.i("暂无兼职", "暂无兼职");//兼职数据输出
+                                                //构造空兼职
+                                                Position position = new Position();
+                                                position.setP_id(0);
+                                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                try {
+                                                    Date now = sdf.parse(sdf.format(new Date()));
+                                                    position.setUpdate_time(now);
+                                                } catch (ParseException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                position.setContent("暂无兼职");//content标记是否有兼职
+                                                list.add(position);//加入list
                                             });
                                         } else if (data_position.getJSONObject(0).getString("memo").equals("请选择兼职种类后再筛选")) {
-                                            //没有兼职数据
+                                            //没有兼职数据（筛选的那个接口）
                                             getActivity().runOnUiThread(() -> {
                                                 Toast toast = Toast.makeText(context, "请选择兼职种类后再筛选", Toast.LENGTH_SHORT);
                                                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
@@ -461,8 +476,6 @@ public class HomeFragment extends Fragment {
                                                 }
                                                 position.setContent("暂无兼职");//content标记是否有兼职
                                                 list.add(position);//加入list
-
-                                                Log.i("请选择兼职种类后再筛选", "请选择兼职种类后再筛选");//兼职数据输出
                                             });
                                         }
 
@@ -486,69 +499,6 @@ public class HomeFragment extends Fragment {
             });
         });
 
-        //适配器的定义与设置
-        getActivity().runOnUiThread(() -> {
-            //配置布局管理器、分割线、适配器
-            rv = view.findViewById(R.id.rv);
-            //第一步：设置布局管理器
-            rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-            //第二步：设置适配器
-            homeAdapter = new HomeAdapter(getActivity(), list);
-            rv.setAdapter(homeAdapter);
-
-            //星推榜
-            TextView enter = view.findViewById(R.id.enter);
-            enter.setOnClickListener(v -> {
-                Log.i("星推榜", "点击了星推榜");
-                //跳转
-
-            });
-        });
-
         return view;
     }
-
-//        list.clear();
-//        new Thread(() -> {
-//            try {
-//                OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-//                String telephone = "13800000001";
-//                String json = "{\"telephone\":\"" + telephone + "\"}";
-//                Log.i("json", json);
-//                RequestBody body = RequestBody.create(MediaType.parse("application/json"), json);
-//
-//                Request request = new Request.Builder()
-//                        .url("http://114.55.239.213:8080/users/resumes/get?telephone=13800000001")
-//                        .get()
-//                        .build();//创建Http请求
-//                client.newBuilder().readTimeout(15000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
-//                    @Override
-//                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//                        Log.i("error", "数据获取失败");
-//                        e.printStackTrace();
-//                    }
-//
-//                    @Override
-//                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-//                        if (response.isSuccessful()) {//调用成功
-//                            try {
-////                                JSONObject jsonObject = new JSONObject(response.body().string());//json
-////                                JSONObject obj = jsonObject.getJSONObject("data");//获取数据
-////                                Log.i("数据", obj.toString());
-//
-//                                //获取obj中的数据
-//
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                        } else {//调用失败
-//                            Log.i("error", response.toString());
-//                        }
-//                    }
-//                });
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }).start();//要start才会启动
 }

@@ -170,10 +170,11 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
     //重写onResume方法，activity跳转到响应的fragment
     @Override
     protected void onResume() {
-        //FragmentTransaction实现向Activity state增加/删除fragment
+        //FragmentTransaction实现向Activity state增/删fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         int id = getIntent().getIntExtra("id", 0);
+
         if (id == 1) {
             changeColors("home");//图片、文字选中的样式
             if (homeFragment == null) {//fragment为空
@@ -183,6 +184,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 transaction.show(homeFragment);//显示该fragment
             }
         }
+
         if (id == 2) {
             changeColors("signup");//图片、文字选中的样式
             if (signupFragment == null) {//fragment为空
@@ -192,6 +194,7 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
                 transaction.show(signupFragment);//显示该fragment
             }
         }
+
         if (id == 3) {
             changeColors("userhome");//图片、文字选中的样式
             if (userhomeFragment == null) {//fragment为空

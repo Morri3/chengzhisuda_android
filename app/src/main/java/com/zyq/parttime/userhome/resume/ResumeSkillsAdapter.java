@@ -18,12 +18,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.EditCampus;
-import com.zyq.parttime.form.EditProject;
 import com.zyq.parttime.form.EditProjectDto;
 import com.zyq.parttime.form.EditSkills;
-import com.zyq.parttime.sp.AddDetail;
-import com.zyq.parttime.sp.DeleteDetail;
+import com.zyq.parttime.form.AddDetail;
+import com.zyq.parttime.form.DeleteDetail;
 
 import java.io.IOException;
 import java.util.List;
@@ -107,7 +105,7 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public HeaderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View headerView = LayoutInflater.from(context).inflate(R.layout.campus_show_skills_item, parent, false);
+        View headerView = LayoutInflater.from(context).inflate(R.layout.resumes_show_skills_item, parent, false);
         HeaderViewHolder headerHolder = new HeaderViewHolder(headerView);
         headerHolder.content = headerView.findViewById(R.id.content);
 
@@ -125,9 +123,6 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
                 EditSkills item = list.get(pos);
                 Log.i("isSave", isSave + "");
-
-                //设置焦点，实现走马灯
-                headerViewHolder.content.requestFocus();
 
                 if (isSave == 0) {
                     //隐藏编辑的控件
@@ -171,8 +166,10 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                             Log.i("error", "最少需要一条数据~");
                         } else {
-                            //删除自带默认动画
-                            list.remove(thePos);
+                            //隐藏增删改图标
+                            headerViewHolder.add2.setVisibility(View.INVISIBLE);
+                            headerViewHolder.save2.setVisibility(View.INVISIBLE);
+                            headerViewHolder.delete2.setVisibility(View.INVISIBLE);
 
                             //调api TODO
                             new Thread(() -> {
@@ -205,12 +202,25 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                             if (response.isSuccessful()) {//调用成功
                                                 try {
                                                     JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                    Log.i("data", jsonObj.getString("data"));
-                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("delete_detail_data", jsonObj.getString("data"));
+                                                    JSONObject delete_detail_data = JSON.parseObject(jsonObj.getString("data"));
 
-                                                    //获取obj中的数据
-                                                    Log.i("rd_id", data.getString("rd_id"));
-                                                    Log.i("删除", "删除成功！");
+                                                    //判断返回的状态
+                                                    if ((delete_detail_data.getString("memo")).equals("删除成功！")) {
+                                                        //删除自带默认动画
+                                                        list.remove(thePos);
+                                                        Log.i("删除", "删除成功！");
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该简历详情不是该学生的")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历信息")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历详情")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("请输入手机号")) {
+
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -233,7 +243,12 @@ public class ResumeSkillsAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                         //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-                        Log.i("b", list.toString());
+//                        Log.i("b", list.toString());
+
+                        //隐藏增删改图标
+                        headerViewHolder.add2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.save2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.delete2.setVisibility(View.INVISIBLE);
 
                         //调api，根据id 修改数据库中的数据
                         new Thread(() -> {

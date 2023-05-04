@@ -21,6 +21,7 @@ import com.zyq.parttime.form.Position;
 import com.zyq.parttime.position.PositionDetail;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -52,10 +53,28 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         private View divider;
         private TextView detail_text;
         private ImageView detail_icon;
+        private TextView ddl_text;
+        private TextView ddl;
 
         private TextView no_position;
 
         //getter、setter方法
+        public TextView getDdl_text() {
+            return ddl_text;
+        }
+
+        public void setDdl_text(TextView ddl_text) {
+            this.ddl_text = ddl_text;
+        }
+
+        public TextView getDdl() {
+            return ddl;
+        }
+
+        public void setDdl(TextView ddl) {
+            this.ddl = ddl;
+        }
+
         public TextView getNo_position() {
             return no_position;
         }
@@ -145,6 +164,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
             headerHolder.divider = headerView.findViewById(R.id.divider);
             headerHolder.detail_text = headerView.findViewById(R.id.detail_text);
             headerHolder.detail_icon = headerView.findViewById(R.id.detail_icon);
+            headerHolder.ddl = headerView.findViewById(R.id.ddl);
+            headerHolder.ddl_text = headerView.findViewById(R.id.ddl_text);
             headerHolder.no_position = headerView.findViewById(R.id.no_position);
             return headerHolder;
         } else {
@@ -167,6 +188,8 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 headerViewHolder.salary.setVisibility(View.VISIBLE);
                 headerViewHolder.detail_text.setVisibility(View.VISIBLE);
                 headerViewHolder.detail_icon.setVisibility(View.VISIBLE);
+                headerViewHolder.ddl.setVisibility(View.VISIBLE);
+                headerViewHolder.ddl_text.setVisibility(View.VISIBLE);
                 headerViewHolder.divider.setVisibility(View.VISIBLE);
 
                 //获取第一个兼职
@@ -174,13 +197,16 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                 if (!position.getContent().equals("暂无兼职")) {
                     //有兼职数据
                     Position data = dataList.get(pos);//获取当前item的数据
-                    Log.i("data_adapter", data.toString());//test
+//                    Log.i("data_adapter", data.toString());//test
 
                     headerViewHolder.name.setText(data.getPosition_name());
                     headerViewHolder.area.setText(data.getArea());
                     headerViewHolder.settlement.setText(data.getSettlement());
                     headerViewHolder.work_time.setText(data.getWork_time());
                     headerViewHolder.salary.setText(data.getSalary());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String ddl = sdf.format(data.getSignup_ddl());
+                    headerViewHolder.ddl.setText(ddl);
 
                     //最后一个不显示分割线
                     if (pos == dataList.size() - 1) {
@@ -189,7 +215,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
                     //查看详情按钮
                     headerViewHolder.detail_text.setOnClickListener(view -> {
-                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
 
@@ -197,12 +223,13 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                         Intent editpro = new Intent(context, PositionDetail.class);
                         editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
                         editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+
                         //获取该position在list中的位置（下标），传过去
                         editpro.putExtra("pos", pos);//传递当前选中的报名的下标
                         context.startActivity(editpro);
                     });
                     headerViewHolder.detail_icon.setOnClickListener(view -> {
-                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_SHORT);
+                        Toast toast = Toast.makeText(context, "欢迎查看兼职详情", Toast.LENGTH_LONG);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
 
@@ -210,10 +237,12 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                         Intent editpro = new Intent(context, PositionDetail.class);
                         editpro.putExtra("position_data", (Serializable) dataList);//传递兼职数据
                         editpro.putExtra("p_id", data.getP_id());//传递当前选中的兼职的id
+
                         //获取该position在list中的位置（下标），传过去
                         editpro.putExtra("pos", pos);//传递当前选中的报名的下标
                         context.startActivity(editpro);
                     });
+
                 } else {
                     //没有兼职，显示”暂无兼职“字样
                     headerViewHolder.no_position.setVisibility(View.VISIBLE);
@@ -224,8 +253,9 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
                     headerViewHolder.salary.setVisibility(View.INVISIBLE);
                     headerViewHolder.detail_text.setVisibility(View.INVISIBLE);
                     headerViewHolder.detail_icon.setVisibility(View.INVISIBLE);
+                    headerViewHolder.ddl.setVisibility(View.INVISIBLE);
+                    headerViewHolder.ddl_text.setVisibility(View.INVISIBLE);
                     headerViewHolder.divider.setVisibility(View.INVISIBLE);
-
                 }
             }
         } catch (Exception e) {

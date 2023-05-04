@@ -1,9 +1,6 @@
 package com.zyq.parttime.userhome.resume;
 
 import android.content.Context;
-import android.os.Handler;
-import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,15 +20,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
 import com.zyq.parttime.form.EditCampus;
 import com.zyq.parttime.form.EditCampusDto;
-import com.zyq.parttime.form.EditPersonalDto;
-import com.zyq.parttime.sp.AddDetail;
-import com.zyq.parttime.sp.DeleteDetail;
-import com.zyq.parttime.sp.EditIntention;
-import com.zyq.parttime.util.Constants;
+import com.zyq.parttime.form.AddDetail;
+import com.zyq.parttime.form.DeleteDetail;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -149,7 +141,7 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public HeaderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View headerView = LayoutInflater.from(context).inflate(R.layout.campus_show_item, parent, false);
+        View headerView = LayoutInflater.from(context).inflate(R.layout.resumes_show_item, parent, false);
         HeaderViewHolder headerHolder = new HeaderViewHolder(headerView);
         headerHolder.title = headerView.findViewById(R.id.title);
         headerHolder.date = headerView.findViewById(R.id.date);
@@ -172,11 +164,6 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 EditCampus item = list.get(pos);
                 Log.i("isSave", isSave + "");
 
-                //设置焦点，实现走马灯
-                headerViewHolder.content.requestFocus();
-                headerViewHolder.date.requestFocus();
-                headerViewHolder.title.requestFocus();
-
                 if (isSave == 0) {
                     //隐藏编辑的控件
                     headerViewHolder.title2.setVisibility(View.INVISIBLE);
@@ -192,9 +179,9 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     //list的数据set到textview中
                     headerViewHolder.title.setText(item.getTitle());
                     headerViewHolder.date.setText(item.getDate());
-                    headerViewHolder.content.setText(item.getContent());
+                    headerViewHolder.content.setText("\t\t\t\t" + item.getContent());//首行缩进两个中文
                 } else if (isSave == 1) {
-                    //隐藏编辑的控件
+                    //显示编辑的控件
                     headerViewHolder.title2.setVisibility(View.VISIBLE);
                     headerViewHolder.date2.setVisibility(View.VISIBLE);
                     headerViewHolder.content2.setVisibility(View.VISIBLE);
@@ -233,10 +220,12 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                             Log.i("error", "最少需要一条数据~");
                         } else {
-                            //删除自带默认动画
-                            list.remove(thePos);
+                            //隐藏增删改图标
+                            headerViewHolder.add2.setVisibility(View.INVISIBLE);
+                            headerViewHolder.save2.setVisibility(View.INVISIBLE);
+                            headerViewHolder.delete2.setVisibility(View.INVISIBLE);
 
-                            //调api TODO
+                            //TODO  调api
                             new Thread(() -> {
                                 try {
                                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
@@ -267,12 +256,26 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                             if (response.isSuccessful()) {//调用成功
                                                 try {
                                                     JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                                    Log.i("data", jsonObj.getString("data"));
-                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("delete_detail_data", jsonObj.getString("data"));
+                                                    JSONObject delete_detail_data = JSON.parseObject(jsonObj.getString("data"));
+                                                    Log.i("rd_id", delete_detail_data.getString("rd_id"));
 
-                                                    //获取obj中的数据
-                                                    Log.i("rd_id", data.getString("rd_id"));
-                                                    Log.i("删除", "删除成功！");
+                                                    //判断返回的状态
+                                                    if ((delete_detail_data.getString("memo")).equals("删除成功！")) {
+                                                        //删除自带默认动画
+                                                        list.remove(thePos);
+                                                        Log.i("删除", "删除成功！");
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该简历详情不是该学生的")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历信息")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历详情")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("该账号不存在")) {
+
+                                                    } else if ((delete_detail_data.getString("memo")).equals("请输入手机号")) {
+
+                                                    }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -281,7 +284,6 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                             }
                                         }
                                     });
-
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -297,14 +299,19 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                         //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-                        Log.i("b", list.toString());
+//                        Log.i("b", list.toString());
+
+                        //隐藏增删改图标
+                        headerViewHolder.add2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.save2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.delete2.setVisibility(View.INVISIBLE);
 
                         //调api，根据id 修改数据库中的数据
                         new Thread(() -> {
                             try {
                                 OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
 
-                                //根据initial变量的值，判断是 原有记录 还是 新增记录
+                                //根据initial变量的值，判断是 原有记录 还是 新增记录，实现简历数据的显示、简历detail的新增 两个功能
                                 int initial = item.getInitial();
 
                                 if (initial == 1) {
@@ -416,8 +423,7 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     });
                 }
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

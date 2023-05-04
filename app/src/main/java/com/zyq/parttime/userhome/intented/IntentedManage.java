@@ -20,14 +20,11 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
-import com.zyq.parttime.home.HomeFragment;
-import com.zyq.parttime.sp.EditIntention;
-import com.zyq.parttime.userhome.resume.ResumesManage;
+import com.zyq.parttime.form.EditIntention;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -358,9 +355,15 @@ public class IntentedManage extends AppCompatActivity {
                                     }
 
                                     runOnUiThread(() -> {
-                                        Toast toast = Toast.makeText(getBaseContext(), "意向兼职编辑成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getBaseContext(), "编辑成功！请稍等片刻~", Toast.LENGTH_SHORT);
                                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                         toast.show();
+
+                                        //跳转个人中心
+                                        Intent i = new Intent();
+                                        i.setClass(context, HomeActivity.class);
+                                        i.putExtra("id", 3);
+                                        startActivity(i);
                                     });
                                 } catch (JSONException e) {
                                     e.printStackTrace();
@@ -374,15 +377,13 @@ public class IntentedManage extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }).start();//要start才会启动
-
-            //跳转个人中心
-            Intent i = new Intent();
-            i.setClass(context, HomeActivity.class);
-            i.putExtra("id", 3);
-            startActivity(i);
         });
 
         back.setOnClickListener(v -> {
+            Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+            toast.show();
+
             //跳转个人中心
             Intent i = new Intent();
             i.setClass(context, HomeActivity.class);

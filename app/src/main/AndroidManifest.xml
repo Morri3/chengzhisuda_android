@@ -60,7 +60,7 @@
             android:exported="true">
         </activity>
         <activity
-            android:name=".userhome.UserInfo"
+            android:name=".userhome.info.UserInfo"
             android:exported="true">
         </activity>
         <activity

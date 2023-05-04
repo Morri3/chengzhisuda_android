@@ -1,12 +1,9 @@
 package com.zyq.parttime.signup;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -15,21 +12,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.Position;
-import com.zyq.parttime.sp.MarkPost;
-import com.zyq.parttime.util.Utils;
+import com.zyq.parttime.form.MarkPost;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -159,7 +152,7 @@ public class MarkActivity extends AppCompatActivity {
                                     Log.i("data_mark_post实体", data_mark_post.toString());
 
                                     runOnUiThread(() -> {
-                                        Toast toast = Toast.makeText(getBaseContext(), "评分成功！请耐心等待~", Toast.LENGTH_SHORT);
+                                        Toast toast = Toast.makeText(getBaseContext(), "评分成功！请耐心等待~", Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                         toast.show();
 

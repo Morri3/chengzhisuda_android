@@ -22,13 +22,12 @@ import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
-import com.zyq.parttime.sp.Login;
-import com.zyq.parttime.sp.StuLogin;
+import com.zyq.parttime.form.Login;
+import com.zyq.parttime.form.StuLogin;
 import com.zyq.parttime.util.Constants;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -133,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                                             Log.i("当前账号", Constants.telephone);
 
                                             runOnUiThread(() -> {
-                                                Toast toast = Toast.makeText(getApplicationContext(), "登录成功！请稍等片刻~", Toast.LENGTH_SHORT);
+                                                Toast toast = Toast.makeText(getApplicationContext(), "登录成功！请稍等片刻~", Toast.LENGTH_LONG);
                                                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                 toast.show();
 

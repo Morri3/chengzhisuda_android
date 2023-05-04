@@ -1,22 +1,13 @@
 package com.zyq.parttime.signup;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,27 +17,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.Position;
 import com.zyq.parttime.form.Signup;
-import com.zyq.parttime.home.HomeAdapter;
-import com.zyq.parttime.position.PositionDetail;
-import com.zyq.parttime.sp.Cancel;
-import com.zyq.parttime.sp.Cancels;
-import com.zyq.parttime.sp.CommentPost;
-import com.zyq.parttime.sp.HistoryDto;
-import com.zyq.parttime.sp.Marks;
-import com.zyq.parttime.sp.PositionInfo;
+import com.zyq.parttime.form.Cancel;
+import com.zyq.parttime.form.CommentPost;
+import com.zyq.parttime.form.PositionInfo;
 import com.zyq.parttime.util.Utils;
 
 import java.io.IOException;
@@ -91,6 +71,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         //封装数据
+        private TextView sid;
         private TextView name;
         private TextView status;
         private TextView area;
@@ -111,6 +92,14 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private ConstraintLayout line4;
         private ConstraintLayout item;
         private View divider;
+
+        public TextView getSid() {
+            return sid;
+        }
+
+        public void setSid(TextView sid) {
+            this.sid = sid;
+        }
 
         public View getDivider() {
             return divider;
@@ -292,6 +281,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             View headerView = LayoutInflater.from(context).inflate(R.layout.signup_item, null);
             HeaderViewHolder headerHolder = new HeaderViewHolder(headerView);
             //接下来是控件的引用声明
+            headerHolder.sid = headerView.findViewById(R.id.sid);
             headerHolder.name = headerView.findViewById(R.id.name);
             headerHolder.status = headerView.findViewById(R.id.status);
             headerHolder.area = headerView.findViewById(R.id.area);
@@ -379,6 +369,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             }
 
                                             ((Activity) context).runOnUiThread(() -> {
+                                                headerViewHolder.sid.setText("SID:" + data.getS_id());//设置报名id
                                                 headerViewHolder.name.setText(position_name);
                                                 headerViewHolder.area.setText(area);
                                                 headerViewHolder.settlement.setText(settlement);
@@ -624,7 +615,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                         //评分按钮
                         headerViewHolder.mark.setOnClickListener(view -> {
-                            Toast toast = Toast.makeText(context, "点击了评分按钮", Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(context, "欢迎评分", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                             toast.show();
 
@@ -651,7 +642,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             context.startActivity(editpro);
                         });
                         headerViewHolder.mark_icon.setOnClickListener(view -> {
-                            Toast toast = Toast.makeText(context, "点击了评分按钮", Toast.LENGTH_SHORT);
+                            Toast toast = Toast.makeText(context, "欢迎评分", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                             toast.show();
 
@@ -848,11 +839,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                                             headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
                                                         } else {
-                                                            //第一个参数：设置toast在屏幕中显示的位置。这里设置是居中靠顶
-                                                            //第二个参数：相对于第一个参数设置toast位置的横向X轴的偏移量，正数向右偏移，负数向左偏移
-                                                            //第三个参数：相对于第一个参数设置toast位置的纵向y轴的偏移量，正数向下偏移，负数向上偏移
-                                                            //如果设置的偏移量超过了屏幕的范围，toast将在屏幕内靠近超出的那个边界显示
-                                                            //屏幕居中显示，X轴和Y轴偏移量都是0
                                                             Toast toast = Toast.makeText(context, "不能取消该报名", Toast.LENGTH_SHORT);
                                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                             toast.show();
@@ -1007,8 +993,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     });
                 }
             }
-        } catch (
-                Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

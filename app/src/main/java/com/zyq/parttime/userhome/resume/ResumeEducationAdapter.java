@@ -2,14 +2,12 @@ package com.zyq.parttime.userhome.resume;
 
 import android.content.Context;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +16,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.EditCampus;
-import com.zyq.parttime.form.EditCampusDto;
 import com.zyq.parttime.form.EditEducation;
 import com.zyq.parttime.form.EditEducationDto;
-import com.zyq.parttime.sp.AddDetail;
 
 import java.io.IOException;
 import java.util.List;
@@ -142,7 +137,7 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public HeaderViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View headerView = LayoutInflater.from(context).inflate(R.layout.campus_show_item, parent, false);
+        View headerView = LayoutInflater.from(context).inflate(R.layout.resumes_show_item, parent, false);
         HeaderViewHolder headerHolder = new HeaderViewHolder(headerView);
         headerHolder.title = headerView.findViewById(R.id.title);
         headerHolder.date = headerView.findViewById(R.id.date);
@@ -185,7 +180,7 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     //list的数据set到textview中
                     headerViewHolder.title.setText(item.getTitle());
                     headerViewHolder.date.setText(item.getDate());
-                    headerViewHolder.content.setText(item.getContent());
+                    headerViewHolder.content.setText("\t\t\t\t" + item.getContent());
                 } else if (isSave == 1) {
                     //隐藏编辑的控件
                     headerViewHolder.title2.setVisibility(View.VISIBLE);
@@ -210,9 +205,14 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                         item.setDate(headerViewHolder.date2.getText().toString());
                         item.setContent(headerViewHolder.content2.getText().toString());
 
+                        //隐藏增删改图标
+                        headerViewHolder.add2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.save2.setVisibility(View.INVISIBLE);
+                        headerViewHolder.delete2.setVisibility(View.INVISIBLE);
+
                         //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-                        Log.i("b", list.toString());
+//                        Log.i("b", list.toString());
 
                         //调api，根据id 修改数据库中的数据
                         new Thread(() -> {

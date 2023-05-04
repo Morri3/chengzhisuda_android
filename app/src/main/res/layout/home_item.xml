@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/name"
-            android:layout_width="wrap_content"
+            android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:text="图书馆学生助理"
             android:textColor="@color/text_black_color"
@@ -24,8 +24,33 @@
             android:layout_marginTop="12dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            android:ellipsize="end"
+            android:maxEms="5"
+            android:maxLines="1"
             />
-
+        <TextView
+            android:id="@+id/ddl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2023-01-01 00:00:00"
+            android:textColor="@color/text_orange_color"
+            android:textSize="10dp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            app:layout_constraintRight_toLeftOf="@id/ddl_text"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+        <TextView
+            android:id="@+id/ddl_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="截止报名"
+            android:textColor="@color/text_black_color"
+            android:textSize="10dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/line2"
             android:layout_width="340dp"
@@ -37,7 +62,7 @@
             >
             <TextView
                 android:id="@+id/area"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:text="校图书馆A座"
                 android:textColor="@color/sub_title_color"
@@ -47,6 +72,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginLeft="8dp"
+                android:ellipsize="end"
+                android:maxEms="5"
+                android:maxLines="1"
                 />
             <TextView
                 android:id="@+id/settlement"
