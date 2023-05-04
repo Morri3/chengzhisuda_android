@@ -123,9 +123,9 @@ public class SettingManage extends AppCompatActivity {
 
         back.setOnClickListener(v -> {
             runOnUiThread(() -> {
-                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                toast.show();
+//                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_SHORT);
+//                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                toast.show();
 
                 //跳转个人中心
                 Intent i = new Intent();

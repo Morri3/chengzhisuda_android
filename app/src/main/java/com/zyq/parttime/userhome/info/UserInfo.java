@@ -744,9 +744,9 @@ public class UserInfo extends AppCompatActivity {
 
         //返回
         back.setOnClickListener(v -> {
-            Toast toast = Toast.makeText(this.getBaseContext(), "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-            toast.show();
+//            Toast toast = Toast.makeText(this.getBaseContext(), "数据加载中，请稍等片刻~", Toast.LENGTH_SHORT);
+//            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//            toast.show();
 
             //跳转到首页
             Intent i = new Intent();

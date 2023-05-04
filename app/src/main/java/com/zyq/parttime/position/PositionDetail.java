@@ -250,7 +250,7 @@ public class PositionDetail extends AppCompatActivity {
         back = findViewById(R.id.back);
         back.setOnClickListener(v -> {
             runOnUiThread(() -> {
-                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_SHORT);
                 toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                 toast.show();
 

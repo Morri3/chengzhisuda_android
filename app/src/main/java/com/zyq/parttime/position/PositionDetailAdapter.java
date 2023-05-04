@@ -436,42 +436,42 @@ public class PositionDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                     if (signupWithUser.getCanSignup() == 1) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "请先完成正在进行的兼职", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "请先完成正在进行的兼职", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 2) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "该兼职已招满", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "该兼职已招满", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 3) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "该兼职已结束", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "该兼职已结束", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 4) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "不存在该兼职", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "不存在该兼职", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 5) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "报名失败", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "报名失败", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 6) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 7) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "该兼职已结束报名", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "该兼职已结束报名", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 8) {
                         //不可以报名
-                        Toast toast = Toast.makeText(context, "请检查输入", Toast.LENGTH_LONG);
+                        Toast toast = Toast.makeText(context, "请检查输入", Toast.LENGTH_SHORT);
                         toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                         toast.show();
                     } else if (signupWithUser.getCanSignup() == 9) {

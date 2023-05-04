@@ -1212,9 +1212,9 @@ public class ResumesManage extends AppCompatActivity {
         //返回
         back.setOnClickListener(v -> {
             runOnUiThread(() -> {
-                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                toast.show();
+//                Toast toast = Toast.makeText(context, "数据加载中，请稍等片刻~", Toast.LENGTH_SHORT);
+//                toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                toast.show();
 
                 //跳转到个人中心页
                 Intent i = new Intent();
