@@ -39,9 +39,6 @@
         android:shadowDy="10"
         android:shadowRadius="10"
         android:shadowColor="@color/text_shadow_color"
-        android:ellipsize="end"
-        android:maxEms="5"
-        android:maxLines="1"
         />
     <TextView
         android:id="@+id/settlement"
@@ -292,13 +289,10 @@
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/employer_name"
-        android:ellipsize="end"
-        android:maxEms="5"
-        android:maxLines="1"
         />
     <TextView
         android:id="@+id/unit_name"
-        android:layout_width="wrap_content"
+        android:layout_width="290dp"
         android:layout_height="wrap_content"
         android:text="浙大城市学院图书馆"
         android:textColor="@color/text_black_color"
@@ -308,6 +302,9 @@
         android:layout_marginTop="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/slogan"
+        android:ellipsize="end"
+        android:maxEms="5"
+        android:maxLines="1"
         />
     <TextView
         android:id="@+id/descriptions"
@@ -320,9 +317,6 @@
         android:layout_marginTop="5dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/unit_name"
-        android:ellipsize="end"
-        android:maxEms="5"
-        android:maxLines="1"
         />
     <TextView
         android:id="@+id/job_nums"
