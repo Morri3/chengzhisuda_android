@@ -266,15 +266,15 @@ public class ResumeCampusAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                                         list.remove(thePos);
                                                         Log.i("删除", "删除成功！");
                                                     } else if ((delete_detail_data.getString("memo")).equals("该简历详情不是该学生的")) {
-
+                                                        Log.i("删除", "该简历详情不是该学生的");
                                                     } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历信息")) {
-
+                                                        Log.i("删除", "该账号不存在简历信息");
                                                     } else if ((delete_detail_data.getString("memo")).equals("该账号不存在简历详情")) {
-
+                                                        Log.i("删除", "该账号不存在简历详情");
                                                     } else if ((delete_detail_data.getString("memo")).equals("该账号不存在")) {
-
+                                                        Log.i("删除", "该账号不存在");
                                                     } else if ((delete_detail_data.getString("memo")).equals("请输入手机号")) {
-
+                                                        Log.i("删除", "请输入手机号");
                                                     }
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();

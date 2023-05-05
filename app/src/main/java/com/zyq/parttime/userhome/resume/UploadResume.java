@@ -232,7 +232,7 @@ public class UploadResume extends AppCompatActivity {
         });
 
         back.setOnClickListener(v -> {
-            runOnUiThread(()->{
+            runOnUiThread(() -> {
                 //跳转简历页
                 Intent i = new Intent();
                 i.setClass(context, ResumesManage.class);
@@ -253,7 +253,7 @@ public class UploadResume extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
                     imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, file);
                 } else {
-                    imageUri = Uri.fromFile(file);
+                    imageUri = Uri.fromFile(file);//从file文件中获取uri
                 }
             }
 
@@ -269,10 +269,10 @@ public class UploadResume extends AppCompatActivity {
     private File createImageFile() {
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         String fileName = format + "_";//文件名
-        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);//获取外部存储的存放图片的文件夹的路径
 
         try {
-            File imageFile = File.createTempFile(fileName, ".jpg", file);
+            File imageFile = File.createTempFile(fileName, ".jpg", file);//指定图片文件格式为.jpg
             return imageFile;//返回添加文件名的File
         } catch (IOException e) {
             e.printStackTrace();

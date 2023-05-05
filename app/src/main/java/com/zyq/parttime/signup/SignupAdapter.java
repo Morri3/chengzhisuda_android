@@ -54,9 +54,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
 //    private List<Marks> marks=new ArrayList<>();
 //    private List<Cancels> cancels=new ArrayList<>();
-//    //sharedpreference
-//    private SharedPreferences pref;
-//    private SharedPreferences.Editor editor;
 
     public SignupAdapter(Context context, List<Signup> dataList) {
         this.context = context;
@@ -319,7 +316,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 Log.i("报名item的信息", data.toString());
 
                 if (data != null && data.getS_id() != 0) {//有记录
-                    //根据p_id找到position实体，调api  TODO
+                    //TODO  根据p_id找到position实体，调api
                     PositionInfo positionInfo = new PositionInfo();
                     new Thread(() -> {
                         try {
@@ -361,12 +358,12 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             String position_status = data.getSignup_status();
                                             positionInfo.setPosition_status(position_status);
 
-                                            //延时1.5s
-                                            try {
-                                                Thread.sleep(1500);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+//                                            //延时1.5s
+//                                            try {
+//                                                Thread.sleep(300);
+//                                            } catch (Exception e) {
+//                                                e.printStackTrace();
+//                                            }
 
                                             ((Activity) context).runOnUiThread(() -> {
                                                 headerViewHolder.sid.setText("SID:" + data.getS_id());//设置报名id
@@ -406,188 +403,188 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                     headerViewHolder.cancel.setVisibility(View.VISIBLE);//可见
                                                     headerViewHolder.cancel_icon.setVisibility(View.VISIBLE);//可见
                                                 }
-                                            });
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    } else {//调用失败
-                                        Log.i("error", response.toString());
-                                    }
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }).start();//要start才会启动
 
-                    //评论按钮的可见性
-                    new Thread(() -> {
-                        try {
-                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                            Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8087/comments/get?s_id=" + data.getS_id())
-                                    .get()
-                                    .build();//创建Http请求
-                            client.newBuilder()
-                                    .connectTimeout(20, TimeUnit.SECONDS)
-                                    .readTimeout(20, TimeUnit.SECONDS)
-                                    .writeTimeout(20, TimeUnit.SECONDS)
-                                    .build()
-                                    .newCall(request).enqueue(new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                    Log.i("error", "数据获取失败");
-                                    e.printStackTrace();
-                                }
+                                                //TODO  调api，获取评论按钮的可见性
+                                                new Thread(() -> {
+                                                    try {
+                                                        OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                                        Request request = new Request.Builder()
+                                                                .url("http://114.55.239.213:8087/comments/get?s_id=" + data.getS_id())
+                                                                .get()
+                                                                .build();//创建Http请求
+                                                        client.newBuilder()
+                                                                .connectTimeout(20, TimeUnit.SECONDS)
+                                                                .readTimeout(20, TimeUnit.SECONDS)
+                                                                .writeTimeout(20, TimeUnit.SECONDS)
+                                                                .build()
+                                                                .newCall(request).enqueue(new Callback() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                                Log.i("error", "数据获取失败");
+                                                                e.printStackTrace();
+                                                            }
 
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    if (response.isSuccessful()) {//调用成功
-                                        try {
-                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                            JSONObject data_comment = JSON.parseObject(jsonObj.getString("data"));
-                                            Log.i("data_comment实体", data_comment.toString());
+                                                            @Override
+                                                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                                if (response.isSuccessful()) {//调用成功
+                                                                    try {
+                                                                        com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                                        JSONObject data_comment = JSON.parseObject(jsonObj.getString("data"));
+                                                                        Log.i("data_comment实体", data_comment.toString());
 
-                                            //延时1.5s
-                                            try {
-                                                Thread.sleep(1500);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
+//                                                                        //延时1.5s
+//                                                                        try {
+//                                                                            Thread.sleep(300);
+//                                                                        } catch (Exception e) {
+//                                                                            e.printStackTrace();
+//                                                                        }
 
-                                            ((Activity) context).runOnUiThread(() -> {
-                                                if (data.getSignup_status().equals("已结束")) {
-                                                    //显示评论的相关组件
-                                                    if (data_comment.getString("memo").equals("获取失败")) {
-                                                        //说明没有评论过
-                                                        //不显示评论后的textview
-                                                        headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
-                                                        headerViewHolder.comment_content.setVisibility(View.VISIBLE);
-                                                        headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
-                                                        headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
-                                                    } else {
-                                                        //评论过
-                                                        //显示评论后的textview
-                                                        headerViewHolder.comment_time.setText(data_comment.getString("create_time"));
-                                                        headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
-                                                        headerViewHolder.comment_content_after.setText(data_comment.getString("content"));
-                                                        headerViewHolder.comment_time.setVisibility(View.VISIBLE);
-                                                        headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
-                                                        headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                                                                        ((Activity) context).runOnUiThread(() -> {
+                                                                            if (data.getSignup_status().equals("已结束")) {
+                                                                                //显示评论的相关组件
+                                                                                if (data_comment.getString("memo").equals("获取失败")) {
+                                                                                    //说明没有评论过
+                                                                                    //不显示评论后的textview
+                                                                                    headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
+                                                                                    headerViewHolder.comment_content.setVisibility(View.VISIBLE);
+                                                                                    headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
+                                                                                    headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
+                                                                                } else {
+                                                                                    //评论过
+                                                                                    //显示评论后的textview
+                                                                                    headerViewHolder.comment_time.setText(data_comment.getString("create_time"));
+                                                                                    headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
+                                                                                    headerViewHolder.comment_content_after.setText(data_comment.getString("content"));
+                                                                                    headerViewHolder.comment_time.setVisibility(View.VISIBLE);
+                                                                                    headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+                                                                                    headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                                                                                }
+                                                                            } else {
+                                                                                //不显示评论的相关组件
+                                                                                headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
+                                                                                headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
+                                                                                headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
+                                                                                headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
+                                                                                headerViewHolder.comment_content_after.setText("目前无法评论");
+                                                                                headerViewHolder.comment_content_after.setTextColor(context.getResources().getColor(R.color.text_grey_color));
+                                                                            }
+
+                                                                            //评分按钮的可见性
+                                                                            new Thread(() -> {
+                                                                                try {
+                                                                                    OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
+                                                                                    Request request = new Request.Builder()
+                                                                                            .url("http://114.55.239.213:8087/mark/get?s_id=" + data.getS_id())
+                                                                                            .get()
+                                                                                            .build();//创建Http请求
+                                                                                    client.newBuilder()
+                                                                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                                                                            .readTimeout(20, TimeUnit.SECONDS)
+                                                                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                                                                            .build()
+                                                                                            .newCall(request).enqueue(new Callback() {
+                                                                                        @Override
+                                                                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                                                            Log.i("error", "数据获取失败");
+                                                                                            e.printStackTrace();
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                                                            if (response.isSuccessful()) {//调用成功
+                                                                                                try {
+                                                                                                    com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                                                                    JSONObject data_mark = JSON.parseObject(jsonObj.getString("data"));
+                                                                                                    Log.i("data_mark实体", data_mark.toString());
+
+//                                                                                                    //延时1.5s
+//                                                                                                    try {
+//                                                                                                        Thread.sleep(300);
+//                                                                                                    } catch (InterruptedException e) {
+//                                                                                                        e.printStackTrace();
+//                                                                                                    }
+
+                                                                                                    ((Activity) context).runOnUiThread(() -> {
+                                                                                                        if (data_mark != null) {
+                                                                                                            if (data.getSignup_status().equals("已结束")) {
+                                                                                                                if (data_mark.getString("memo").equals("获取失败")) {
+                                                                                                                    //说明没有评分过
+                                                                                                                    headerViewHolder.mark.setVisibility(View.VISIBLE);
+                                                                                                                    headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
+                                                                                                                } else {
+                                                                                                                    //评分过
+                                                                                                                    headerViewHolder.mark.setVisibility(View.INVISIBLE);
+                                                                                                                    headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
+
+                                                                                                                    //移除组件
+                                                                                                                    headerViewHolder.line4.removeView(headerViewHolder.mark);
+                                                                                                                    headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+
+                                                                                                                    //改变取消按钮的位置
+                                                                                                                    ConstraintSet set = new ConstraintSet();
+                                                                                                                    set.clone(headerViewHolder.line4);
+                                                                                                                    set.connect(
+                                                                                                                            R.id.cancel,
+                                                                                                                            ConstraintSet.LEFT,
+                                                                                                                            R.id.mark,
+                                                                                                                            ConstraintSet.LEFT
+                                                                                                                    );
+                                                                                                                    set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
+                                                                                                                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                                                                                                                }
+                                                                                                            } else {//已结束+其他状态不能评分
+                                                                                                                headerViewHolder.mark.setVisibility(View.INVISIBLE);
+                                                                                                                headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
+
+                                                                                                                //移除组件
+                                                                                                                headerViewHolder.line4.removeView(headerViewHolder.mark);
+                                                                                                                headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
+
+                                                                                                                //改变取消按钮的位置
+                                                                                                                ConstraintSet set = new ConstraintSet();
+                                                                                                                set.clone(headerViewHolder.line4);
+                                                                                                                set.connect(
+                                                                                                                        R.id.cancel,
+                                                                                                                        ConstraintSet.LEFT,
+                                                                                                                        R.id.mark,
+                                                                                                                        ConstraintSet.LEFT
+                                                                                                                );
+                                                                                                                set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
+                                                                                                                set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                                                                                                            }
+                                                                                                        } else {
+                                                                                                            //没记录就显示
+                                                                                                            ((Activity) context).runOnUiThread(() -> {
+                                                                                                                headerViewHolder.mark.setVisibility(View.VISIBLE);
+                                                                                                                headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
+                                                                                                            });
+                                                                                                        }
+                                                                                                    });
+                                                                                                } catch (JSONException e) {
+                                                                                                    e.printStackTrace();
+                                                                                                }
+                                                                                            } else {//调用失败
+                                                                                                Log.i("error", response.toString());
+                                                                                            }
+                                                                                        }
+                                                                                    });
+                                                                                } catch (Exception e) {
+                                                                                    e.printStackTrace();
+                                                                                }
+                                                                            }).start();//要start才会启动
+                                                                        });
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                } else {//调用失败
+                                                                    Log.i("error", response.toString());
+                                                                }
+                                                            }
+                                                        });
+                                                    } catch (Exception e) {
+                                                        e.printStackTrace();
                                                     }
-                                                } else {
-                                                    //不显示评论的相关组件
-                                                    headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
-                                                    headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
-                                                    headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
-                                                    headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
-                                                    headerViewHolder.comment_content_after.setText("目前无法评论");
-                                                    headerViewHolder.comment_content_after.setTextColor(context.getResources().getColor(R.color.text_grey_color));
-                                                }
-                                            });
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    } else {//调用失败
-                                        Log.i("error", response.toString());
-                                    }
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }).start();//要start才会启动
-
-                    //评分按钮的可见性
-                    new Thread(() -> {
-                        try {
-                            OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
-                            Request request = new Request.Builder()
-                                    .url("http://114.55.239.213:8087/mark/get?s_id=" + data.getS_id())
-                                    .get()
-                                    .build();//创建Http请求
-                            client.newBuilder()
-                                    .connectTimeout(20, TimeUnit.SECONDS)
-                                    .readTimeout(20, TimeUnit.SECONDS)
-                                    .writeTimeout(20, TimeUnit.SECONDS)
-                                    .build()
-                                    .newCall(request).enqueue(new Callback() {
-                                @Override
-                                public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                    Log.i("error", "数据获取失败");
-                                    e.printStackTrace();
-                                }
-
-                                @Override
-                                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                    if (response.isSuccessful()) {//调用成功
-                                        try {
-                                            com.alibaba.fastjson.JSONObject jsonObj = JSON.parseObject(response.body().string());
-                                            JSONObject data_mark = JSON.parseObject(jsonObj.getString("data"));
-                                            Log.i("data_mark实体", data_mark.toString());
-
-                                            //延时1.5s
-                                            try {
-                                                Thread.sleep(1500);
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
-
-                                            ((Activity) context).runOnUiThread(() -> {
-                                                if (data_mark != null) {
-                                                    if (data.getSignup_status().equals("已结束")) {
-                                                        if (data_mark.getString("memo").equals("获取失败")) {
-                                                            //说明没有评分过
-                                                            headerViewHolder.mark.setVisibility(View.VISIBLE);
-                                                            headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
-                                                        } else {
-                                                            //评分过
-                                                            headerViewHolder.mark.setVisibility(View.INVISIBLE);
-                                                            headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
-
-                                                            //移除组件
-                                                            headerViewHolder.line4.removeView(headerViewHolder.mark);
-                                                            headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
-
-                                                            //改变取消按钮的位置
-                                                            ConstraintSet set = new ConstraintSet();
-                                                            set.clone(headerViewHolder.line4);
-                                                            set.connect(
-                                                                    R.id.cancel,
-                                                                    ConstraintSet.LEFT,
-                                                                    R.id.mark,
-                                                                    ConstraintSet.LEFT
-                                                            );
-                                                            set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                                                            set.applyTo(headerViewHolder.line4);//设置约束条件生效
-                                                        }
-                                                    } else {//已结束+其他状态不能评分
-                                                        headerViewHolder.mark.setVisibility(View.INVISIBLE);
-                                                        headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
-
-                                                        //移除组件
-                                                        headerViewHolder.line4.removeView(headerViewHolder.mark);
-                                                        headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
-
-                                                        //改变取消按钮的位置
-                                                        ConstraintSet set = new ConstraintSet();
-                                                        set.clone(headerViewHolder.line4);
-                                                        set.connect(
-                                                                R.id.cancel,
-                                                                ConstraintSet.LEFT,
-                                                                R.id.mark,
-                                                                ConstraintSet.LEFT
-                                                        );
-                                                        set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                                                        set.applyTo(headerViewHolder.line4);//设置约束条件生效
-                                                    }
-                                                } else {
-                                                    //没记录就显示
-                                                    ((Activity) context).runOnUiThread(() -> {
-                                                        headerViewHolder.mark.setVisibility(View.VISIBLE);
-                                                        headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
-                                                    });
-                                                }
+                                                }).start();//要start才会启动
                                             });
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -604,7 +601,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                     //延时1.5s
                     try {
-                        Thread.sleep(1500);
+                        Thread.sleep(100);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -650,21 +647,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             headerViewHolder.line4.removeView(headerViewHolder.mark);
                             headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-//                    //记录sharedpreference
-//                    editor = pref.edit();
-//                    //构造对象
-//                    Marks mark=new Marks();
-//                    mark.setPos(pos);
-//                    mark.setFlag(true);
-//                    marks.add(mark);
-//                    Gson gson3 = new Gson();
-//                    String res = gson3.toJson(marks);
-//                    Log.i("mark",res);
-//                    editor.putString("marks",res);
-////                    editor.putBoolean("isMark",true);//标记为已经点了评分
-////                    editor.putInt("pos",pos);//当前选择的item
-//                    editor.commit();//提交
-
                             //改变取消按钮的位置
                             ConstraintSet set = new ConstraintSet();
                             set.clone(headerViewHolder.line4);
@@ -686,7 +668,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
                         //取消按钮
                         headerViewHolder.cancel.setOnClickListener(view -> {
-                            //调api，改报名状态  TODO
+                            //TODO  调api，改报名状态
                             new Thread(() -> {
                                 try {
                                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
@@ -773,18 +755,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                 headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
                             });
-//                    //记录sharedpreference
-//                    editor = pref.edit();
-//                    //构造对象
-//                    Cancels cancel=new Cancels();
-//                    cancel.setPos(pos);
-//                    cancel.setFlag(true);
-//                    cancels.add(cancel);
-//                    Gson gson4 = new Gson();
-//                    String res = gson4.toJson(cancels);
-//                    Log.i("cancel",res);
-//                    editor.putString("cancels",res);
-//                    editor.commit();//提交
                         });
                         headerViewHolder.cancel_icon.setOnClickListener(view -> {
                             //调api，改报名状态
@@ -862,20 +832,6 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                 headerViewHolder.line4.removeView(headerViewHolder.cancel);
                                 headerViewHolder.line4.removeView(headerViewHolder.cancel_icon);
                             });
-//                    //记录sharedpreference
-//                    editor = pref.edit();
-//                    //构造对象
-//                    Cancels cancel=new Cancels();
-//                    cancel.setPos(pos);
-//                    cancel.setFlag(true);
-//                    cancels.add(cancel);
-//                    Gson gson5 = new Gson();
-//                    String res = gson5.toJson(cancels);
-//                    Log.i("cancel",res);
-//                    editor.putString("cancels",res);
-////                    editor.putBoolean("isCancel",true);//标记为已经点了取消
-////                    editor.putInt("pos",pos);//当前选择的item
-//                    editor.commit();//提交
                         });
 
                         //评论确定按钮
@@ -884,7 +840,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             String content = headerViewHolder.comment_content.getText().toString();
                             Log.i("评论内容", content);
 
-                            //调api，content存到db TODO
+                            //TODO  调api，content存到db
                             new Thread(() -> {
                                 try {
                                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端
@@ -962,12 +918,14 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         });
                     });
                 } else {
-                    //延时1.5s
-                    try {
-                        Thread.sleep(1500);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    //没有记录
+
+//                    //延时1.5s
+//                    try {
+//                        Thread.sleep(1500);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
 
                     //为空，显示404
                     ((Activity) context).runOnUiThread(() -> {

@@ -50,6 +50,8 @@ public class SignupFragment extends Fragment {
 
     //判断是哪个状态
     private int s = 0;//1-4分别对应四个状态
+    //判断"已结束"tab是否没数据，值=0表示有数据，值>0表示没数据
+    private int none1 = 0, none2 = 0;
 
     public SignupFragment() {
     }
@@ -166,12 +168,12 @@ public class SignupFragment extends Fragment {
                                 }
                                 Log.i("报名数据", list.toString());
 
-                                //2s延时
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
+//                                //2s延时
+//                                try {
+//                                    Thread.sleep(2000);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
 
                                 getActivity().runOnUiThread(() -> {
                                     //等待加载的toast
@@ -204,12 +206,12 @@ public class SignupFragment extends Fragment {
             }
         }).start();//要start才会启动
 
-        //4s延时
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+//        //4s延时
+//        try {
+//            Thread.sleep(4000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
 
         //点击事件
         //状态1
@@ -684,23 +686,28 @@ public class SignupFragment extends Fragment {
                                             signup.setStu_id(stu_id);
                                             list.add(signup);
                                         }
+                                        none1 = 0;
 
                                     } else if (obj0.getString("memo").equals("获取历史记录失败")) {
                                         //无”已结束“状态的报名数据，不做toast
-
+                                        none1 = 1;
                                     } else if (obj0.getString("memo").equals("该账号不存在")) {
-                                        getActivity().runOnUiThread(() -> {
-                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                            toast.show();
-                                        });
+//                                        getActivity().runOnUiThread(() -> {
+//                                            Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+//                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                            toast.show();
+
+                                        none1 = 2;
+//                                        });
 
                                     } else if (obj0.getString("memo").equals("输入有误")) {
-                                        getActivity().runOnUiThread(() -> {
-                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
-                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                            toast.show();
-                                        });
+//                                        getActivity().runOnUiThread(() -> {
+//                                            Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+//                                            toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                            toast.show();
+
+                                        none1 = 3;
+//                                        });
                                     }
                                     Log.i("报名数据", list.toString());
 
@@ -753,28 +760,35 @@ public class SignupFragment extends Fragment {
                                                                     signup.setStu_id(stu_id);
                                                                     list.add(signup);
                                                                 }
+                                                                none2 = 0;
 
                                                             } else if (obj2.getString("memo").equals("获取历史记录失败")) {
-                                                                getActivity().runOnUiThread(() -> {
-                                                                    //没数据
-                                                                    Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
-                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                    toast.show();
-                                                                });
+//                                                                getActivity().runOnUiThread(() -> {
+//                                                                    //没数据
+//                                                                    Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+//                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                                                    toast.show();
+
+                                                                none2 = 1;
+//                                                                });
 
                                                             } else if (obj2.getString("memo").equals("该账号不存在")) {
-                                                                getActivity().runOnUiThread(() -> {
-                                                                    Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
-                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                    toast.show();
-                                                                });
+//                                                                getActivity().runOnUiThread(() -> {
+//                                                                    Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+//                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                                                    toast.show();
+
+                                                                none2 = 2;
+//                                                                });
 
                                                             } else if (obj2.getString("memo").equals("输入有误")) {
-                                                                getActivity().runOnUiThread(() -> {
-                                                                    Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
-                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
-                                                                    toast.show();
-                                                                });
+//                                                                getActivity().runOnUiThread(() -> {
+//                                                                    Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+//                                                                    toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+//                                                                    toast.show();
+
+                                                                none2 = 3;
+//                                                                });
                                                             }
                                                             Log.i("报名数据3", list.toString());
 
@@ -786,6 +800,29 @@ public class SignupFragment extends Fragment {
                                                             }
 
                                                             getActivity().runOnUiThread(() -> {
+                                                                //若没数据或获取数据出错，这里显示toast
+                                                                if (none1 == 0 || none2 == 0) {
+                                                                    //有一个有数据，就表示已结束tab中有数据，不做操作
+                                                                } else {
+                                                                    //此时none1和none2都>0
+                                                                    if (none1 == 1 && none2 == 1) {
+                                                                        //没数据/获取数据失败
+                                                                        Toast toast = Toast.makeText(context, "暂无数据", Toast.LENGTH_SHORT);
+                                                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                        toast.show();
+                                                                    } else if (none1 == 2 || none2 == 2) {
+                                                                        //该账号不存在
+                                                                        Toast toast = Toast.makeText(context, "该账号不存在", Toast.LENGTH_SHORT);
+                                                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                        toast.show();
+                                                                    } else if (none1 == 3 || none2 == 3) {
+                                                                        //该账号不存在
+                                                                        Toast toast = Toast.makeText(context, "输入有误", Toast.LENGTH_SHORT);
+                                                                        toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
+                                                                        toast.show();
+                                                                    }
+                                                                }
+
                                                                 //适配器的定义与设置
                                                                 Log.i("报名数据3", list.toString());
                                                                 //配置布局管理器、分割线、适配器

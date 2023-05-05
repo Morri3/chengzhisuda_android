@@ -1028,7 +1028,7 @@ public class ResumesManage extends AppCompatActivity {
             }
         }).start();//要start才会启动
 
-        //编辑按钮
+        //个人信息编辑按钮
         edit1.setOnClickListener(v -> {
             runOnUiThread(() -> {
                 save1.setVisibility(View.VISIBLE);
@@ -1042,7 +1042,7 @@ public class ResumesManage extends AppCompatActivity {
             });
         });
 
-        //保存按钮
+        //个人信息保存按钮
         save1.setOnClickListener(v -> {
             runOnUiThread(() -> {
                 save1.setVisibility(View.INVISIBLE);
