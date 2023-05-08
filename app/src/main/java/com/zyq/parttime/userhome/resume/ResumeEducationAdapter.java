@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.zyq.parttime.R;
+import com.zyq.parttime.form.AddDetail;
 import com.zyq.parttime.form.EditEducation;
 import com.zyq.parttime.form.EditEducationDto;
 
@@ -212,7 +213,6 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                         //UI界面添加该元素，并刷新适配器
                         saveData(pos, item);
-//                        Log.i("b", list.toString());
 
                         //调api，根据id 修改数据库中的数据
                         new Thread(() -> {
@@ -224,6 +224,7 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
                                 if (initial == 1) {
                                     //原有记录
+
                                     //dto
                                     EditEducationDto dto = new EditEducationDto();
                                     dto.setRd_id(item.getRd_id());
@@ -264,6 +265,55 @@ public class ResumeEducationAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                                                     //获取obj中的数据
                                                     Log.i("rd_id", data.getString("rd_id"));
                                                     Log.i("修改", "修改成功！");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {//调用失败
+                                                Log.i("error", response.toString());
+                                            }
+                                        }
+                                    });
+                                } else if (initial == 0) {
+                                    //新增记录
+
+                                    //dto
+                                    AddDetail dto = new AddDetail();
+                                    dto.setTelephone(item.getTelephone());
+                                    dto.setR_id(item.getR_id());
+                                    dto.setDate(item.getDate());//字符串类型
+                                    dto.setTitle(item.getTitle());
+                                    dto.setContent(item.getContent());
+                                    dto.setCategory("教育背景");
+                                    String json = JSON.toJSONString(dto);//dto转json
+
+                                    Request request = new Request.Builder()
+                                            .url("http://114.55.239.213:8087/users/resumes/add_detail")
+                                            .post(RequestBody.create(MediaType.parse("application/json"), json))
+                                            .build();//创建Http请求
+                                    client.newBuilder()
+                                            .connectTimeout(20, TimeUnit.SECONDS)
+                                            .readTimeout(20, TimeUnit.SECONDS)
+                                            .writeTimeout(20, TimeUnit.SECONDS)
+                                            .build()
+                                            .newCall(request).enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                            Log.i("error", "数据更新失败");
+                                            e.printStackTrace();
+                                        }
+
+                                        @Override
+                                        public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                            if (response.isSuccessful()) {//调用成功
+                                                try {
+                                                    JSONObject jsonObj = JSON.parseObject(response.body().string());
+                                                    Log.i("data", jsonObj.getString("data"));
+                                                    JSONObject data = JSON.parseObject(jsonObj.getString("data"));
+
+                                                    //获取obj中的数据
+                                                    Log.i("rd_id", data.getString("rd_id"));
+                                                    Log.i("新增", "新增成功！");
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }

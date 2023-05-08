@@ -532,7 +532,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                                                                                     set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
                                                                                                                     set.applyTo(headerViewHolder.line4);//设置约束条件生效
                                                                                                                 }
-                                                                                                            } else {//已结束+其他状态不能评分
+                                                                                                            } else {//已结束之外的其他状态不能评分
                                                                                                                 headerViewHolder.mark.setVisibility(View.INVISIBLE);
                                                                                                                 headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
 

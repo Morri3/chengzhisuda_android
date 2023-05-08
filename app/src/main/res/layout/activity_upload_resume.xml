@@ -168,7 +168,7 @@
     <!-- 白色背景卡片 -->
     <View
         android:id="@+id/card2"
-        android:layout_width="359dp"
+        android:layout_width="345dp"
         android:layout_height="360dp"
         android:background="@drawable/white_round_bg2"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -179,7 +179,7 @@
         android:outlineSpotShadowColor="#BAFDCE" />
     <ImageView
         android:id="@+id/pic"
-        android:layout_width="330dp"
+        android:layout_width="320dp"
         android:layout_height="330dp"
         android:src="@drawable/zyq_resume"
         app:layout_constraintRight_toRightOf="@id/card2"
