@@ -1,8 +1,9 @@
 package com.zyq.parttime.util;
 
+//出生年月、入学年月、毕业年月的下拉框
 public class DateData {
-    private int[] month = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    private boolean leapryear;
+    private int[] month = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};//每月的天数
+    private boolean leapryear;//是否是闰年
     private int birthYear;//出生年份
     private int birthMonth;//出生月份
     private int startYear;//入学年份
@@ -25,13 +26,19 @@ public class DateData {
 
     //根据年份判断是否是闰年，然后获得二月的天数
     public DateData(int year) {
+        //判断是否是闰年
         if ((year % 100 == 0 && year % 400 == 0) || year % 4 == 0) {
             leapryear = true;
-        } else leapryear = false;
-        if (leapryear)
+        } else {
+            leapryear = false;
+        }
+
+        //获取二月的天数
+        if (leapryear) {
             month[1] = 29;
-        else
+        } else {
             month[1] = 28;
+        }
     }
 
     //获取当前月份

@@ -265,14 +265,12 @@ public class ResumesManage extends AppCompatActivity {
                                                                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                                                 String now = sdf.format(new Date());
 
-//                                                                FormBody.Builder params = new FormBody.Builder();
-//                                                                params.add("telephone", telephone);
-//                                                                params.add("upload_time", now);
-
-                                                                CreateResume createResume = new CreateResume();//DTO
+                                                                //DTO
+                                                                CreateResume createResume = new CreateResume();
                                                                 createResume.setTelephone(telephone);
                                                                 createResume.setUpload_time(now);
                                                                 String json = JSON.toJSONString(createResume);//dto转string
+
                                                                 Request request = new Request.Builder()
                                                                         .url("http://114.55.239.213:8087/users/resumes/create")
                                                                         .post(RequestBody.create(MediaType.parse("application/json"), json))
@@ -1537,8 +1535,9 @@ public class ResumesManage extends AppCompatActivity {
                                         Log.i("stu", student.toString());
                                     }
 
-                                    //这里不用判断”不存在简历“的情况，因为能进入到简历界面，就表示要么本身存在简历，
-                                    //   要么本身没简历在上面创建好了简历，能看到刷新按钮时肯定存在简历
+                                    //这里不用判断”不存在简历“的情况，因为能进入到简历界面，就表示：
+                                    //  1.要么本身存在简历，
+                                    //  2.要么本身没简历在上面创建好了简历，能看到刷新按钮时肯定存在简历
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }

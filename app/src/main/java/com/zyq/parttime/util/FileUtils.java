@@ -19,19 +19,20 @@ public class FileUtils {
         return multipartFile;
     }
 
+    //创建一个contentType是text/plain的文件
     private static FileItem createFileItem(File file) {
         FileItemFactory factory = new DiskFileItemFactory(16, null);
         FileItem item = factory.createItem("textField", "text/plain", true, file.getName());
         int bytesRead = 0;
-        byte[] buffer = new byte[8192];
+        byte[] buffer = new byte[8192];//存放文件比特流
         try {
             FileInputStream fis = new FileInputStream(file);
             OutputStream os = item.getOutputStream();
             while ((bytesRead = fis.read(buffer, 0, 8192)) != -1) {
                 os.write(buffer, 0, bytesRead);
             }
-            os.close();
-            fis.close();
+            os.close();//关闭输出流
+            fis.close();//关闭文件输入流
         } catch (IOException e) {
             e.printStackTrace();
         }

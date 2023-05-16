@@ -355,8 +355,8 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                             positionInfo.setSalary(salary);
                                             positionInfo.setWork_time(work_time);
                                             positionInfo.setArea(area);
-                                            String position_status = data.getSignup_status();
-                                            positionInfo.setPosition_status(position_status);
+                                            String signup_status = data.getSignup_status();//报名状态
+                                            positionInfo.setPosition_status(signup_status);
 
 //                                            //延时1.5s
 //                                            try {
@@ -389,7 +389,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                 String update = sdf.format(data.getCreate_time());
                                                 headerViewHolder.update_time.setText(update);
 
-                                                //取消按钮的可见性
+                                                //取消按钮的可见性（根据报名状态确定）
                                                 if (positionInfo.getPosition_status().equals("已结束")
                                                         || positionInfo.getPosition_status().equals("已取消")
                                                         || positionInfo.getPosition_status().equals("已录取")) {
@@ -443,14 +443,16 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                                             if (data.getSignup_status().equals("已结束")) {
                                                                                 //显示评论的相关组件
                                                                                 if (data_comment.getString("memo").equals("获取失败")) {
-                                                                                    //说明没有评论过
+                                                                                    //⭐说明DB中没有评论记录，表示没有评论过
+
                                                                                     //不显示评论后的textview
                                                                                     headerViewHolder.comment_time.setVisibility(View.INVISIBLE);
                                                                                     headerViewHolder.comment_content.setVisibility(View.VISIBLE);
                                                                                     headerViewHolder.btn_comment.setVisibility(View.VISIBLE);
                                                                                     headerViewHolder.comment_content_after.setVisibility(View.INVISIBLE);
                                                                                 } else {
-                                                                                    //评论过
+                                                                                    //⭐评论过
+
                                                                                     //显示评论后的textview
                                                                                     headerViewHolder.comment_time.setText(data_comment.getString("create_time"));
                                                                                     headerViewHolder.comment_content_after.setVisibility(View.VISIBLE);
@@ -508,49 +510,57 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                                                                         if (data_mark != null) {
                                                                                                             if (data.getSignup_status().equals("已结束")) {
                                                                                                                 if (data_mark.getString("memo").equals("获取失败")) {
-                                                                                                                    //说明没有评分过
+                                                                                                                    //⭐DB中没有评分记录，表明没有评分过
                                                                                                                     headerViewHolder.mark.setVisibility(View.VISIBLE);
                                                                                                                     headerViewHolder.mark_icon.setVisibility(View.VISIBLE);
                                                                                                                 } else {
-                                                                                                                    //评分过
+                                                                                                                    //⭐表示评分过
                                                                                                                     headerViewHolder.mark.setVisibility(View.INVISIBLE);
                                                                                                                     headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
 
-                                                                                                                    //移除组件
+                                                                                                                    //移除评分按钮
                                                                                                                     headerViewHolder.line4.removeView(headerViewHolder.mark);
                                                                                                                     headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-                                                                                                                    //改变取消按钮的位置
+                                                                                                                    //改变取消按钮的位置，让取消按钮位于这个线性布局的最左侧
+                                                                                                                    //step1：创建ConstraintSet对象
                                                                                                                     ConstraintSet set = new ConstraintSet();
                                                                                                                     set.clone(headerViewHolder.line4);
+                                                                                                                    //step2：约束元素，这里让取消按钮左侧与评分字样左侧对齐
                                                                                                                     set.connect(
                                                                                                                             R.id.cancel,
                                                                                                                             ConstraintSet.LEFT,
                                                                                                                             R.id.mark,
                                                                                                                             ConstraintSet.LEFT
                                                                                                                     );
+                                                                                                                    //step3：设置取消文字的左外边距为75dp
                                                                                                                     set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                                                                                                                    set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                                                                                                                    //step4：让约束条件生效
+                                                                                                                    set.applyTo(headerViewHolder.line4);
                                                                                                                 }
                                                                                                             } else {//已结束之外的其他状态不能评分
                                                                                                                 headerViewHolder.mark.setVisibility(View.INVISIBLE);
                                                                                                                 headerViewHolder.mark_icon.setVisibility(View.INVISIBLE);
 
-                                                                                                                //移除组件
+                                                                                                                //移除评分按钮
                                                                                                                 headerViewHolder.line4.removeView(headerViewHolder.mark);
                                                                                                                 headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-                                                                                                                //改变取消按钮的位置
+                                                                                                                //改变取消按钮的位置，让取消按钮位于这个线性布局的最左侧
+                                                                                                                //step1：创建ConstraintSet对象
                                                                                                                 ConstraintSet set = new ConstraintSet();
                                                                                                                 set.clone(headerViewHolder.line4);
+                                                                                                                //step2：约束元素，这里让取消按钮左侧与评分字样左侧对齐
                                                                                                                 set.connect(
                                                                                                                         R.id.cancel,
                                                                                                                         ConstraintSet.LEFT,
                                                                                                                         R.id.mark,
                                                                                                                         ConstraintSet.LEFT
                                                                                                                 );
+                                                                                                                //step3：设置取消文字的左外边距为75dp
                                                                                                                 set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                                                                                                                set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                                                                                                                //step4：让约束条件生效
+                                                                                                                set.applyTo(headerViewHolder.line4);
                                                                                                             }
                                                                                                         } else {
                                                                                                             //没记录就显示
@@ -599,7 +609,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         }
                     }).start();//要start才会启动
 
-                    //延时1.5s
+                    //延时0.1s
                     try {
                         Thread.sleep(100);
                     } catch (Exception e) {
@@ -610,27 +620,31 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                         //不显示404
                         headerViewHolder.no_content.setVisibility(View.INVISIBLE);
 
-                        //评分按钮
+                        //点击评分按钮
                         headerViewHolder.mark.setOnClickListener(view -> {
                             Toast toast = Toast.makeText(context, "欢迎评分", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                             toast.show();
 
-                            //移除组件
+                            //移除评分按钮
                             headerViewHolder.line4.removeView(headerViewHolder.mark);
                             headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-                            //改变取消按钮的位置
+                            //改变取消按钮的位置，让取消按钮位于这个线性布局的最左侧
+                            //step1：创建ConstraintSet对象
                             ConstraintSet set = new ConstraintSet();
                             set.clone(headerViewHolder.line4);
+                            //step2：约束元素，这里让取消按钮左侧与评分字样左侧对齐
                             set.connect(
                                     R.id.cancel,
                                     ConstraintSet.LEFT,
                                     R.id.mark,
                                     ConstraintSet.LEFT
                             );
+                            //step3：设置取消文字的左外边距为75dp
                             set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                            set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                            //step4：让约束条件生效
+                            set.applyTo(headerViewHolder.line4);
 
                             //跳转到评分界面
                             Intent editpro = new Intent(context, MarkActivity.class);
@@ -643,21 +657,25 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                             toast.show();
 
-                            //移除组件
+                            //移除评分按钮
                             headerViewHolder.line4.removeView(headerViewHolder.mark);
                             headerViewHolder.line4.removeView(headerViewHolder.mark_icon);
 
-                            //改变取消按钮的位置
+                            //改变取消按钮的位置，让取消按钮位于这个线性布局的最左侧
+                            //step1：创建ConstraintSet对象
                             ConstraintSet set = new ConstraintSet();
                             set.clone(headerViewHolder.line4);
+                            //step2：约束元素，这里让取消按钮左侧与评分字样左侧对齐
                             set.connect(
                                     R.id.cancel,
                                     ConstraintSet.LEFT,
                                     R.id.mark,
                                     ConstraintSet.LEFT
                             );
+                            //step3：设置取消文字的左外边距为75dp
                             set.setMargin(R.id.cancel, ConstraintSet.START, Utils.px2dp(context, 75));
-                            set.applyTo(headerViewHolder.line4);//设置约束条件生效
+                            //step4：让约束条件生效
+                            set.applyTo(headerViewHolder.line4);
 
                             //跳转到评分界面
                             Intent editpro = new Intent(context, MarkActivity.class);
@@ -666,7 +684,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             context.startActivity(editpro);
                         });
 
-                        //取消按钮
+                        //点击取消按钮
                         headerViewHolder.cancel.setOnClickListener(view -> {
                             //TODO  调api，改报名状态
                             new Thread(() -> {
@@ -888,11 +906,11 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                             toast.setGravity(Gravity.TOP | Gravity.CENTER, 0, 250);
                                                             toast.show();
 
-                                                            //确定按钮+输入框，显示TextView，隐藏按钮,移除组件
+                                                            //确定按钮+输入框，显示TextView
                                                             headerViewHolder.comment_content_after.setText(content);
                                                             headerViewHolder.comment_time.setVisibility(View.VISIBLE);
                                                             headerViewHolder.comment_time.setText(sdf.format(now));//设置时间
-                                                            //移除2个控件
+                                                            //隐藏两个控件
                                                             headerViewHolder.comment_content.setVisibility(View.INVISIBLE);
                                                             headerViewHolder.btn_comment.setVisibility(View.INVISIBLE);
                                                             //显示Textview

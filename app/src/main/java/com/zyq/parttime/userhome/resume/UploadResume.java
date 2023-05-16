@@ -87,18 +87,18 @@ public class UploadResume extends AppCompatActivity {
 
         //上传
         upload.setOnClickListener(v -> {
-            //显示组件
+            //1.显示组件
             title.setVisibility(View.VISIBLE);
             card.setVisibility(View.VISIBLE);
 
-            //获取简历图片
+            //2.拍照相关
             takePhoto();
             Log.i("uri", imageUri.toString());
 
-            //把从相册获得的图片set到pic控件
-            pic.setImageResource(R.drawable.zyq_resume);//预设的简历图片
-            pic.setVisibility(View.VISIBLE);//显示pic
-
+            //3.预设简历图片，这里是假数据，在拍照返回的函数中是真正拍摄的照片
+            pic.setImageResource(R.drawable.zyq_resume);
+            //4.显示pic
+            pic.setVisibility(View.VISIBLE);
         });
 
         //保存
@@ -145,15 +145,19 @@ public class UploadResume extends AppCompatActivity {
                                         File theFile = new File(picFile.getPath());
                                         Log.i("theFile", theFile.getAbsolutePath() + " - " + theFile.getName());
 
+                                        //1.构造请求体
+                                        //  传的参数是表单类型
                                         RequestBody body = new MultipartBody.Builder()
-                                                .setType(MultipartBody.FORM) //表单类型
+                                                .setType(MultipartBody.FORM)
                                                 .addFormDataPart("file", theFile.getName(),
                                                         RequestBody.create(new File(theFile.getAbsolutePath()), MediaType.parse("multipart/form-data")))
                                                 .build();
+                                        //2.封装请求
                                         Request request = new Request.Builder()
                                                 .url("http://114.55.239.213:8087/users/resumes/upload")
                                                 .post(body)
                                                 .build();//创建Http请求
+                                        //3.客户端异步执行
                                         client.newBuilder()
                                                 .connectTimeout(45, TimeUnit.SECONDS)
                                                 .readTimeout(45, TimeUnit.SECONDS)
@@ -241,26 +245,35 @@ public class UploadResume extends AppCompatActivity {
         });
     }
 
-    //拍照，获取大图并存相册
+    //拍照
     private void takePhoto() {
+        //1.创建隐式意图
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        //2.判断是否有Activity能打开该意图
+        //   若不加这个判断，当没有相机时应用会闪退
         if (intent.resolveActivity(getPackageManager()) != null) {
-            File file = createImageFile();//创建用来保存图片的文件
+            //3.创建File文件，用于存放图片，文件名=当前时间_
+            File file = createImageFile();
             Log.e("file", file + "");
 
+            //4.获取图片URI
             if (file != null) {
-                //7.0以上通过FileProvider将file转换成uri
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N) {
+                    //4-1.Android 7以上要通过FileProvider将file转换成uri
                     imageUri = FileProvider.getUriForFile(this, FILE_PROVIDER_AUTHORITY, file);
                 } else {
-                    imageUri = Uri.fromFile(file);//从file文件中获取uri
+                    //4-2.Android 7以下直接通过File获取Uri
+                    imageUri = Uri.fromFile(file);
                 }
             }
 
+            //5.给意图添加参数
             intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            //6.打开意图，执行系统相机的拍照
             startActivityForResult(intent, REQUEST_TAKE_PHOTO_CODE);
 
-            //赋值给全局变量
+            //7.原图赋值给全局变量，在调api时传给后端
             picFile = file;
         }
     }
@@ -268,12 +281,16 @@ public class UploadResume extends AppCompatActivity {
     //创建文件
     private File createImageFile() {
         String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
-        String fileName = format + "_";//文件名
-        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);//获取外部存储的存放图片的文件夹的路径
+        //1.构造文件名=日期_
+        String fileName = format + "_";
+
+        //2.获取外部存储中存放图片的目录路径
+        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 
         try {
-            File imageFile = File.createTempFile(fileName, ".jpg", file);//指定图片文件格式为.jpg
-            return imageFile;//返回添加文件名的File
+            //3.创建jpg格式的文件，返回
+            File imageFile = File.createTempFile(fileName, ".jpg", file);
+            return imageFile;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -284,11 +301,15 @@ public class UploadResume extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        //1.执行的是拍照，且成功返回，就用bitmap工厂类的decodeStream方法，把图片的输入流转为bitmap
         if (requestCode == REQUEST_TAKE_PHOTO_CODE && resultCode == RESULT_OK) {
             try {
                 Bitmap bitmap = BitmapFactory.
                         decodeStream(UploadResume.this.getContentResolver().openInputStream(imageUri));
-                pic.setImageBitmap(bitmap);//把图片set到pic上
+
+                //2.把图片set到pic上，从而在前端页面中显示用户拍摄的照片
+                pic.setImageBitmap(bitmap);
             } catch (Exception e) {
                 e.printStackTrace();
             }

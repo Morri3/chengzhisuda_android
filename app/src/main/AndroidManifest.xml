@@ -10,8 +10,8 @@
     <!-- 相机 -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 下面该权限会与UploadResume的startActivityForResult冲突，故替换为android.hardware.camera -->
 <!--    <uses-permission android:name="android.permission.CAMERA" />-->
-    <!-- Declare features -->
     <uses-feature android:name="android.hardware.camera" />
 
     <application

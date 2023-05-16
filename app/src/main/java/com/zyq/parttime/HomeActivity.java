@@ -16,6 +16,7 @@ import com.zyq.parttime.home.HomeFragment;
 import com.zyq.parttime.signup.SignupFragment;
 import com.zyq.parttime.userhome.UserhomeFragment;
 
+//主文件，页面入口
 public class HomeActivity extends AppCompatActivity implements View.OnClickListener {
     //fragment
     private HomeFragment homeFragment;
@@ -46,14 +47,16 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         // 初始时显示首页
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();//向Activity state增加/删除fragment
         hideFragments(transaction);//隐藏所有的fragment
-        changeColors("home");//图片、文字选中的样式
-        if (homeFragment == null) {//fragment为空
-            homeFragment = new HomeFragment();//创建一个fragment
-            transaction.add(R.id.main_container, homeFragment);//加入transaction
-        } else {//fragment不为空
-            transaction.show(homeFragment);//显示该fragment
+        changeColors("home");//改变选中项的图片、文字的样式
+        if (homeFragment == null) {
+            //fragment为空，就创建一个，然后加入transaction
+            homeFragment = new HomeFragment();
+            transaction.add(R.id.main_container, homeFragment);
+        } else {
+            //fragment不为空，就显示该fragment
+            transaction.show(homeFragment);
         }
-        transaction.commit();//提交
+        transaction.commit();//提交transaction
     }
 
     public void initViews() {
@@ -76,43 +79,49 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.home://首页
             case R.id.icon_home:
                 reset();//重置文本、图片选中状态
-                changeColors("home");//图片、文字选中的样式
+                changeColors("home");//改变选中项的图片、文字的样式
 
-                if (homeFragment == null) {//fragment为空
-                    homeFragment = new HomeFragment();//创建一个fragment
-                    transaction.add(R.id.main_container, homeFragment);//加入transaction
-                } else {//fragment不为空
-                    transaction.show(homeFragment);//显示该fragment
+                if (homeFragment == null) {
+                    //fragment为空，就创建一个，然后加入transactio
+                    homeFragment = new HomeFragment();
+                    transaction.add(R.id.main_container, homeFragment);
+                } else {
+                    //fragment不为空，就显示该fragment
+                    transaction.show(homeFragment);
                 }
                 break;
             case R.id.signup://我的报名
             case R.id.icon_signup:
                 reset();//重置文本、图片选中状态
-                changeColors("signup");//图片、文字选中的样式
+                changeColors("signup");//改变选中项的图片、文字的样式
 
-                if (signupFragment == null) {//fragment为空
-                    signupFragment = new SignupFragment();//创建一个fragment
-                    transaction.add(R.id.main_container, signupFragment);//加入transaction
-                } else {//fragment不为空
-                    transaction.show(signupFragment);//显示该fragment
+                if (signupFragment == null) {
+                    //fragment为空，就创建一个，然后加入transactio
+                    signupFragment = new SignupFragment();
+                    transaction.add(R.id.main_container, signupFragment);
+                } else {
+                    //fragment不为空，就显示该fragment
+                    transaction.show(signupFragment);
                 }
                 break;
             case R.id.userhome://个人中心
             case R.id.icon_userhome:
                 reset();//重置文本、图片选中状态
-                changeColors("userhome");//图片、文字选中的样式
-//                text_userhome.setSelected(true);//文字选中
-//                icon_userhome.setSelected(true);//图片选中
+                changeColors("userhome");//改变选中项的图片、文字的样式
 
-                if (userhomeFragment == null) {//fragment为空
-                    userhomeFragment = new UserhomeFragment();//创建一个fragment
-                    transaction.add(R.id.main_container, userhomeFragment);//加入transaction
-                } else {//fragment不为空
-                    transaction.show(userhomeFragment);//显示该fragment
+                if (userhomeFragment == null) {
+                    //fragment为空，就创建一个，然后加入transactio
+                    userhomeFragment = new UserhomeFragment();
+                    transaction.add(R.id.main_container, userhomeFragment);
+                } else {
+                    //fragment不为空，就显示该fragment
+                    transaction.show(userhomeFragment);
                 }
                 break;
         }
-        transaction.commit();//提交
+
+        //提交transaction
+        transaction.commit();
     }
 
     //重置文本、图片的选中状态
@@ -167,43 +176,51 @@ public class HomeActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    //重写onResume方法，activity跳转到响应的fragment
+    //重写onResume方法，activity跳转到响应的fragment。这里的内容同监听点击事件的函数的内容
     @Override
     protected void onResume() {
         //FragmentTransaction实现向Activity state增/删fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        //获取意图中传来的id值，根据id值切换fragment
         int id = getIntent().getIntExtra("id", 0);
 
         if (id == 1) {
             changeColors("home");//图片、文字选中的样式
-            if (homeFragment == null) {//fragment为空
-                homeFragment = new HomeFragment();//创建一个fragment
-                transaction.add(R.id.main_container, homeFragment);//加入transaction
-            } else {//fragment不为空
-                transaction.show(homeFragment);//显示该fragment
+            if (homeFragment == null) {
+                //fragment为空，就创建一个fragment，加入transaction
+                homeFragment = new HomeFragment();
+                transaction.add(R.id.main_container, homeFragment);
+            } else {
+                //fragment不为空，就显示该fragment
+                transaction.show(homeFragment);
             }
         }
 
         if (id == 2) {
             changeColors("signup");//图片、文字选中的样式
-            if (signupFragment == null) {//fragment为空
-                signupFragment = new SignupFragment();//创建一个fragment
-                transaction.add(R.id.main_container, signupFragment);//加入transaction
-            } else {//fragment不为空
-                transaction.show(signupFragment);//显示该fragment
+            if (signupFragment == null) {
+                //fragment为空，就创建一个fragment，加入transaction
+                signupFragment = new SignupFragment();
+                transaction.add(R.id.main_container, signupFragment);
+            } else {
+                //fragment不为空，就显示该fragment
+                transaction.show(signupFragment);
             }
         }
 
         if (id == 3) {
             changeColors("userhome");//图片、文字选中的样式
-            if (userhomeFragment == null) {//fragment为空
-                userhomeFragment = new UserhomeFragment();//创建一个fragment
-                transaction.add(R.id.main_container, userhomeFragment);//加入transaction
-            } else {//fragment不为空
-                transaction.show(userhomeFragment);//显示该fragment
+            if (userhomeFragment == null) {
+                //fragment为空，就创建一个fragment，加入transaction
+                userhomeFragment = new UserhomeFragment();
+                transaction.add(R.id.main_container, userhomeFragment);
+            } else {
+                //fragment不为空，就显示该fragment
+                transaction.show(userhomeFragment);
             }
         }
+        //提交transaction
         transaction.commit();
 
         super.onResume();

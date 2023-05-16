@@ -184,7 +184,7 @@ public class LoginActivity extends AppCompatActivity {
             View v = getCurrentFocus();
             //判断是否要隐藏
             if (isShouldHideInput(v, ev)) {
-                //使用InputMethodManager管理类，进行隐藏
+                //使用InputMethodManager管理类，隐藏键盘
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (imm != null) {
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
@@ -205,8 +205,8 @@ public class LoginActivity extends AppCompatActivity {
             v.getLocationInWindow(leftTop);
             int left = leftTop[0];//左
             int top = leftTop[1];//上
-            int bottom = top + v.getHeight();//下=上+高度
-            int right = left + v.getWidth();//右=左+宽度
+            int bottom = top + v.getHeight();//下=上+视图高度
+            int right = left + v.getWidth();//右=左+视图宽度
             if (event.getX() > left && event.getX() < right && event.getY() > top
                     && event.getY() < bottom) {//点击区域在输入框内，保留点击EditText的事件
                 return false;
