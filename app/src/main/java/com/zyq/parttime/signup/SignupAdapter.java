@@ -471,7 +471,7 @@ public class SignupAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                                                                                 headerViewHolder.comment_content_after.setTextColor(context.getResources().getColor(R.color.text_grey_color));
                                                                             }
 
-                                                                            //评分按钮的可见性
+                                                                            //TODO  评分按钮的可见性
                                                                             new Thread(() -> {
                                                                                 try {
                                                                                     OkHttpClient client = new OkHttpClient();//创建Okhttp客户端

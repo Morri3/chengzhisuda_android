@@ -68,6 +68,10 @@
             android:exported="true">
         </activity>
         <activity
+            android:name=".userhome.resume.template.ResumeTemplate"
+            android:exported="true">
+        </activity>
+        <activity
             android:name=".userhome.setting.SettingManage"
             android:exported="true">
         </activity>

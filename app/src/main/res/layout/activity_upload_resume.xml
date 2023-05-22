@@ -90,49 +90,37 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/icon"
         />
-    <TextView
-        android:id="@+id/tip"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="0dp"
-        android:text="目前支持jpg格式的简历图片。"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:textColor="@color/text_grey_color"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        />
-    <!-- 白色背景卡片 -->
+
+    <!-- 1.白色背景卡片 -->
     <View
         android:id="@+id/card"
         android:layout_width="350dp"
-        android:layout_height="50dp"
+        android:layout_height="45dp"
         android:background="@drawable/white_round_bg2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tip"
+        app:layout_constraintTop_toBottomOf="@id/title"
         android:layout_marginTop="10dp"
         android:outlineAmbientShadowColor="#FFAAAA"
         android:outlineSpotShadowColor="#BAFDCE" />
     <ImageView
         android:id="@+id/icon2"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/icon_upload"
+        android:layout_width="38dp"
+        android:layout_height="38dp"
+        android:src="@drawable/icon_resume_upload"
         app:layout_constraintLeft_toLeftOf="@id/card"
         app:layout_constraintTop_toTopOf="@id/card"
         app:layout_constraintBottom_toBottomOf="@id/card"
         android:layout_marginLeft="25dp"
+        android:layout_marginBottom="4dp"
         />
     <TextView
         android:id="@+id/title2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="0dp"
+        android:layout_marginBottom="3dp"
         android:layout_marginLeft="10dp"
-        android:text="选择简历图片"
+        android:text="拍摄照片"
         android:textSize="18dp"
         android:textStyle="bold"
         android:textColor="@color/text_black_color"
@@ -142,38 +130,116 @@
         />
     <ImageView
         android:id="@+id/icon3"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:src="@drawable/icon_right"
         app:layout_constraintRight_toRightOf="@id/card"
         app:layout_constraintTop_toTopOf="@id/card"
         app:layout_constraintBottom_toBottomOf="@id/card"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/tip1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginLeft="5dp"
+        android:text="支持jpg格式的简历照片"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/text_grey_color"
+        app:layout_constraintLeft_toRightOf="@id/title2"
+        app:layout_constraintTop_toTopOf="@id/card"
+        app:layout_constraintBottom_toBottomOf="@id/card"
         />
 
-    <!--简历内容-->
+    <!-- 2.白色背景卡片 -->
+    <View
+        android:id="@+id/card2"
+        android:layout_width="350dp"
+        android:layout_height="45dp"
+        android:background="@drawable/white_round_bg2"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/card"
+        android:layout_marginTop="10dp"
+        android:outlineAmbientShadowColor="#FFAAAA"
+        android:outlineSpotShadowColor="#BAFDCE" />
+    <ImageView
+        android:id="@+id/icon4"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/icon_resume_template"
+        app:layout_constraintLeft_toLeftOf="@id/card2"
+        app:layout_constraintTop_toTopOf="@id/card2"
+        app:layout_constraintBottom_toBottomOf="@id/card2"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="4dp"
+        />
     <TextView
         android:id="@+id/title3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="14dp"
+        android:text="模板格式"
+        android:textSize="18dp"
+        android:textStyle="bold"
+        android:textColor="@color/text_black_color"
+        app:layout_constraintLeft_toRightOf="@id/icon4"
+        app:layout_constraintBottom_toBottomOf="@id/card2"
+        app:layout_constraintTop_toTopOf="@id/card2"
+        />
+    <ImageView
+        android:id="@+id/icon5"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/template_detail"
+        app:layout_constraintRight_toRightOf="@id/card2"
+        app:layout_constraintTop_toTopOf="@id/card2"
+        app:layout_constraintBottom_toBottomOf="@id/card2"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="5dp"
+        />
+    <TextView
+        android:id="@+id/tip3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginLeft="5dp"
+        android:text="目前仅支持上传指定模板的简历"
+        android:textSize="10dp"
+        android:textStyle="bold"
+        android:textColor="@color/text_grey_color"
+        app:layout_constraintLeft_toRightOf="@id/title3"
+        app:layout_constraintTop_toTopOf="@id/card2"
+        app:layout_constraintBottom_toBottomOf="@id/card2"
+        />
+
+    <!--3.简历内容-->
+    <TextView
+        android:id="@+id/title4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
         android:layout_marginLeft="30dp"
         android:text="简历内容"
         android:textSize="18dp"
         android:textStyle="bold"
         android:textColor="@color/text_black_color"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card"
+        app:layout_constraintTop_toBottomOf="@id/card2"
         />
     <!-- 白色背景卡片 -->
     <View
-        android:id="@+id/card2"
+        android:id="@+id/card3"
         android:layout_width="345dp"
         android:layout_height="360dp"
         android:background="@drawable/white_round_bg2"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title3"
+        app:layout_constraintTop_toBottomOf="@id/title4"
         android:layout_marginTop="10dp"
         android:outlineAmbientShadowColor="#FFAAAA"
         android:outlineSpotShadowColor="#BAFDCE" />
@@ -182,9 +248,9 @@
         android:layout_width="320dp"
         android:layout_height="330dp"
         android:src="@drawable/zyq_resume"
-        app:layout_constraintRight_toRightOf="@id/card2"
-        app:layout_constraintLeft_toLeftOf="@id/card2"
-        app:layout_constraintTop_toTopOf="@id/card2"
-        app:layout_constraintBottom_toBottomOf="@id/card2"
+        app:layout_constraintRight_toRightOf="@id/card3"
+        app:layout_constraintLeft_toLeftOf="@id/card3"
+        app:layout_constraintTop_toTopOf="@id/card3"
+        app:layout_constraintBottom_toBottomOf="@id/card3"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

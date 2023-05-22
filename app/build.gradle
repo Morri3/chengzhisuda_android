@@ -58,8 +58,6 @@ dependencies {
     // If you want to additionally use the CameraX Extensions library
     implementation "androidx.camera:camera-extensions:1.0.0-alpha27"
 
-//    implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.1'
-//    implementation group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
-//    annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
-//    implementation group: 'com.alibaba', name: 'fastjson', version: '1.2.76'
+    //skeleton骨架屏
+//    implementation 'com.ethanhua:skeleton:1.1.2'
 }

@@ -24,25 +24,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.zyq.parttime.HomeActivity;
 import com.zyq.parttime.R;
-import com.zyq.parttime.form.EditProjectDto;
-import com.zyq.parttime.util.FileUtils;
+import com.zyq.parttime.userhome.resume.template.ResumeTemplate;
 
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
-
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -59,8 +49,8 @@ public class UploadResume extends AppCompatActivity {
     private Context context;//上下文
     private static final int REQUEST_TAKE_PHOTO_CODE = 2;//拍照请求
     private static final String FILE_PROVIDER_AUTHORITY = "com.zyq.parttime.fileProvider";//文件提供者名字
-    private Uri imageUri;
-    private ImageView pic;
+    private Uri imageUri;//图片的URI
+    private ImageView pic;//显示用户拍摄的照片的控件
     private File picFile;//传给Spring Boot的图片文件
 
     @Override
@@ -70,14 +60,22 @@ public class UploadResume extends AppCompatActivity {
         setContentView(R.layout.activity_upload_resume);
         context = this.getBaseContext();
 
-        //获取传递来的telephone
+        //获取通过意图传来的学生id
         String telephone = getIntent().getStringExtra("telephone");
 
+        //返回、保存图标
         ImageView back = findViewById(R.id.back);
         ImageView button_save = findViewById(R.id.button_save);
-        ImageView upload = findViewById(R.id.icon3);
-        TextView title = findViewById(R.id.title3);
-        View card = findViewById(R.id.card2);
+
+        //上传部分
+        ImageView upload = findViewById(R.id.icon3);//上传图片的图标
+
+        //模板部分
+        ImageView template = findViewById(R.id.icon5);//查看模板内容的图标
+
+        //简历内容
+        TextView title = findViewById(R.id.title4);
+        View card = findViewById(R.id.card3);//简历内容的白色卡片
         pic = findViewById(R.id.pic);
 
         //初始组件
@@ -99,6 +97,15 @@ public class UploadResume extends AppCompatActivity {
             pic.setImageResource(R.drawable.zyq_resume);
             //4.显示pic
             pic.setVisibility(View.VISIBLE);
+        });
+
+        //查看模板内容
+        template.setOnClickListener(v -> {
+            //跳转到模板页面
+            Intent i = new Intent();
+            i.setClass(context, ResumeTemplate.class);
+            i.putExtra("telephone", telephone);//点击模板详情，把学生id传过去
+            startActivity(i);
         });
 
         //保存
@@ -235,6 +242,7 @@ public class UploadResume extends AppCompatActivity {
             }
         });
 
+        //返回
         back.setOnClickListener(v -> {
             runOnUiThread(() -> {
                 //跳转简历页
