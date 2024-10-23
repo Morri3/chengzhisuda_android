@@ -1,2 +1,3 @@
 # chengzhisuda_android
-毕设“城职速达”安卓前端
+Graduation Thesis: Design and Development of Campus Part-time Platform Based on Android Studio
+Android front-end
